@@ -9,6 +9,8 @@
 ---
 
 ## 1. println, print, printf
+![](../../../images/image_id=408838.jpg)
+
 ```java
 // 换行
 System.out.println("Hello World!");
