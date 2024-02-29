@@ -4,16 +4,14 @@ import java.util.StringJoiner;
 public class Student {
 
     public static void main(String[] args) {
-        // 默认容量为16
-        StringBuilder sb = new StringBuilder();
-        System.out.println(sb.capacity());  // 16
+        System.out.println('中' + '文');  // 46004
+        System.out.println('中' + "文");  // 中文
 
-        // 扩容为原来的2倍 + 2
-        sb.append("abcdefghijklmnopqrstuvwxyz");
-        System.out.println(sb.capacity());  // 34 = 16 * 2  + 2
+        System.out.println("abc" + 123);    // abc123
+        System.out.println('a' + null);  // abc
+        System.out.println(1 + 2 + 'b' + 3 + 4);  // 108
 
-        // 如果扩容之后还不够，以实际长度为准
-        sb.append("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv");
-        System.out.println(sb.capacity());  // 74 > 70 = 34 * 2 + 2
+        System.out.println("abc" + true + null);  // abctruenull
+        // System.out.println(null);  // 不允许输出null
     }
 }
