@@ -26,16 +26,17 @@ System.out.printf("Hello %d %s", 123, "world");
 
 键盘录入分为两套：
 
-- next()、nextInt()、nextDouble()这三个配套使用。
+- `next()`、`nextInt()`、`nextDouble()`这三个配套使用。
 
     在接收数据的时候，会遇到空格/回车/制表符，其中一个就会停止接收数据。
 
     如果用了这三个其中一个，就不要用nextLine()。
 
-- nextLine()单独使用。
+- `nextLine()`单独使用。
+    
     在接收数据的时候，会遇到回车，就会停止接收数据。
 
-    如果想要整数，那么先接收，再使用Integer.parseInt进行类型转换。
+    如果想要整数，那么先接收，再使用`Integer.parseInt()`进行类型转换。
 
 
 ```java
@@ -57,6 +58,7 @@ System.out.println("此时为整数：" + i);
 ### 2.1. 用法
 
 ```java
+/* next() */
 // 录入的所有数据都会看做是字符串
 Scanner sc = new Scanner(System.in);
 String s = sc.next();
@@ -97,7 +99,9 @@ System.out.println(s);
 ```
 ### 2.2. 细节
 
-next()，nextInt()，nextDouble()在接收数据的时候，会遇到空格，回车，制表符其中一个就会停止接收数据。但是这些符号 + 后面的数据还在内存中并没有接收。如果后面还有其他键盘录入的方法，会自动将这些数据接收。
+next()，nextInt()，nextDouble()在接收数据的时候
+- 第一次遇到的**空格、回车、制表符**，会真正字符前的这些过滤掉。
+- 第二次会遇到**空格、回车、制表符**其中一个就会停止接收数据。但是这些符号 + 后面的数据还在内存中并没有接收。如果后面还有其他键盘录入的方法，会自动将这些数据接收。
 
 ```java
 Scanner sc = new Scanner(System.in);
@@ -105,11 +109,42 @@ String s1 = sc.next();
 String s2 = sc.next();
 System.out.println(s1);
 System.out.println(s2);
-// 此时值键盘录入一次a b(注意a和b之间用空格隔开)
-// 那么第一个next();会接收a，a后面是空格，那么就停止，所以打印s1是a
+// 此时值键盘录入：回车空格a制表符b
+// 那么第一个next()过滤完后会接收a，a后面是空格，那么就停止，所以打印s1是a
 // 但是空格+b还在内存中。
 // 第二个next会去掉前面的空格，只接收b
 // 所以第二个s2打印出来是b
+/*
+
+ a      b
+a
+b
+*/
+```
+
+nextLine()方法是把一整行(**空格、制表符，没有回车**)全部接收完毕。
+
+代码示例：
+
+```java
+Scanner sc = new Scanner(System.in);
+String s = sc.nextLine();
+System.out.println(s);
+System.out.println(s.length());
+System.out.println(s == "");
+//键盘录入：制表符a b(注意a和b之间用空格隔开)
+//那么nextLine不会过滤前面和后面的空格，会把这一整行数据全部接收完毕。
+/*
+        a b
+        a b
+*/
+// 录入后不打字符就回车，是空行""，有换行效果只是因为println。
+/*
+
+
+0
+true
+*/
 ```
 
 ### 2.3. 混用引起的后果
