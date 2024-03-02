@@ -10,7 +10,18 @@ public class Mytest {
         // String d = str1 + str2; // 在堆上创建的新的对象
         // System.out.println(c == d);// false
 
+        
+        
+        String s1 = Integer.toBinaryString(100);    // 1100100
 
+        String s2 = Integer.toOctalString(100);     // 144
+
+        String s3 = Integer.toHexString(100);       // 64
+
+        int i1 = Integer.parseInt("100");
+        int i2 = Integer.parseInt("64", 16);
+
+        // 除了Character都有对应的parseXxx的方法。
 
         // Address address = new Address();
         // address.setName("杭州");
