@@ -24,6 +24,10 @@ alt+enter: 修复报错
 
 ctrl+alt+v: 自动生成左边的类型和变量名。
 
+ctrl+alt+b: 实现方法。接口类跳转实现类
+
+ctrl+alt+d：surround with。try是6.
+
 ctrl+alt+t: try-catch捕获
 
 导入jar包：![Alt text](../../images/image-8.png)
