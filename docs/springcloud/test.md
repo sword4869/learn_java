@@ -185,6 +185,32 @@ XA vs AT
 TC服务器搭建 tc-server
 - registry服务注册中心（其他分支事务），config服务配置中心（seata的config，有多个seata）
 
+## SpringAMQP
+
+SpringAMQP中处理消息确认的几种情况: 消息发送到MQ（交换机和队列）会返回结果回执（ack表示已经到交换机，nack表示未到交换机）
+- publisher-comfirm:
+  
+    - 消息发送失败，没有到达交换机，返回nack回执
+    - 消息成功发送到exchange和成功路由到queue，返回ack回执
+    - 消息发送过程中出现异常，没有收到回执
+- publisher-return
+  
+    消息成功发送到exchange, 但没有路由到queue, 返回ack，调用ReturnCallback
+
+如何确保RabbitMQ消息的可靠性?
+- 开启生产者确认机制，确保生产者的消息能到达队列
+- 开启持久化功能， 确保消息未消费前在队列中不会丢失
+- 开启消费者确认机制为auto,由spring确认消息处理成功后完成ack
+- 开启消费者失败重试机制，并设置MessageRecoverer, 多次重试失败后将消息投递到异常交换机，交由人工处理
+
+
+消息延迟效果：
+- TTL+死信交换机
+- 延迟队列插件，RabbitMQ的DelayExchange插件
+
+消息堆积
+
+
 ## 业务
 
 > 业务：拼音自动
