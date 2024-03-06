@@ -218,6 +218,29 @@ String s4 = s3 + "bc";
 System.out.println(s1 == s4); // false
 ```
 
+```java
+// 算常量
+final String str1 = "str";  // 这里的str是常量池中的对象
+final String str2 = "ing";
+String c = "str" + "ing";// 常量池中的对象
+String d = str1 + str2; // 复用
+System.out.println(c == d);// true
+```
+
+```java
+// 调用方法就不算常量了
+public static void main(String[] args) {
+    final String str1 = "str";  // 这里的str是常量池中的对象
+    final String str2 = "ing";
+    String c = "str" + getStr();// 常量池中的对象
+    String d = str1 + str2;
+    System.out.println(c == d);// true
+}
+public static String getStr() {
+    return "ing";
+}
+```
+
 ### 2.3. 手动StringBuilder提高字符串效率
 
 1. 所有要拼接的内容都会往StringBuilder中放，`"a"`, `"b"`, `"c"`都是在字符串常量池中的，不会创建很多无用的空间，节约内存。
