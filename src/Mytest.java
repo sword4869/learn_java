@@ -1,6 +1,4 @@
 
-import java.math.BigDecimal;
-import java.util.Objects;
 
 public class Mytest {
     public static void main(String[] args) {
@@ -10,13 +8,11 @@ public class Mytest {
         // String d = str1 + str2; // 在堆上创建的新的对象
         // System.out.println(c == d);// false
 
+        int i = 0;
+        i ++ ;
+        i+=1;
         
         
-
-        int i1 = Integer.parseInt("100");
-
-        Integer i2 = Integer.valueOf("100");
-
         // Address address = new Address();
         // address.setName("杭州");
 

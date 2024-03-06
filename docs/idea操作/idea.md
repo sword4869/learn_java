@@ -53,3 +53,10 @@ Grep Console: console 高亮某个字段
 ![alt text](../../images/image-78.png)
 
 ![alt text](../../images/image-77.png)
+
+编译
+
+![alt text](../../images/image-102.png)
+
+- 选中文件，View->show Bytecode With Jclasslib
+- 如果更改后，需要重新编译。直接Run 或者 Build-> Recompile xxx.java
