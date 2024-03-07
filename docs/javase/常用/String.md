@@ -76,9 +76,9 @@ System.out.println(c==d);   //false
 
    
 ```java
-String a = "abc";
+String a = "abc";       // 变量a的存放的是字符串常量池的"abc"的地址
 String b = "abc";
-String c = new String("abc");
+String c = new String("abc"); // 变量c的存放的是堆中"abc"的地址
 String d = new String("abc");
 
 /* 比较地址 */
@@ -173,7 +173,7 @@ System.out.println(sb.capacity());  // 74 > 70 = 34 * 2 + 2
 
     `String s = "a" + "b" + "c";`
 
-    触发字符串的优化机制，编译出class文件后直接就是`String s = "abc";`了。
+    触发字符串的优化机制，**编译**出class文件后直接就是`String s = "abc";`了。
 
 2. 有变量时`s1 + "a"`。
    
