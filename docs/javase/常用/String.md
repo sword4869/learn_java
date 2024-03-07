@@ -12,6 +12,7 @@
 - [3. StringJoiner](#3-stringjoiner)
 - [4. 其他](#4-其他)
     - [4.0.1. int转String](#401-int转string)
+    - [重复几次](#重复几次)
 
 ---
 ## 1. String
@@ -288,4 +289,11 @@ int length = sj.length();
 
 ```java
 String a = 0 + "";
+```
+
+#### 重复几次
+
+虽然没有`*`，但有`public String repeat(int count)`
+```java
+String a = " ".repeat(3);
 ```

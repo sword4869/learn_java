@@ -20,6 +20,8 @@ ctrl+shift+u: 单词全大写
 
 鼠标滚轮：矩阵选中
 
+ctrl+alt+l: 格式化
+
 alt+enter: 修复报错
 
 ctrl+alt+v: 自动生成左边的类型和变量名。
