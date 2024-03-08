@@ -24,7 +24,7 @@ ctrl+alt+l: 格式化
 
 alt+enter: 修复报错
 
-ctrl+alt+v: 自动生成左边的类型和变量名。
+ctrl+alt+v: 自动生成左边的类型和变量名。`new Integer(1).var`打上`.var`也会自动生成。
 
 ctrl+alt+b: 实现方法。接口类跳转实现类
 
