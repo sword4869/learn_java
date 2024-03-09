@@ -29,3 +29,12 @@
 - ParNew和CMS：暂停时间较短，适用于大型互联网应用中与用户交互的部分
 - Parallel Scavenge和Parallel Old：吞吐量高，适用于后台进行大量数据操作
 - G1：适用于较大的堆，具有可控的暂停时间
+
+## System.gc是minor gc还是full gc
+
+full gc
+
+
+## 调用System.gc后，Java内存会不会马上进行回收
+
+不会，只有在justRanFinalization=true的时候才会执行
