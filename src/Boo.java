@@ -3,15 +3,10 @@ import java.util.concurrent.TimeUnit;
 
 public class Boo {
     public static void main(String[] args) throws InterruptedException {
-        HashMap<String, String> h = new HashMap<>();
-        h.put(null, null);
-        System.out.println(h.get(null));
-        System.out.println(h.size());
-    }
+        Object o = new Object();
 
-    public void doIt() {
-        Integer i = null;
-        System.out.println(i);
+        ClasLay
+        
     }
 }
 // 静态内部类内能用this吗？
