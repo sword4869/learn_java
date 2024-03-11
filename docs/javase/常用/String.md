@@ -293,6 +293,8 @@ String a = 0 + "";
 
 #### 重复几次
 
+JDK11引入
+
 虽然没有`*`，但有`public String repeat(int count)`
 ```java
 String a = " ".repeat(3);

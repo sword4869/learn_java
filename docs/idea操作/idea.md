@@ -14,7 +14,9 @@ alt+7: 函数大纲
 
 ctrl+f12：查找函数
 
-shift+f6: 选中单词全部修改
+ctrl+r : 替换，可以选择区域。
+
+shift+f6: 直接全部替换
 
 ctrl+shift+u: 单词全大写
 
