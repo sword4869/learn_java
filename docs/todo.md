@@ -17,6 +17,12 @@ new
 【无符号右移十六位按位异或，然后再与n-1做与运算】
 
 hashcode的6种生成策略： https://zhuanlan.zhihu.com/p/348612455
+## equals和hashcode都必须重写吗
+
+在没有散列表的情况下，hashCode和equals其实是没有关系的，hashcode并没有什么作用。equals相等，hashcode也可以不等。
+
+当对象会被散列表存储时，必须重写equals() 和 hashCode()方法。且equals()相等时，hashCode()也必须相等。
+
 ## equals()既然已经能实现对比的功能了，为什么还要hashCode()呢？
 
 因为重写的equals（）里一般比较的比较全面比较复杂，这样效率就比较低，而利用hashCode()进行对比，则只要生成一个hash值进行比较就可以了，效率很高。
@@ -25,8 +31,9 @@ hashcode的6种生成策略： https://zhuanlan.zhihu.com/p/348612455
 
 因为hashCode()并不是完全可靠，有时候不同的对象他们生成的hashcode也会一样（生成hash值得公式可能存在的问题），所以hashCode()只能说是大部分时候可靠，并不是绝对可靠，所以我们可以得出：
 
-equals()相等的两个对象他们的hashCode()肯定相等，也就是用equals()对比是绝对可靠的。
 hashCode()相等的两个对象他们的equals()不一定相等，也就是hashCode()不是绝对可靠的。
+
+equals()相等的两个对象他们的hashCode()肯定相等，也就是用equals()对比是绝对可靠的。
 ## 为什么要重写 hashcode 和 equals 方法？
 
 因为原生的hashcode和equals 只是比较类似内存地址的唯一值，也就是说必须是new出的同个对象才返回相等，跟对象里的业务值没关系。 但是有的场景比如订单对象，很明显当订单号相同的两个订单对象就应该是相等的，于是我们需要重写hashcode 和equals 只判断订单号相等则对象相等。
@@ -194,7 +201,8 @@ cookie被拿到以后，通常可以换一个机器访问。
 ##
 ##
 ##
-##
+## 静态内部类内能用this吗？
+
 ##
 ##
 ##
