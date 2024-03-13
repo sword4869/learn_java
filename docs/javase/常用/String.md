@@ -12,7 +12,7 @@
 - [3. StringJoiner](#3-stringjoiner)
 - [4. 其他](#4-其他)
     - [4.0.1. int转String](#401-int转string)
-    - [重复几次](#重复几次)
+    - [4.0.2. 重复几次](#402-重复几次)
 
 ---
 ## 1. String
@@ -104,9 +104,21 @@ System.out.println(c.equals(d)); // true
 
 ### 1.4. 修改某个字符
 
-Java的String没有索引`[]`，只有`.charAt()`方法。
+获取摸个字符，Java的String没有索引`[]`，只有`.charAt()`方法。
+
+```java
+String str = "Hello World";
+char c = str.charAt(0);
+```
 
 修改字符也不能通过索引，而是要转化为char字符数组。
+
+```java
+String str = "Hello World";
+char[] c = str.toCharArray();
+c[0] = 'b';
+str = new String(c);   // bello World
+```
 ### 1.5. 子串 subString()方法
 
 ![](../../../images/image_id=410831.jpg)
@@ -291,7 +303,7 @@ int length = sj.length();
 String a = 0 + "";
 ```
 
-#### 重复几次
+#### 4.0.2. 重复几次
 
 JDK11引入
 

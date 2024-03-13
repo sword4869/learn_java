@@ -1,15 +1,18 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 
 public class Test {
     public static void main(String[] args) {
-       HashMap<String, String> m = new HashMap<>();
-       m.put("abc", "123");
-       System.out.println(m.get("abc"));
-       ArrayList<String> a  =  new ArrayList<>(m.values());
-       for(String b: a){
-        System.out.println(b);
-       }
+        List<Character> stack = new Stack<>();
+        stack('c');
     }
 }
