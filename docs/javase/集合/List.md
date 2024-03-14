@@ -132,15 +132,35 @@ ArrayList<String> a = new ArrayList<>(m.values());
 
 ## 3. LinkedList类
 
-- 添加：add(e), add(i, e), **addFirst(e)**, **addLast(e)**
-- 删除：remove(e), remove(i, e), **removeFirst()**, **removeLast()**
+- 添加头：push(e), **addFirst()**
+- 添加尾：add/offer(e), **addLast()**
+- 删除：poll/pop/remove(), remove(i, e), **removeFirst()**, **removeLast()**
 - 获取：get(i), **getFirst()**, **getLast()**
 - 更新：set(i, e)
 
+还实现了Deque接口。
 
+![alt text](../../../images/image-16.png)
+
+```java
+/* 栈 */
+LinkedList<Integer> stack = new LinkedList<>();
+stack.push(12);
+stack.push(13);
+stack.push(14);
+System.out.println(stack.pop()); // 14
+System.out.println(stack.poll()); // 13
+System.out.println(stack.remove()); // 12
+
+/* 队列 */
+LinkedList<Integer> queue = new LinkedList<>();
+queue.offer(12);
+queue.add(13);
+System.out.println(queue.pop()); // 12
+// poll……remove……
+```
 ## Stack类
-- 添加：**push**/add(e), add(i, e)
-- 删除：**pop**/remove(e), remove(i, e)
-- 获取：**get(i)**, peek()
-- 更新：**set(i, e)**
+- 添加：**push**/add(e)
+- 删除：**pop**
+- 获取：**peek**()
 - 其他：clear(), contains(e), isEmpty(), **empty**(), size()
