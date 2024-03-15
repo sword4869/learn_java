@@ -1,39 +1,22 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class Test {
     public static void main(String[] args) {
-        splitString("1 + 1");
-    }
-    public static String[] splitString(String s) {
-        List<String> tokens = new LinkedList<>();
-        char[] chars = s.toCharArray();
-        int n = s.length();
-        StringBuilder keepNum = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            if (chars[i] == '(' || chars[i] == ')' || chars[i] == '+' || chars[i] == '*' || chars[i] == '/') {
-                tokens.add(chars[i] + "");
-            } else if (chars[i] == ' ') {
-
-            } else if (Character.isDigit(chars[i])) {
-                if (i == n - 1 || !Character.isDigit(chars[i + 1])) {
-                    keepNum.append(chars[i]);
-                    tokens.add(keepNum.toString());
-                    keepNum.setLength(0);
-                } else {
-                    keepNum.append(chars[i]);
-                }
-            } else {
-                if (Character.isDigit(chars[i + 1])) {
-                    keepNum.append(chars[i]);
-                } else {
-                    tokens.add(chars[i] + "");
-                }
+        PriorityQueue<Integer> qMin = new PriorityQueue<>();
+        PriorityQueue<Integer> qMax = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
             }
-        }
-        System.out.println(tokens);
-        return tokens.toArray(new String[0]);
+        });
+        qMax.add(1);
+        qMax.add(2);
+        qMax.add(3);
+        System.out.println(qMax.poll());
     }
 }
