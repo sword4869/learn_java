@@ -100,6 +100,13 @@ Stream<String> strArrayStream2 = Stream.of("hello", "world", "java");
 int[] arr1 = {1,2,3,4,5,6,7,8,9,10};
 Stream.of(arr1).forEach(s-> System.out.println(s));//[I@41629346
 ```
+
+`Stream.iterate()`代替for循环
+```java
+Stream<Integer> intStream = Stream.iterate(0, i -> i+1);
+
+Stream.iterate(0, i -> i+1).limit(10).forEach(System.out::println);
+```
 ## 3. 中间方法
 
 

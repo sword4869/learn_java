@@ -121,7 +121,7 @@ System.out.println("====================================");
 // 4.getName 获取名字
 File f7 = new File("D:\\aaa\\a.txt");
 String name1 = f7.getName();
-System.out.println(name1);
+System.out.println(name1);  // a.txt
 
 File f8 = new File("D:\\aaa\\bbb");
 String name2 = f8.getName();
@@ -162,6 +162,7 @@ System.out.println(f3.exists());// false
 ### 2.3. 创建删除功能的方法
 
 - `public boolean createNewFile()` ：当且仅当具有该名称的文件尚不存在时，创建一个新的空文件。 
+- `static File.createTempFile()`: 创建临时文件
 - `public boolean mkdir()` ：创建由此File表示的目录。
 - `public boolean mkdirs()` ：创建由此File表示的目录，包括任何必需但不存在的父目录。
 - `public boolean delete()` ：删除由此File表示的文件或目录。  
@@ -202,7 +203,12 @@ File f4 = new File("D:\\aaa\\ddd");
 boolean b4 = f4.delete();
 System.out.println(b4);
 ```
-
+```java
+// 创建临时文件
+File tempFile = File.createTempFile("minio", ".jpg");
+System.out.println(tempFile.getAbsolutePath());
+// C:\Users\lab\AppData\Local\Temp\minio3194347510812105777.jpg
+```
 ### 2.4. 遍历
 
 ```java
