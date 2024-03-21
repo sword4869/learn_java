@@ -10,6 +10,5 @@ import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        Stream<Integer> intStream = Stream.iterate(0, i -> i+1);
     }
 }
