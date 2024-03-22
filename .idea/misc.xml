@@ -6,6 +6,12 @@
       <list>
         <option value="$PROJECT_DIR$/untitled/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/jedis/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/redis01/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/SelfDefinedSerialization/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/redis01/defalutSerialization/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/redis01/selfDefinedSerialization/pom.xml" />
+        <option value="$PROJECT_DIR$/codes/redis/redis01/stringRedisTemplate/pom.xml" />
       </list>
     </option>
     <option name="workspaceImportForciblyTurnedOn" value="true" />
