@@ -10,5 +10,8 @@ import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) throws IOException {
+        // mybatis的标签表格
+        
+
     }
 }
