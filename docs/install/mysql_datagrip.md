@@ -85,3 +85,5 @@ net stop mysql80
 ![alt text](../../images/image-98.png)
 
 ![alt text](../../images/image-133.png)
+
+- 导入sql脚本：https://blog.csdn.net/qq_44696465/article/details/131523368
