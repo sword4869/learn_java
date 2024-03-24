@@ -2,8 +2,10 @@ package com.sword.logininterceptor.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sword.logininterceptor.dto.Result;
+import com.sword.logininterceptor.service.UserService;
 import com.sword.logininterceptor.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
