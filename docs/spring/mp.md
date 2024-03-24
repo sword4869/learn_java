@@ -29,7 +29,7 @@
 
     ```yml
     spring:
-    datasource:
+      datasource:
         # 驱动类名称
         driver-class-name: com.mysql.cj.jdbc.Driver
         # 数据库连接的url
@@ -38,9 +38,9 @@
         username: root
         # 连接数据库的密码
         password: 1234
-
+    
     mybatis:
-    configuration:
+      configuration:
         # 指定mybatis输出日志的位置, 输出控制台
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
         # 开启数据库表字段 到 实体类属性的驼峰映射

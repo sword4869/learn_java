@@ -1,6 +1,4 @@
 
-![alt text](../../images/image-128.png)
-
 
 ## 八股
 
