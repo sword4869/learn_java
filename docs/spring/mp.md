@@ -4,7 +4,6 @@
   - [2.2. 主键返回](#22-主键返回)
   - [2.3. 数据封装](#23-数据封装)
 - [3. XML](#3-xml)
-- [分页插件](#分页插件)
 
 ---
 ## 1. Mybatis导入
@@ -28,22 +27,25 @@
 
 1. application.properties
 
-    ~~~properties
-    #驱动类名称
-    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-    #数据库连接的url
-    spring.datasource.url=jdbc:mysql://localhost:3306/mybatis
-    #连接数据库的用户名
-    spring.datasource.username=root
-    #连接数据库的密码
-    spring.datasource.password=1234
+    ```yml
+    spring:
+    datasource:
+        # 驱动类名称
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        # 数据库连接的url
+        url: jdbc:mysql://localhost:3306/tlias
+        # 连接数据库的用户名
+        username: root
+        # 连接数据库的密码
+        password: 1234
 
-    #指定mybatis输出日志的位置, 输出控制台
-    mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
-
-    #开启数据库表字段 到 实体类属性的驼峰映射
-    mybatis.configuration.map-underscore-to-camel-case=true
-    ~~~
+    mybatis:
+    configuration:
+        # 指定mybatis输出日志的位置, 输出控制台
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        # 开启数据库表字段 到 实体类属性的驼峰映射
+        map-underscore-to-camel-case: true
+    ```
 
 2. Mapper接口（编写SQL语句）
 
@@ -136,8 +138,9 @@ public Emp getById(Integer id);
 ```
 **开启驼峰命名**
 ```properties
-# 在application.properties中添加：
-mybatis.configuration.map-underscore-to-camel-case=true
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 ```
 ## 3. XML
 
@@ -239,59 +242,3 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 </select>
 ```
 
-## 分页插件
-
-在Mapper中我们只需要进行正常的列表查询即可。
-
-在Service层中，调用Mapper的方法之前设置分页参数，在调用Mapper方法执行查询之后，解析分页结果，并将结果封装到PageBean对象中返回。
-
-1、在pom.xml引入依赖
-
-```xml
-<dependency>
-    <groupId>com.github.pagehelper</groupId>
-    <artifactId>pagehelper-spring-boot-starter</artifactId>
-    <version>1.4.2</version>
-</dependency>
-```
-
-
-
-2、EmpMapper
-
-~~~java
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class PageBean {
-    private Long total; //总记录数
-    private List rows; //当前页数据列表
-}
-~~~
-```java
-@Mapper
-public interface EmpMapper {
-    //获取当前页的结果列表
-    @Select("select * from emp")
-    public List<Emp> page(Integer start, Integer pageSize);
-}
-```
-
-
-
-3、EmpServiceImpl
-
-```java
-@Override
-public PageBean page(Integer page, Integer pageSize) {
-    // 设置分页参数
-    PageHelper.startPage(page, pageSize); 
-    // 执行分页查询
-    List<Emp> empList = empMapper.list(name,gender,begin,end); 
-    // 获取分页结果
-    Page<Emp> p = (Page<Emp>) empList;   
-    // 封装PageBean
-    PageBean pageBean = new PageBean(p.getTotal(), p.getResult()); 
-    return pageBean;
-}
-```
