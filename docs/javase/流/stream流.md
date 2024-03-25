@@ -253,6 +253,10 @@ Set<String> newList2 = list.stream()
         .collect(Collectors.toSet());
 System.out.println(newList2);       // [张无忌-男-15]
 
+// 收集到map，按照分组，分组结果成为一个集合。
+Map<String, List<String>> mapGroup = list.stream().collect(Collectors.groupingBy(s -> s.split("-")[2]));
+System.out.println(mapGroup);    // {14=[周芷若-女-14], 15=[张无忌-男-15, 张无忌-男-15]}
+
 // 收集Map集合当中：不能重复，key重复会报错
 list.remove("张无忌-男-15");
 Map<String, Integer> map = list.stream()
@@ -301,4 +305,5 @@ Map<String, Integer> map2 = list.stream()
         .collect(Collectors.toMap(
                 s -> s.split("-")[0],
                 s -> Integer.parseInt(s.split("-")[2])));
+
 ```
