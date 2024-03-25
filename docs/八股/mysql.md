@@ -320,3 +320,10 @@ NULL值时，它可以更好地确定哪个索引最有效地用于查询。
 |`SELECT ... FOR UPDATE`| SHARED_WRITE元数据写锁、意向排他锁IX|行排他锁|
 |`insert` 、`update`、`delete`|SHARED_WRITE元数据写锁、意向排他锁IX|排他锁|
 |`alter table ...`|EXCLUSIVE元数据排他锁||
+
+
+## 数据库主从同步
+
+1. MySQL master 将数据变更写入二进制日志binlog
+2. MySQL slave 读取 master 的 binlog，写入到自己的中继日志relay log中。
+3. MySQL slave 重放 relay log 中事件，将数据变更。

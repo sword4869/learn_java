@@ -16,6 +16,10 @@
 
 ## 1. 服务端：安装Redis docker
 
+```bash
+docker run --name redis -p 6379:6379 -d redis redis-server --appendonly yes
+```
+
 
 ## 2. 服务端：安装Redis压缩包
 
