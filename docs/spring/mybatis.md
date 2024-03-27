@@ -8,7 +8,6 @@
 ---
 ## 1. Mybatis导入
 
-
 ```xml
 <!-- mybatis起步依赖 -->
 <dependency>
@@ -58,12 +57,12 @@
 
 @Mapper注解：表示是mybatis中的Mapper接口。程序运行时：框架会自动生成接口的实现类对象(代理对象)，并给交Spring的IOC容器管理
 
- @Select、@Delete、@Insert、@Update
 
 
 ## 2. 注解
-```java
+@Select、@Delete、@Insert、@Update
 
+```java
 @Mapper
 public interface UserMapper {
     @Select("select id, name, age, gender, phone from user")
@@ -105,7 +104,7 @@ public interface UserMapper {
 
 默认情况下，执行插入操作时，是不会主键值返回的。
 
-如果我们想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性useGeneratedKeys=true和keyProperty="实体类属性名"
+如果我们想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性`useGeneratedKeys=true`和`keyProperty="实体类属性名"`
 ### 2.3. 数据封装
 - 实体类属性名和数据库表查询返回的字段名一致，mybatis会自动封装。
 - 如果实体类属性名和数据库表查询返回的字段名不一致，不能自动封装。

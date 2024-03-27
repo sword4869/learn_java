@@ -166,3 +166,6 @@ spring.datasource.url=jdbc:mysql://localhost:3306/mybatis
 spring.datasource.username=root
 spring.datasource.password=1234
 ```
+
+
+`?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true`

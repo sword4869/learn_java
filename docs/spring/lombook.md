@@ -2,6 +2,8 @@
 
 ### 4.1 介绍
 
+Lombok会在**编译**时，会自动生成对应的java代码
+
 | **注解**            | **作用**                                                     |
 | ------------------- | ------------------------------------------------------------ |
 | @Getter/@Setter     | 为所有的属性提供get/set方法                                  |
@@ -12,27 +14,56 @@
 | @AllArgsConstructor | 为实体类生成除了static修饰的字段之外带有各参数的构造器方法。 |
 
 ```xml
-<!-- 在springboot的父工程中，已经集成了lombok并指定了版本号，故当前引入依赖时不需要指定version -->
 <dependency>
     <groupId>org.projectlombok</groupId>
     <artifactId>lombok</artifactId>
 </dependency>
 ```
 
-
-
 ~~~java
 import lombok.Data;
 
-@Data //getter方法、setter方法、toString方法、hashCode方法、equals方法
+@Data
 @NoArgsConstructor //无参构造
 @AllArgsConstructor//全参构造
 public class User {
-    private Integer id;
     private String name;
     private Short age;
-    private Short gender;
-    private String phone;
 }
 ~~~
-Lombok会在**编译**时，会自动生成对应的java代码
+
+## EqualsAndHashCode
+`@EqualsAndHashCode` 默认选项 `(callSuper=false)`：
+
+比较两个对象时：
+1.  只是想在当前类比较字段，使用`@EqualsAndHashCode(callSuper=false)`。
+2.  需要考虑**父类**和本类中的成员，使用`@EqualsAndHashCode(callSuper=true)`
+3.  如果全部要比较 或 全部不需要比较 父类成员，使用全局配置 lombok.config
+
+
+## AllArgsConstructor
+```java
+@AllArgsConstructor(staticName = "of")      // // return new User(...)
+
+User user = User.of("Tom", 123);    
+```
+## RequiredArgsConstructor
+```java
+@RequiredArgsConstructor
+// 将类的每一个final字段或者non-null字段生成一个构造方法
+public class UserController {
+    // 需要变成final字段
+    private final IUserService userService;
+}
+```
+
+简化了对多个注入的@Autowired书写。我们在写Controller层或者Service层的时候，总是需要注入很多mapper接口或者service接口，如果每个接口都写上@Autowired，这样看起来就会很繁琐，@RequiredArgsConstructor注解可以代替@Autowired注解
+
+## Accessors
+
+用来控制getter/setter访问行为的，Accessors有三个属性：
+- `fluent = false`: 去除 get/set，直接`user.name()`
+- `chain = false`: 链式编程 set，`new User().setName("Tom").setAge(12);`
+- `prefix = {}`：过滤字段前缀，`xxName`, `prefix = {"xx"}` → `getName(), setName()`
+
+https://blog.csdn.net/sunnyzyq/article/details/119992746
