@@ -20,7 +20,26 @@ new
 ## 12. 对于解决哈希冲突来说，常见的方法
 ## 13. 那Java中用来解决hash冲突的方法是什么，底层的实现细节（关于为什么是8，我说的是因为泊松分布，面试官说其实按魔法数理解会合适一些）
 
+## hash算法
+
+![alt text](../images/image-203.png)
+
+![alt text](../images/image-204.png)
+
+![alt text](../images/image-205.png)
+
+![alt text](../images/image-206.png)
+
 ## 14. hascode
+
+摘要：在一定程度摘取了原始数据的特征（在计算hash值时，考虑了原始数据的每一个字节。一旦动了一个字节，hash就会明显不同）
+
+散列：
+
+`obj.hashCode()`返回int整数。
+
+String已经重写了hashCode方法：字符串常量池的和堆上的String的哈希值一样。
+
 
 new一个对象后没有hash值，只当调用hashcode()后才有值。
 
@@ -31,11 +50,18 @@ new一个对象后没有hash值，只当调用hashcode()后才有值。
 【无符号右移十六位按位异或，然后再与n-1做与运算】
 
 hashcode的6种生成策略： https://zhuanlan.zhihu.com/p/348612455
+
 ## 16. equals和hashcode都必须重写吗
 
 在没有散列表的情况下，hashCode和equals其实是没有关系的，hashcode并没有什么作用。equals相等，hashcode也可以不等。
 
 当对象会被散列表存储时，必须重写equals() 和 hashCode()方法。且equals()相等时，hashCode()也必须相等。
+
+## String的hashCode
+
+![alt text](../images/image-201.png)
+
+![alt text](../images/image-202.png)
 
 ## 17. equals()方法和==的区别
 

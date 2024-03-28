@@ -192,6 +192,13 @@ Stream<String> stream2 = stream.filter(s -> s.startsWith("张"));
 Stream<String> stream3 = stream.skip(1);        // error， stream已经被steam2使用了一次，不能再使用了。建议使用链式编程
 ```
 
+int转包装类：
+![alt text](../../../images/image-208.png)
+
+max
+
+![alt text](../../../images/image-209.png)
+
 ## 4. 终结方法
 
 ![Alt text](../../../images/image-52.png)
