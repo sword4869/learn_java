@@ -26,16 +26,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final IUserService userService;
 
-    @GetMapping
-    @ApiOperation("简单查所有 + page")
+    @GetMapping("mp")
+    @ApiOperation("mp 简单查所有 + page")
     public PageDTO<UserVO> queryUserByIds(PageQuery pageQuery) {
         return userService.queryUsersPage(pageQuery);
     }
 
-    @ApiOperation("带条件查  + page")
-    @GetMapping("list")
+    @ApiOperation("mp 带条件查  + page")
+    @GetMapping("mp/condition")
     public PageDTO<UserVO> queryUsersByCondition(UserConditionQuery query) {
         return userService.queryUsersByCondition(query);
     }
 
+    @ApiOperation("pagehelper 带条件查  + page")
+    @GetMapping("ph/condition")
+    public PageDTO<UserVO> queryUsersByPH(UserConditionQuery query) {
+        return userService.queryUsersByPH(query);
+    }
 }

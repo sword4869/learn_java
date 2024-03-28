@@ -19,4 +19,6 @@ public interface IUserService extends IService<User> {
     PageDTO<UserVO> queryUsersByCondition(UserConditionQuery query);
 
     PageDTO<UserVO> queryUsersPage(PageQuery pageQuery);
+
+    PageDTO<UserVO> queryUsersByPH(UserConditionQuery query);
 }

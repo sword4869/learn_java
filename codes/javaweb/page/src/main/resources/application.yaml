@@ -15,11 +15,6 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-      logic-delete-field: deleted # 配置逻辑删除字段
-  configuration:
-    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
-
-
 
 knife4j:
   enable: true
@@ -33,3 +28,8 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.sword.page.controller
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true  # 在启用合理化时，如果 pageNum<1，则会查询第一页；如果 pageNum>pages，则会查询最后一页。
+  support-methods-arguments: true # 支持通过Mapper接口参数来传递分页参数

@@ -14,3 +14,11 @@ public class UserConditionQuery extends PageQuery {
     @ApiModelProperty("余额最大值")
     private Integer maxBalance;
 }
+// {
+//     "pageNo": 1,
+//     "pageSize": 5,
+//     "sortBy": "balance",
+//     "isAsc": false,
+//     "name": "o",
+//     "status": 1
+// }

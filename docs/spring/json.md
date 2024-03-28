@@ -32,12 +32,3 @@ System.out.println(json);   // {"name":"Tom","age":18}
 // 手动反序列化
 User getUser = objectMapper.readValue(json, User.class);
 ```
-
----
-```java
-userDTO = BeanUtil.copyProperties(user, userDTO.class)
-
-map = BeanUtil.beanToMap(userDTO)
-
-userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false); // fasle表示有错就抛出
-```

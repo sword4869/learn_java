@@ -13,6 +13,7 @@ import com.sword.crud.domain.vo.UserWithAddressVO;
 import com.sword.crud.mapper.UserMapper;
 import com.sword.crud.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    @Autowired
+    UserMapper userMapper;
 
     @Override
     public List<User> queryUsersByCondition(String keyword, Integer status, Integer minBalance, Integer maxBalance) {
@@ -84,5 +88,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         UserWithAddressVO userWithAddressVO = BeanUtil.copyProperties(user, UserWithAddressVO.class);
         userWithAddressVO.setAddresses(BeanUtil.copyToList(addresses, AddressVO.class));
         return userWithAddressVO;
+    }
+
+    @Override
+    public List<UserVO> querySelfDefined() {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("a.city", "北京")
+                .in("u.id", List.of(1L, 2L, 4L));
+        List<User> users = userMapper.querySelfDefined(wrapper);
+        return BeanUtil.copyToList(users, UserVO.class);
     }
 }

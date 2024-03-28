@@ -21,4 +21,6 @@ public interface IUserService extends IService<User> {
     void deductBalance(Long id, Integer money);
 
     UserWithAddressVO queryUserAndAddressById(Long userId);
+
+    List<UserVO> querySelfDefined();
 }

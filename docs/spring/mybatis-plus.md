@@ -1,3 +1,5 @@
+
+https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylink
 ## 1. Mybatis导入
 
 - 引入起步依赖
@@ -105,8 +107,87 @@ mybatis-plus:
       update-strategy: not_null # update传入po实体，只更新其非null的字段
 ```
 
+## BaseMapper和IService
 
-## lambda
+> BaseMapper
+
+![alt text](../../images/image-199.png)
+
+
+> IService
+
+![alt text](../../images/image-198.png)
+## Wrapper 条件构造器
+
+![alt text](../../images/image-196.png)
+
+![alt text](../../images/image-197.png)
+
+两个抽象类`Wrapper`和`AbstractWrapper`，实际用的就是`QueryWrapper`和`UpdateWrapper`。
+
+Wrapper的子类AbstractWrapper提供了where中包含的所有条件构造方法。
+
+```java
+@Test
+void testUpdateByQueryWrapper() {
+    // 1.构建查询条件 where name = "Jack"
+    QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", "Jack");
+    // 2.更新数据，user中非null字段都会作为set语句
+    User user = new User();
+    user.setBalance(2000);
+    userMapper.update(user, wrapper);
+}
+```
+
+QueryWrapper在AbstractWrapper的基础上拓展了一个select方法（允许指定SQL中的select的字段）
+
+
+```java
+@Test
+void testQueryWrapper() {
+    // 1.构建查询条件 where name like "%o%" AND balance >= 1000
+    QueryWrapper<User> wrapper = new QueryWrapper<User>()
+            .select("id", "username", "info", "balance")
+            .like("username", "o")
+            .ge("balance", 1000);
+    // 2.查询数据
+    List<User> users = userMapper.selectList(wrapper);
+    users.forEach(System.out::println);
+}
+```
+UpdateWrapper在AbstractWrapper的基础上拓展了一个set方法（允许指定SQL中的SET部分）
+
+```java
+@Test
+void testUpdateWrapper() {
+    List<Long> ids = List.of(1L, 2L, 4L);
+    // 1.生成SQL
+    UpdateWrapper<User> wrapper = new UpdateWrapper<User>()
+            .setSql("balance = balance - 200") // SET balance = balance - 200
+            .in("id", ids); // WHERE id in (1, 2, 4)
+        // 2.更新，注意第一个参数可以给null，也就是不填更新字段和数据，
+    // 而是基于UpdateWrapper中的setSQL来更新
+    userMapper.update(null, wrapper);
+}
+```
+
+LambdaQueryWrapper解决QueryWrapper写死字段名称的问题，使用基于变量的gettter方法结合反射技术。
+
+```java
+// 方式1：可以直接链式编程
+LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance);
+
+// 方式2：不可用链式编程
+LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+queryWrapper.eq(User::getName,"liangd1");
+```
+![alt text](../../images/image-200.png)
+
+## lambdaQuery、lambdaUpdate
 
 lambdaQuery 查，lambdaUpdate 更新
 
@@ -114,25 +195,20 @@ condition可选条件。
 
 one/list/page/count/exists
 
-
-
----
-
-## hutool
-
 ```java
-// 方式1
-CourseBase courseBaseNew = new CourseBase();
-BeanUtils.copyProperties(dto, courseBaseNew);
+LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance);
+// 2.查询用户
+List<User> users = userService.list(wrapper);
 
 
-// 方式2
-CourseBase courseBaseNew2 = BeanUtils.copyProperties(dto, CourseBase.class);
+List<User> users = userService.lambdaQuery()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance)
+        .list();
 ```
-`BeanUtils.copyProperties()`，是根据属性名字来匹配的，如果名字不一样的话，那么就得手动get/set。所以设计dto和po之间时，要注意名字。
-
-```java
-List<User> users = userService.listByIds(ids);
-List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
-```
-

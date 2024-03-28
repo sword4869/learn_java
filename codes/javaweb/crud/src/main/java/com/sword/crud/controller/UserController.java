@@ -99,9 +99,17 @@ public class UserController {
     /********************************* 循环依赖 *********************************************/
 
     @GetMapping("userWithAddress/{id}")
-    @ApiOperation("根据id查询用户")
+    @ApiOperation("循环依赖")
     public UserWithAddressVO queryUserWithAddressById(@PathVariable("id") Long userId){
         // 基于自定义service方法查询
         return userService.queryUserAndAddressById(userId);
+    }
+
+    /********************************* 自定义sql *******************************************/
+    @GetMapping("self")
+    @ApiOperation("自定义sql")
+    public List<UserVO> querySelfDefined(){
+        // 基于自定义service方法查询
+        return userService.querySelfDefined();
     }
 }
