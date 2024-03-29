@@ -4,6 +4,9 @@
   - [1.3. 比较String](#13-比较string)
   - [1.4. 修改某个字符](#14-修改某个字符)
   - [1.5. 子串 subString()方法](#15-子串-substring方法)
+  - [1.6. 找索引](#16-找索引)
+  - [大小写](#大小写)
+  - [分割](#分割)
 - [2. StringBuilder: 快速拼接字符串。](#2-stringbuilder-快速拼接字符串)
   - [2.1. 扩容原理](#21-扩容原理)
   - [2.2. 字符串拼接](#22-字符串拼接)
@@ -128,6 +131,50 @@ str = new String(c);   // bello World
 ● String substring(int beginIndex) 截取到末尾（包括）
 ● String substring(int beginIndex, int endIndex) [beginIndex, endIndex)，不允许负数-1之类的
 ```
+
+### 1.6. 找索引
+
+```java
+// indexOf: 找到第一个匹配的字符或字符串的位置，找不到返回-1
+// lastIndexOf: 找到最后一个匹配的字符或字符串的位置，找不到返回-1
+String a = "abcdabc";
+int indexOf1 = a.indexOf('a');
+int indexOf2 = a.indexOf("bc");
+System.out.println(indexOf1);   // 0
+System.out.println(indexOf2);   // 1
+int indexOf3 = a.indexOf('e', 1);
+int indexOf4 = a.indexOf("bc", 2);
+System.out.println(indexOf3);   // -1
+System.out.println(indexOf4);   // 5
+
+int lastIndexOf1 = a.lastIndexOf('a');
+int lastIndexOf2 = a.lastIndexOf("bc");
+System.out.println(lastIndexOf1);   // 4
+System.out.println(lastIndexOf2);   // 5
+
+int lastIndexOf3 = a.lastIndexOf('a', 1);
+int lastIndexOf4 = a.lastIndexOf("bc", 2);
+System.out.println(lastIndexOf3);   // 0
+System.out.println(lastIndexOf4);   // 1
+```
+
+### 大小写
+
+```java
+String s = "Hello World";
+String lower = s.toLowerCase();
+String upper = s.toUpperCase();
+```
+
+### 分割
+
+```java
+String a = "Bob hit a ball, the hit BALL flew far after it was hit.";
+String[] split = a.split("[^a-zA-Z0-9]+");
+System.out.println(Arrays.toString(split));
+// [Bob, hit, a, ball, the, hit, BALL, flew, far, after, it, was, hit
+```
+
 ## 2. StringBuilder: 快速拼接字符串。
 
 不像String会产生中间无用的字符串，而是类型容器，拼接完了才产生字符串。

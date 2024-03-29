@@ -1,12 +1,15 @@
+- [lambda](#lambda)
 - [1. 方法引用](#1-方法引用)
   - [1.1. 引用静态方法](#11-引用静态方法)
   - [1.2. 引用成员方法](#12-引用成员方法)
   - [1.3. 类名引用成员方法](#13-类名引用成员方法)
   - [1.4. 引用构造方法](#14-引用构造方法)
-  - [1.3. 类名引用成员方法](#13-类名引用成员方法-1)
-  - [1.5. 引用数组的构造方法](#15-引用数组的构造方法)
+  - [1.5. 类名引用成员方法](#15-类名引用成员方法)
+  - [1.6. 引用数组的构造方法](#16-引用数组的构造方法)
 
 ---
+
+
 
 ```java
 public class FunctionDemo1 {
@@ -72,6 +75,22 @@ public class MyStringDemo {
         System.out.println(s);
     }
 }
+```
+
+## lambda
+
+lambda 表达式中不能修改外部变量的值
+```java
+String r = null;
+int rv = 0;
+m.forEach((k, v)->{
+    // error: local variables referenced from a lambda expression must be final or effectively final
+    if(v > rv){
+    if(v > rv){
+        rv = v;
+        r = k;
+    }
+});
 ```
 
 ## 1. 方法引用
@@ -256,7 +275,7 @@ class Student {
 }
 ```
 
-### 1.3. 类名引用成员方法
+### 1.5. 类名引用成员方法
 
 `类名::成员方法`
 
@@ -290,7 +309,7 @@ String[] arr = list.stream().map(new Function<Student, String>() {
 
 String[] arr = list.stream().map(Student::getName).toArray(String[]::new);
 ```
-### 1.5. 引用数组的构造方法
+### 1.6. 引用数组的构造方法
 
 `数据类型[]::new`
 
