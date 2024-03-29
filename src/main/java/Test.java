@@ -38,20 +38,7 @@ Collections.addAll(list, "张无忌-男-15", "张无忌-男-15", "周芷若-女-
 
         Map<String, Integer> map = new HashMap<>();
 
-        // 创建或更新一个键值对
-        Integer i1 = map.compute("a", (k,v)-> v == null ? 1 : v + 1);    
-        Integer i2 = map.compute("a", (k, v) -> v == null ? 1 : v + 1);
-        System.out.println(i1 + " " + i2 + " " + map);    // 1 2 {a=2}
-
-        // 只创建，不更新
-        i1 = map.computeIfAbsent("b", k -> 1);   // 创建
-        i2 = map.computeIfAbsent("b", k -> 2);   // 不会执行
-        System.out.println(i1 + " " + i2 + " " + map);    // 1 1 {a=2, b=1}
-
-        // 只更新，不创建
-        i1 = map.computeIfPresent("b", (k,v) -> v + 1);   // 更新
-        i2 = map.computeIfPresent("c", (k,v) -> v + 1);   // 不会执行
-        System.out.println(i1 + " " + i2 + " " + map);    // 2 null {a=2, b=2}
+        
     }
 
 }
