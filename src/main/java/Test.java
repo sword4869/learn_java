@@ -25,7 +25,9 @@ public class Test {
         List<String> list = List.of(arr);
         Set<String> set = Set.of(arr);
         Map<String, Integer> map = Map.of("a", 1, "b", 2, "c", 3);
-
+        int a = 0;
+        int b= 5;
+        System.out.println((a+b) >>> 1);
     }
 
 }
