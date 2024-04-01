@@ -21,11 +21,14 @@ import java.util.stream.Stream;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        String[] arr = { "a", "b", "c" };
-        List<String> list = List.of(arr);
-        list = new ArrayList<>(list);
-        list.add("d");
-
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparing(Integer::intValue).reversed());
+        pq.add(1);
+pq.add(2);
+pq.add(3);
+System.out.println(pq.poll());
+System.out.println(pq.poll());
+System.out.println(pq.poll());
+// 3 2 1
     }
 
 }

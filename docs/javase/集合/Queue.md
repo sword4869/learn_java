@@ -21,3 +21,21 @@
 `Queue<String> q = new ArrayDeque<>();`
 
 ## 3. PriorityQueue
+默认，队列头是最小的元素。
+
+自定义类型，则需要实现`Comparable`接口的`compareTo`方法。
+
+
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+pq.add(1);
+pq.add(2);
+pq.add(3);
+System.out.println(pq.poll());
+System.out.println(pq.poll());
+System.out.println(pq.poll());
+// 3 2 1
+```
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparing(Integer::intValue).reversed());
+```
