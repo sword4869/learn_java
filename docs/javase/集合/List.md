@@ -142,6 +142,8 @@ ArrayList<String> a = new ArrayList<>(m.values());
 
 ![alt text](../../../images/image-16.png)
 
+注意：是栈，则一定是`push`，而不是`add`
+
 ```java
 /* 栈 */
 LinkedList<Integer> stack = new LinkedList<>();
