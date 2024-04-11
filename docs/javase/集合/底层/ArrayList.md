@@ -1,0 +1,125 @@
+- [1. 源码分析（jdk1.8）](#1-源码分析jdk18)
+  - [1.1. ArrayList底层实现](#11-arraylist底层实现)
+  - [1.2. 成员变量](#12-成员变量)
+  - [1.3. 构造方法](#13-构造方法)
+  - [1.4. 添加数据](#14-添加数据)
+    - [1.4.1. 空参](#141-空参)
+- [2. 面试题](#2-面试题)
+  - [2.1. ArrayList list=new ArrayList(10)中的list扩容几次](#21-arraylist-listnew-arraylist10中的list扩容几次)
+  - [2.2. 如何实现数组和List之间的转换](#22-如何实现数组和list之间的转换)
+  - [2.3. 用Arrays.asList转List后，如果修改了数组内容，list受影响吗？List用toArray转数组后，如果修改了List内容，数组受影响吗](#23-用arraysaslist转list后如果修改了数组内容list受影响吗list用toarray转数组后如果修改了list内容数组受影响吗)
+  - [ArrayList和LinkedList的区别是什么？](#arraylist和linkedlist的区别是什么)
+  - [ArrayList和LinkedList需要保证线程安全，有两种方案](#arraylist和linkedlist需要保证线程安全有两种方案)
+
+
+---
+# 1. 源码分析（jdk1.8）
+
+分析ArrayList源码主要从三个方面去翻阅：成员变量，构造函数，关键方法
+
+## 1.1. ArrayList底层实现
+
+ArrayList底层是动态数组。
+
+数组名字：elementDate，定义变量size（已有元素数量）。
+
+## 1.2. 成员变量
+
+![](../../../../images/image-20230427192118259.png)
+
+ArrayList底层是动态数组。
+
+数组名字：elementDate，定义变量size。
+
+elementDate 会被初始化：
+- 默认空参构造：`DEFAULTCAPACITY_EMPTY_ELEMENTDATA`
+- 指定容量的带参构造：
+    - 容量非0：`elementData = new Object[capacity]`; 
+    - 容量为0：`EMPTY_ELEMENTDATA`
+- 将collection对象转换成数组的构造：collection对象转数组`.toArray()`。
+
+## 1.3. 构造方法
+
+三种：
+- 默认空参构造：默认创建一个空集合
+
+- 指定容量的带参构造：可以按照指定的容量初始化数组
+
+- 将collection对象转换成数组
+
+![](../../../../images/image-20230427192154014.png)
+
+![](../../../../images/image_new_new.png)
+
+
+## 1.4. 添加数据
+
+### 1.4.1. 空参
+
+![](../../../../images/image-20230427192644244.png)
+
+
+- 空参构造：ArrayList的数组初始容量为0
+- 第一次添加数据：扩容，初始化容量为10
+- 第2到10次添加数据：不扩容。
+- 第11次添加数据：扩容为15.
+
+添加逻辑：
+  - 确保数组容量够用：默认容量10和已有元素数量+1，选取最大值作为最小容量；判断最小容量与数组长度，不够则扩容。
+  - 扩容规则：新数组的大小为，最小容量与原数组1.5倍中的最大值；拷贝老数组到新数组中。
+  - 将新元素添加到位于size的位置上，size++。
+  - 返回添加成功 true。
+
+
+# 2. 面试题
+
+## 2.1. ArrayList list=new ArrayList(10)中的list扩容几次
+
+- ArrayList的数组指定了容量为 10，**未扩容**
+
+## 2.2. 如何实现数组和List之间的转换
+
+- 数组转List ，使用JDK中java.util.Arrays工具类的asList方法
+- List转数组，使用List的toArray方法。无参toArray方法返回 Object数组，传入初始化长度的数组对象，返回该对象数组
+
+## 2.3. 用Arrays.asList转List后，如果修改了数组内容，list受影响吗？List用toArray转数组后，如果修改了List内容，数组受影响吗
+
+- 数组转List受影响，List转数组不受影响。
+- asList受影响。第一，它的底层使用的Arrays类中的一个内部类ArrayList来构造的集合。第二，这个集合使用的还是传入的数组。
+- toArray不会影响。toArray在底层是进行了数组的拷贝，跟原来的元素就没啥关系了。
+
+
+##  ArrayList和LinkedList的区别是什么？
+
+- 底层数据结构
+
+  - ArrayList 是动态数组的数据结构实现
+
+  - LinkedList 是双向链表的数据结构实现
+
+- 操作数据效率
+  - ArrayList按照下标查询的时间复杂度O(1)， LinkedList不支持下标查询
+  - 查找（未知索引）： ArrayList需要遍历，链表也需要链表，时间复杂度都是O(n)
+  - 新增和删除
+    - ArrayList 只有尾部增删快O(1)
+    - LinkedList 头尾增删快O(1)
+    - 两者在其他都需要遍历链表，时间复杂度是O(n)
+
+- 内存空间占用
+
+  - ArrayList底层是数组，内存连续，节省内存
+  - LinkedList 是双向链表需要存储数据，和两个指针，更占用内存
+
+- 线程安全
+  - ArrayList和LinkedList都不是线程安全的
+
+## ArrayList和LinkedList需要保证线程安全，有两种方案
+- 因为局部变量是线程安全的，所以将其在方法内使用。
+- 使用线程安全的ArrayList和LinkedList
+
+通过Collections 的 synchronizedList 方法将 ArrayList、LinkedList 转换成线程安全的容器后再使用。
+```java
+List<Object> syn1 = Collections.synchronizedList(new ArrayList<>());
+List<Object> syn2 = Collections.synchronizedList(new LinkedList<>());
+```
+LinkedList 换成`ConcurrentLinkedQueue`来使用
