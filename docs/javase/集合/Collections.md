@@ -14,6 +14,7 @@ Set<Object> set = Collections.singleton(user);
 List<Object> list = Collections.singletonList(user);
 Map<Object, Object> map = Collections.singletonMap(user);
 ```
+
 ## 其他
 仅限单列集合。
 

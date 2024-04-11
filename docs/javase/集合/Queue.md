@@ -25,7 +25,9 @@
 
 自定义类型，则需要实现`Comparable`接口的`compareTo`方法。
 
-
+```java
+PriorityQueue<int[]> edges = new PriorityQueue<>((a, b) -> a[2] - b[2]);
+```
 ```java
 PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
 pq.add(1);

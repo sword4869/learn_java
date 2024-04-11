@@ -5,9 +5,6 @@
 
 所以多了很多首尾操作的特有API。
 
-
-![Alt text](../../../../images/image-22.png)
-
 用的双链表是不带哨兵的形式。
 
 ![Alt text](../../../../images/image-23.png)

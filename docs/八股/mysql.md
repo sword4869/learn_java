@@ -1,4 +1,4 @@
-@ mysql
+# mysql
 ## 1. char varch
 
 char 与 varchar 都可以描述字符串。

@@ -2,7 +2,7 @@
   - [1.1. 遍历](#11-遍历)
 - [2. ArrayList类](#2-arraylist类)
 - [3. LinkedList类](#3-linkedlist类)
-- [Stack类](#stack类)
+- [4. Stack类](#4-stack类)
 
 
 ---
@@ -161,7 +161,7 @@ queue.add(13);
 System.out.println(queue.pop()); // 12
 // poll……remove……
 ```
-## Stack类
+## 4. Stack类
 - 添加：**push**/add(e)
 - 删除：**pop**
 - 获取：**peek**()
