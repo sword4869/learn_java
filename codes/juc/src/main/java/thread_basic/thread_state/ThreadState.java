@@ -1,4 +1,4 @@
-package src.main.java.thread_basic;
+package thread_basic.thread_state;
 
 public class ThreadState {
     public static  void directBlocked() throws InterruptedException {
