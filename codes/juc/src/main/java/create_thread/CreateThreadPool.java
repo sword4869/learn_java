@@ -1,4 +1,4 @@
-package src.main.java.create_thread;
+package create_thread;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,11 +27,3 @@ public class CreateThreadPool {
         executorService.shutdown();
     }
 }
-/*
-// 创建有上限的线程池
-ExecutorService pool1 = Executors.newFixedThreadPool(3);
-// 创建一个没有上限的线程池
-ExecutorService pool2 = Executors.newCachedThreadPool();
-// 单例模式
-ExecutorService pool3 = Executors.newSingleThreadExecutor();
- */

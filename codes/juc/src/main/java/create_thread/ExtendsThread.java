@@ -1,4 +1,4 @@
-package src.main.java.create_thread;
+package create_thread;
 
 public class ExtendsThread extends Thread{
     @Override

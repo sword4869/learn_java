@@ -1,4 +1,4 @@
-package src.main.java.task;
+package task;
 
 public class 单次顺序执行 {
     public static void main(String[] args) {
@@ -27,7 +27,7 @@ public class 单次顺序执行 {
             System.out.println("t3");               // T3的任务
         }) ;
 
-        // 启动线程
+        // 最后才一起启动线程
         t1.start();
         t2.start();
         t3.start();
