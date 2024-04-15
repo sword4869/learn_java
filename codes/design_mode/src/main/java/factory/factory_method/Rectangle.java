@@ -1,4 +1,4 @@
-package factory.abstract_factory;
+package factory.factory_method;
 
 public class Rectangle implements Shape {
 

@@ -1,2 +1,5 @@
-package singleton;public class Singleton6 {
+package singleton;
+
+public enum Singleton6 {
+    INSTANCE;
 }

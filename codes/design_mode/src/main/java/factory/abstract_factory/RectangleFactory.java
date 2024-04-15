@@ -1,8 +1,13 @@
-package factory.factory_method;
+package factory.abstract_factory;
 
-public class RectangleFactory implements ShapeFactory{
+public class RectangleFactory implements ShapeColorFactory {
     @Override
     public Shape createShape() {
         return new Rectangle();
+    }
+
+    @Override
+    public Color setColor() {
+        return new Blue();
     }
 }

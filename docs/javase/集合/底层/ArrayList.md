@@ -1,15 +1,16 @@
 - [1. 源码分析（jdk1.8）](#1-源码分析jdk18)
-  - [1.1. ArrayList底层实现](#11-arraylist底层实现)
-  - [1.2. 成员变量](#12-成员变量)
-  - [1.3. 构造方法](#13-构造方法)
-  - [1.4. 添加数据](#14-添加数据)
-    - [1.4.1. 空参](#141-空参)
+  - [1.1. 成员变量](#11-成员变量)
+  - [1.2. 构造方法](#12-构造方法)
+  - [1.3. 空参构造的添加数据](#13-空参构造的添加数据)
+  - [删除元素](#删除元素)
 - [2. 面试题](#2-面试题)
+  - [JDK版本](#jdk版本)
   - [2.1. ArrayList list=new ArrayList(10)中的list扩容几次](#21-arraylist-listnew-arraylist10中的list扩容几次)
   - [2.2. 如何实现数组和List之间的转换](#22-如何实现数组和list之间的转换)
   - [2.3. 用Arrays.asList转List后，如果修改了数组内容，list受影响吗？List用toArray转数组后，如果修改了List内容，数组受影响吗](#23-用arraysaslist转list后如果修改了数组内容list受影响吗list用toarray转数组后如果修改了list内容数组受影响吗)
-  - [ArrayList和LinkedList的区别是什么？](#arraylist和linkedlist的区别是什么)
-  - [ArrayList和LinkedList需要保证线程安全，有两种方案](#arraylist和linkedlist需要保证线程安全有两种方案)
+  - [2.4. ArrayList和LinkedList的区别是什么？](#24-arraylist和linkedlist的区别是什么)
+  - [ArrayList是线程安全的吗](#arraylist是线程安全的吗)
+  - [2.5. ArrayList和LinkedList需要保证线程安全，有两种方案](#25-arraylist和linkedlist需要保证线程安全有两种方案)
 
 
 ---
@@ -17,44 +18,33 @@
 
 分析ArrayList源码主要从三个方面去翻阅：成员变量，构造函数，关键方法
 
-## 1.1. ArrayList底层实现
-
-ArrayList底层是动态数组。
-
-数组名字：elementDate，定义变量size（已有元素数量）。
-
-## 1.2. 成员变量
+## 1.1. 成员变量
 
 ![](../../../../images/image-20230427192118259.png)
 
-ArrayList底层是动态数组。
+ArrayList底层是动态数组 `Object []`。
 
-数组名字：elementDate，定义变量size。
+数组名字：elementDate，定义变量size（已有元素数量）。
 
-elementDate 会被初始化：
-- 默认空参构造：`DEFAULTCAPACITY_EMPTY_ELEMENTDATA`
-- 指定容量的带参构造：
+## 1.2. 构造方法
+
+三种构造方法，来初始化elementDate数组：
+- 默认空参构造 `new ArrayList()`：
+    
+    `elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA`
+- 指定容量的带参构造 `new ArrayList(int initialCapacity)`：可以按照指定的容量初始化数组
     - 容量非0：`elementData = new Object[capacity]`; 
-    - 容量为0：`EMPTY_ELEMENTDATA`
-- 将collection对象转换成数组的构造：collection对象转数组`.toArray()`。
+    - 容量为0：`elementData = EMPTY_ELEMENTDATA`
+- 将collection对象转换成数组 `new ArrayList(Collection<? Extends E> c)`
 
-## 1.3. 构造方法
-
-三种：
-- 默认空参构造：默认创建一个空集合
-
-- 指定容量的带参构造：可以按照指定的容量初始化数组
-
-- 将collection对象转换成数组
+    collection对象转数组`.toArray()`。
 
 ![](../../../../images/image-20230427192154014.png)
 
 ![](../../../../images/image_new_new.png)
 
 
-## 1.4. 添加数据
-
-### 1.4.1. 空参
+## 1.3. 空参构造的添加数据
 
 ![](../../../../images/image-20230427192644244.png)
 
@@ -65,13 +55,45 @@ elementDate 会被初始化：
 - 第11次添加数据：扩容为15.
 
 添加逻辑：
-  - 确保数组容量够用：默认容量10和已有元素数量+1，选取最大值作为最小容量；判断最小容量与数组长度，不够则扩容。
-  - 扩容规则：新数组的大小为，最小容量与原数组1.5倍中的最大值；拷贝老数组到新数组中。
+  - （扩容时机）确保数组容量够用：默认容量10和已有元素数量+1，选取最大值作为最小容量；判断最小容量与数组长度，不够则扩容。
+  - 扩容规则：新数组的大小为，最小容量与原数组1.5倍中的最大值；检查是否超过最大容量；`Arrays.copyOf`拷贝老数组到新数组中。
   - 将新元素添加到位于size的位置上，size++。
   - 返回添加成功 true。
 
+## 删除元素
+
+```java
+// 移除指定index位置的元素
+public E remove(int index) {
+    // 校验索引是否越界
+    rangeCheck(index);
+
+    modCount++;
+    // 获取即将移除的元素值
+    E oldValue = elementData(index);
+    // 计算数组移动的长度
+    int numMoved = size - index - 1;
+    if (numMoved > 0)
+        // 从移除数据的索引位置往后开始到末尾的这些数据往前移动
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    // 将最后一个位置元素置为null，数组长度size-1                     
+    elementData[--size] = null; // clear to let GC do its work
+    // 返回被移除的元素值
+    return oldValue;
+}
+```
+
+1. 获取即将移除的元素值
+2. 计算数组移动的长度 `size - index - 1`
+3. 使用 `System.arraycopy` 移动index后面的元素往前。
+4. 将最后一个位置元素置为null，`size--`
 
 # 2. 面试题
+
+## JDK版本
+
+JDK6 new 无参构造的 ArrayList 对象时，直接创建了长度是 10 的 Object[] 数组 elementData
 
 ## 2.1. ArrayList list=new ArrayList(10)中的list扩容几次
 
@@ -89,7 +111,7 @@ elementDate 会被初始化：
 - toArray不会影响。toArray在底层是进行了数组的拷贝，跟原来的元素就没啥关系了。
 
 
-##  ArrayList和LinkedList的区别是什么？
+##  2.4. ArrayList和LinkedList的区别是什么？
 
 - 底层数据结构
 
@@ -101,8 +123,8 @@ elementDate 会被初始化：
   - ArrayList按照下标查询的时间复杂度O(1)， LinkedList不支持下标查询
   - 查找（未知索引）： ArrayList需要遍历，链表也需要链表，时间复杂度都是O(n)
   - 新增和删除
-    - ArrayList 只有尾部增删快O(1)
-    - LinkedList 头尾增删快O(1)
+    - ArrayList 只有**尾部**增删快O(1)
+    - LinkedList **头尾**增删快O(1)
     - 两者在其他都需要遍历链表，时间复杂度是O(n)
 
 - 内存空间占用
@@ -111,9 +133,15 @@ elementDate 会被初始化：
   - LinkedList 是双向链表需要存储数据，和两个指针，更占用内存
 
 - 线程安全
-  - ArrayList和LinkedList都不是线程安全的
+  - ArrayList和LinkedList都**不是线程安全的**
+## ArrayList是线程安全的吗
 
-## ArrayList和LinkedList需要保证线程安全，有两种方案
+不是。
+
+添加元素时`size++`，删除元素时`size--`，由于++操作不具有原子性，两个线程可能会对同一索引位置进行操作，导致数据缺失。
+
+
+## 2.5. ArrayList和LinkedList需要保证线程安全，有两种方案
 - 因为局部变量是线程安全的，所以将其在方法内使用。
 - 使用线程安全的ArrayList和LinkedList
 

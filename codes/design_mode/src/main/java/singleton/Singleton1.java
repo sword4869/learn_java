@@ -1,11 +1,14 @@
 package singleton;
 
-public class Singleton3 {
-    private Singleton3(){}
+public class Singleton1 {
+    private Singleton1(){}
 
-    private static Singleton3 singleton3 = new Singleton3();
+    private static Singleton1 singleton = null;
 
-    public static Singleton3 getInstance(){
-        return singleton3;
+    public static Singleton1 getInstance(){
+        if(singleton == null){
+            singleton = new Singleton1();
+        }
+        return singleton;
     }
 }

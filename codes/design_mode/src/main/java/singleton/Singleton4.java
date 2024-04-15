@@ -1,13 +1,17 @@
 package singleton;
 
-public class Singleton2 {
-    private Singleton2(){}
+public class Singleton4 {
+    private Singleton4(){}
 
-    private static Singleton2 singleton = null;
+    private volatile static Singleton4 singleton = null;        // volatile
 
-    public static synchronized Singleton2 getInstance(){
+    public static Singleton4 getInstance(){
         if(singleton == null){
-            singleton = new Singleton2();
+            synchronized (Singleton4.class){
+                if(singleton == null){
+                    singleton = new Singleton4();
+                }
+            }
         }
         return singleton;
     }

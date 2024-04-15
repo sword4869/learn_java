@@ -1,13 +1,13 @@
 package singleton;
 
-public class Singleton1 {
-    private Singleton1(){}
+public class Singleton2 {
+    private Singleton2(){}
 
-    private static Singleton1 singleton = null;
+    private static Singleton2 singleton = null;
 
-    public static Singleton1 getInstance(){
+    public static synchronized Singleton2 getInstance(){
         if(singleton == null){
-            singleton = new Singleton1();
+            singleton = new Singleton2();
         }
         return singleton;
     }

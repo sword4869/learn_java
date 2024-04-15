@@ -1,16 +1,17 @@
-package factory.factory_method;
+package factory.abstract_factory;
 
 public class ClientDemo{
     public static void main(String[] args) {
-        /*
-        不需要修改工厂的代码，只需告知客户使用新的具体工厂。
-         */
-        ShapeFactory shapeFactory = new RectangleFactory();
-        Shape shape = shapeFactory.createShape();
+        ShapeColorFactory shapeColorFactory = new RectangleFactory();
+        Shape shape = shapeColorFactory.createShape();
+        Color color = shapeColorFactory.setColor();
         shape.draw();
+        color.setColor();
 
-        ShapeFactory shapeFactory2 = new SquareFactory();
-        Shape shape2 = shapeFactory2.createShape();
-        shape.draw();
+        ShapeColorFactory shapeColorFactory2 = new SquareFactory();
+        Shape shape2 = shapeColorFactory2.createShape();
+        Color color2 = shapeColorFactory.setColor();
+        shape2.draw();
+        color2.setColor();
     }
 }

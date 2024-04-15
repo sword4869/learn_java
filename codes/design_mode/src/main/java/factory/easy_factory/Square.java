@@ -1,6 +1,6 @@
-package factory.ordinary;
+package factory.easy_factory;
 
-public class Square implements Shape{
+public class Square implements Shape {
     @Override
     public void draw() {
         System.out.println("Square");

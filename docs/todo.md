@@ -85,35 +85,6 @@ equals()相等的两个对象他们的hashCode()肯定相等，也就是用equal
 因为原生的hashcode和equals 只是比较类似内存地址的唯一值，也就是说必须是new出的同个对象才返回相等，跟对象里的业务值没关系。 但是有的场景比如订单对象，很明显当订单号相同的两个订单对象就应该是相等的，于是我们需要重写hashcode 和equals 只判断订单号相等则对象相等。
 
 
-## 23. 线程安全单例模式
-
-使用了双重检查锁定（Double-Checked Locking）来确保线程安全。关键点如下：
-- volatile 关键字用于保证可见性，确保多线程环境下对 instance 的正确访问。
-- 使用双重检查的方式可以减少锁的竞争，提高性能。在 getInstance() 方法中，首先检查 instance 是否已经被实例化，如果没有，则进入同步块。在同步块内部，再次检查 instance 是否为 null，如果是，则创建一个新的实例。
-
-这样，无论多少个线程同时调用 `getInstance()` 方法，都只会返回同一个实例，确保了线程安全的单例模式。
-
-```java
-public class Singleton {
-    private static volatile Singleton instance;
-    
-    private Singleton() {
-        // 私有构造函数
-    }
-    
-    public static Singleton getInstance() {
-        if (instance == null) {
-            synchronized (Singleton.class) {
-                if (instance == null) {
-                    instance = new Singleton();
-                }
-            }
-        }
-        return instance;
-    }
-}
-```
-
 ## 24. this() & super()在构造方法中的区别？
 
 ## 25. Object有哪些方法？
