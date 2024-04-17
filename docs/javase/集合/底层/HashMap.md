@@ -4,18 +4,20 @@
       - [1.0.1.2. 散列函数和散列冲突](#1012-散列函数和散列冲突)
       - [1.0.1.3. 散列冲突-链表法（拉链）](#1013-散列冲突-链表法拉链)
       - [1.0.1.4. 时间复杂度-散列表](#1014-时间复杂度-散列表)
-  - [1.1. hashMap常见属性](#11-hashmap常见属性)
-  - [1.2. HashMap的实现原理？](#12-hashmap的实现原理)
-  - [1.3. HashMap的jdk1.7和jdk1.8有什么区别](#13-hashmap的jdk17和jdk18有什么区别)
-  - [1.4. HashMap的put方法的具体流程吗？](#14-hashmap的put方法的具体流程吗)
-  - [1.5. 讲一讲HashMap的扩容机制吗？](#15-讲一讲hashmap的扩容机制吗)
-  - [1.6. 通过hash计算后找到数组的下标，是如何找到的呢，你了解hashMap的寻址算法吗？](#16-通过hash计算后找到数组的下标是如何找到的呢你了解hashmap的寻址算法吗)
-  - [1.7. 为何HashMap的数组长度一定是2的次幂？](#17-为何hashmap的数组长度一定是2的次幂)
-  - [1.8. 为何HashMap的数组长度一定是2的次幂？](#18-为何hashmap的数组长度一定是2的次幂)
-  - [1.9. hashmap在1.7情况下的多线程死循环问题吗？](#19-hashmap在17情况下的多线程死循环问题吗)
-  - [1.10. hashmap是线程安全的吗？想要使用线程安全的map该怎么做呢？](#110-hashmap是线程安全的吗想要使用线程安全的map该怎么做呢)
-  - [1.11. HashSet与HashMap的区别？](#111-hashset与hashmap的区别)
-  - [1.12. HashTable与HashMap的区别](#112-hashtable与hashmap的区别)
+- [2. JDK1.8](#2-jdk18)
+  - [2.1. hashMap常见属性](#21-hashmap常见属性)
+  - [2.2. HashMap的实现原理？](#22-hashmap的实现原理)
+  - [2.3. HashMap的put方法的具体流程吗？](#23-hashmap的put方法的具体流程吗)
+  - [2.4. 讲一讲HashMap的扩容机制吗？](#24-讲一讲hashmap的扩容机制吗)
+  - [2.5. 通过hash计算后找到数组的下标，是如何找到的呢，你了解hashMap的寻址算法吗？](#25-通过hash计算后找到数组的下标是如何找到的呢你了解hashmap的寻址算法吗)
+  - [2.6. 为何HashMap的数组长度一定是2的次幂？](#26-为何hashmap的数组长度一定是2的次幂)
+  - [2.7. 为何HashMap的数组长度一定是2的次幂？](#27-为何hashmap的数组长度一定是2的次幂)
+  - [2.8. hashmap是线程安全的吗？想要使用线程安全的map该怎么做呢？](#28-hashmap是线程安全的吗想要使用线程安全的map该怎么做呢)
+  - [2.9. HashSet与HashMap的区别？](#29-hashset与hashmap的区别)
+  - [2.10. HashTable与HashMap的区别](#210-hashtable与hashmap的区别)
+- [3. JDK7](#3-jdk7)
+  - [3.1. HashMap的jdk1.7和jdk1.8有什么区别](#31-hashmap的jdk17和jdk18有什么区别)
+  - [3.2. hashmap在1.7情况下的多线程死循环问题吗？](#32-hashmap在17情况下的多线程死循环问题吗)
 
 ---
 # 1. 红黑树
@@ -85,11 +87,13 @@
 
 将链表法中的链表改造红黑树还有一个非常重要的原因，可以防止DDos攻击
 
-## 1.1. hashMap常见属性
+# 2. JDK1.8
+
+## 2.1. hashMap常见属性
 
 ![](../../../../images/image-20230428210404117.png)
 
-## 1.2. HashMap的实现原理？
+## 2.2. HashMap的实现原理？
 
 
 1，底层使用hash表数据结构，即数组+（链表 | 红黑树）
@@ -99,16 +103,8 @@
 3，获取数据通过key的hash计算数组下标获取元素
 
 
-## 1.3. HashMap的jdk1.7和jdk1.8有什么区别
 
-JDK1.8之前采用的拉链法，数组+链表，链表是头插法
-
-JDK1.8之后采用数组+链表+红黑树，链表长度大于8且数组长度大于64则会从链表转化为红黑树
-
-- 链表是尾插法
-- 在解决哈希冲突时有了较大的变化，当**链表长度大于8并且数组长度达到64**时，将链表转化为红黑树，以减少搜索时间。
-- 扩容 resize时，红黑树拆分成的树的结点数小于等于临界值6个，则退化成链表
-## 1.4. HashMap的put方法的具体流程吗？
+## 2.3. HashMap的put方法的具体流程吗？
 
 1. 判断键值对数组table是否为空或为null，否则执行resize()进行扩容（初始化）
 
@@ -217,11 +213,11 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 
 
 
-## 1.5. 讲一讲HashMap的扩容机制吗？
+## 2.4. 讲一讲HashMap的扩容机制吗？
 
-- 在添加元素或初始化的时候需要调用resize方法进行扩容，第一次添加数据初始化数组长度为16，以后每次每次扩容都是达到了扩容阈值（数组长度 * 0.75）
+- 在**添加元素或初始化**的时候需要调用resize方法进行扩容，第一次添加数据初始化数组长度为16，以后每次每次扩容都是达到了**扩容阈值（数组长度 * 0.75）**
 
-- 每次扩容的时候，都是扩容之前容量的2倍； 
+- 每次扩容的时候，都是扩容之前容量的**2倍**； 
 
 - 扩容之后，会新创建一个数组，需要把老数组中的数据挪动到新的数组中
   - 没有hash冲突的节点，则直接使用 e.hash & (newCap - 1) 计算新数组的索引位置
@@ -367,7 +363,7 @@ final Node<K,V>[] resize() {
         return newTab;
     }
 ```
-## 1.6. 通过hash计算后找到数组的下标，是如何找到的呢，你了解hashMap的寻址算法吗？
+## 2.5. 通过hash计算后找到数组的下标，是如何找到的呢，你了解hashMap的寻址算法吗？
 ![](../../../../images/image-20230428212601977.png)
 
 - key是null，hash值就是0
@@ -378,79 +374,24 @@ final Node<K,V>[] resize() {
 
 在putValue的方法中，计算数组下标，没有直接采用取模的方式，而是使用了`hash &(数组长度-1)`。
 
-## 1.7. 为何HashMap的数组长度一定是2的次幂？
+## 2.6. 为何HashMap的数组长度一定是2的次幂？
 
 1.  计算索引时效率更高：如果是 2 的 n 次幂可以使用位与运算代替取模`hash &(数组长度-1)`
 
 2.  扩容时重新计算索引效率更高： hash & oldCap == 0 的元素留在原来位置 ，否则新位置 = 旧位置 + oldCap
 
-## 1.8. 为何HashMap的数组长度一定是2的次幂？
+## 2.7. 为何HashMap的数组长度一定是2的次幂？
 - 计算索引时效率更高：如果是 2 的 n 次幂可以使用位与运算代替取模
 - 扩容时重新计算索引效率更高：在进行扩容是会进行判断 hash值按位与运算旧数组长租是否 == 0。如果等于0，则把元素留在原来位置 ，否则新位置是等于旧位置的下标+旧数组长度
 
 
-
-## 1.9. hashmap在1.7情况下的多线程死循环问题吗？
-
-jdk7的的数据结构是：数组+链表。在数组进行扩容的时候，因为链表是**头插法**，在进行数据迁移的过程中，有可能导致死循环
-
-比如说，现在有两个线程
-
-线程一：**读取**到当前的hashmap数据，数据中一个链表，在准备扩容时，线程二介入
-
-线程二也读取hashmap，直接进行扩容。因为是头插法，链表的顺序会进行颠倒过来。比如原来的顺序是AB，扩容后的顺序是BA，线程二执行结束。
-
-当线程一再继续执行的时候就会出现死循环的问题。
-
-线程一先将A移入新的链表，再将B插入到链头，由于另外一个线程的原因，B的next指向了A，所以B->A->B,形成循环。
-
-所以，JDK 8 将扩容算法做了调整，不再将元素加入链表头（而是保持与扩容前一样的顺序），**尾插法**，就避免了jdk7中死循环的问题。
-
-
-
-![](../../../../images/image-20230428213115071.png)
-
-- 变量e指向的是需要迁移的对象
-
-- 变量next指向的是下一个需要迁移的对象
-
-- Jdk1.7中的链表采用的头插法
-
-- 在数据迁移的过程中并没有新的对象产生，只是改变了对象的引用
-
-
-
-产生死循环的过程：
-
-线程1和线程2的变量e和next都引用了这个两个节点
-
-![](../../../../images/image-20230428213533483.png)
-
-线程2扩容后，由于头插法，链表顺序颠倒，但是线程1的临时变量e和next还引用了这两个节点
-
-![](../../../../images/image-20230428214732877.png)
-
-第一次循环
-
-由于线程2迁移的时候，已经把B的next执行了A
-
-![](../../../../images/image-20230428214806072.png)
-
-第二次循环
-
-![](../../../../images/image-20230428214908652.png)
-
-第三次循环
-
-![](../../../../images/image-20230428214937231.png)
-
-## 1.10. hashmap是线程安全的吗？想要使用线程安全的map该怎么做呢？
+## 2.8. hashmap是线程安全的吗？想要使用线程安全的map该怎么做呢？
 
 不是线程安全的
 
 可以采用ConcurrentHashMap进行使用，它是一个线程安全的HashMap
 
-## 1.11. HashSet与HashMap的区别？
+## 2.9. HashSet与HashMap的区别？
 
 HashSet实现了Set接口, 仅存储对象; HashMap实现了 Map接口, 存储的是键值对.
 
@@ -462,7 +403,7 @@ HashSet底层其实是用HashMap实现存储的。
 ![](../../../../images/image-20221007110404375.png)
 
 
-## 1.12. HashTable与HashMap的区别
+## 2.10. HashTable与HashMap的区别
 
 | **区别**       | **HashTable**                  | **HashMap**      |
 | -------------- | ------------------------------ | ---------------- |
@@ -473,3 +414,151 @@ HashSet底层其实是用HashMap实现存储的。
 | 线程安全       | 同步(synchronized)的，线程安全 | 非线程安全       |
 
 在实际开中不建议使用HashTable，在多线程环境下可以使用ConcurrentHashMap类
+
+# 3. JDK7
+
+## 3.1. HashMap的jdk1.7和jdk1.8有什么区别
+
+JDK1.8之前采用的拉链法，数组+链表，链表是头插法
+
+JDK1.8之后采用数组+链表+红黑树，链表长度大于8且数组长度大于64则会从链表转化为红黑树
+
+- 链表是尾插法
+- 在解决哈希冲突时有了较大的变化，当**链表长度大于8并且数组长度达到64**时，将链表转化为红黑树，以减少搜索时间。
+- 扩容 resize时，红黑树拆分成的树的结点数小于等于临界值6个，则退化成链表
+
+## 3.2. hashmap在1.7情况下的多线程死循环问题吗？
+
+HashMap JDK 1.7 的数据结构是：数组+链表，链表使用**头插法**。**头插法会反转链表顺序**。
+
+**头插法 + 多线程并发操作 + HashMap 扩容**，这几个点加在一起就形成了 HashMap 的死循环。
+
+所以，JDK 8 使用**尾插法**，保持与扩容前一样的顺序，就避免了jdk7中死循环的问题。
+
+![alt text](../../../../images/未命名文件.png)
+
+<details>
+
+<summary>具体复现过程</summary>
+
+```java
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+
+
+/**
+ * 测试在JDK 1.7中 HashMap出现死循环
+ */
+public class Main {
+    static class TestObject{
+        String key;
+
+        public TestObject(String key){
+            this.key = key;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TestObject that = (TestObject) o;
+            return Objects.equals(key, that.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return 1;
+        }
+    }
+
+    /**
+     * 这个map 桶的长度为2，当元素个数达到  2 * 1.5 = 3 的时候才会触发扩容
+     */
+    private static HashMap<TestObject, String> map = new HashMap<>(2, 1.5f);
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        map.put(new TestObject("A"), "A");
+        map.put(new TestObject("B"), "B");
+        map.put(new TestObject("C"), "C");
+        System.out.println("此时元素已经达到3了，再往里面添加就会产生扩容操作：" + map);
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
+        new Thread("T1") {
+            public void run() {
+                map.put(new TestObject("D"), "D");
+                System.out.println(Thread.currentThread().getName() + "扩容完毕");
+                countDownLatch.countDown();
+            }
+        }.start();
+        new Thread("T2") {
+            public void run() {
+                map.put(new TestObject("E"), "E");
+                System.out.println(Thread.currentThread().getName() + "扩容完毕 ");
+                countDownLatch.countDown();
+            }
+        }.start();
+
+        countDownLatch.await();
+
+        // 死循环后打印直接OOM，思考一下为什么？
+        System.out.println(map);
+        /*
+        此时元素已经达到3了，再往里面添加就会产生扩容操作：{Main$TestObject@1=C, Main$TestObject@1=B, Main$TestObject@1=A}
+        T1扩容完毕 
+        T2扩容完毕 
+        Exception in thread "T2" java.lang.OutOfMemoryError: Java heap space
+            at java.util.Arrays.copyOf(Arrays.java:2367)
+            at java.lang.AbstractStringBuilder.expandCapacity(AbstractStringBuilder.java:130)
+            at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:114)
+            at java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:415)
+            at java.lang.StringBuilder.append(StringBuilder.java:132)
+            at java.lang.StringBuilder.append(StringBuilder.java:128)
+            at java.util.AbstractMap.toString(AbstractMap.java:521)
+            at java.lang.String.valueOf(String.java:2849)
+            at java.lang.StringBuilder.append(StringBuilder.java:128)
+            at Main$2.run(Main.java:53)
+         */
+    }
+}
+```
+
+1. 扩容`resize()`中的`transfer()`转移老数组到新数组部分，在已经获取`next`后面打线程级断点。
+2. 线程T1运行完毕后，我们再去运行线程T2.
+    - 扩容前是 `C->B->A` ，T1和T2在`if(rehash)`处暂停，`e`和`next`都分别指向`C`和`B`。
+    - 先运行线程T1，线程T1运行完毕后的结果是 `A->B->C` 。
+    - 切换到T2线程继续运行，T2此时，`e` 指向 `C`，`next` 指向 `B`。
+    - 第一轮while，将 `C` 插入到新数组，`A->B->[C->null]`（注意 `newTable` 是局部变量，所以 `newTable` 是空的）。
+    - 第二轮while，现在 e 是 `B`，next 是 `C`。将 `B` 插入到新数组，`A->[B->C->null]`.
+    - 第三轮while产生死循环，现在 e `C`, next 是 `null`, `e.next = newTable[i]`不再是插入新数组，而是让C指向了B，形成了死循环。next是null，下一轮while循环直接退出。
+3. 线程T1、T2加入元素完毕后，main线程打印map陷入死循环。
+
+![alt text](../../../../images/image-225.png)
+
+![alt text](../../../../images/image-226.png)
+
+```
+Thread.currentThread().getName().equals("T1")||Thread.currentThread().getName().equals("T2")
+```
+
+> 线程T1运行完毕后
+
+![线程T1运行完毕后](../../../../images/image-228.png)
+
+> 注意newTable是局部变量，所有新数组是没问题的
+
+![注意newTable是局部变量，所有新数组是没问题的](../../../../images/image-227.png)
+
+> 第三次while循环，产生死循环
+
+![死循环](../../../../images/image-229.png)
+
+![alt text](../../../../images/image-230.png)
+
+> 退出transfer后，原来T1的新数组被T2的新数组所覆盖
+
+![退出transfer后，原来T1的新数组被T2的新数组所覆盖](../../../../images/image-232.png)
+
+![alt text](../../../../images/image-231.png)
+
+<details/>
