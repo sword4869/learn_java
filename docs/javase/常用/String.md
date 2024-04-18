@@ -5,8 +5,8 @@
   - [1.4. 修改某个字符](#14-修改某个字符)
   - [1.5. 子串 subString()方法](#15-子串-substring方法)
   - [1.6. 找索引](#16-找索引)
-  - [大小写](#大小写)
-  - [分割](#分割)
+  - [1.7. 大小写](#17-大小写)
+  - [1.8. 分割](#18-分割)
 - [2. StringBuilder: 快速拼接字符串。](#2-stringbuilder-快速拼接字符串)
   - [2.1. 扩容原理](#21-扩容原理)
   - [2.2. 字符串拼接](#22-字符串拼接)
@@ -124,12 +124,13 @@ str = new String(c);   // bello World
 ```
 ### 1.5. 子串 subString()方法
 
-![](../../../images/image_id=410831.jpg)
-
+注意是小写 sub**s**tring.
 ```java
-// 注意是小写 substring.
-● String substring(int beginIndex) 截取到末尾（包括）
-● String substring(int beginIndex, int endIndex) [beginIndex, endIndex)，不允许负数-1之类的
+String substring(int beginIndex, int endIndex) 
+[beginIndex, endIndex)，不允许负数-1之类的
+
+String substring(int beginIndex) 
+截取到末尾（包括）
 ```
 
 ### 1.6. 找索引
@@ -158,7 +159,9 @@ System.out.println(lastIndexOf3);   // 0
 System.out.println(lastIndexOf4);   // 1
 ```
 
-### 大小写
+### 1.7. 大小写
+
+**lower**
 
 ```java
 String s = "Hello World";
@@ -166,7 +169,7 @@ String lower = s.toLowerCase();
 String upper = s.toUpperCase();
 ```
 
-### 分割
+### 1.8. 分割
 
 ```java
 String a = "Bob hit a ball, the hit BALL flew far after it was hit.";
