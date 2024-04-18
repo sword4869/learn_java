@@ -1,20 +1,28 @@
 
 ## 2. JDBC介绍(了解)
 
-JDBC： ( Java DataBase Connectivity )，就是使用Java语言操作关系型数据库的一套API，即接口。
+JDBC： ( Java DataBase Connectivity )，就是使用Java语言操作关系型数据库的一套API
 - 各个数据库厂商去实现这套接口，提供数据库驱动jar包。
-- 我们可以使用这套接口(JDBC)编程，真正执行的代码是驱动jar包中的实现类。
+- 我们可以使用JDBC编程，真正执行的代码是驱动jar包中的实现类。
 
 
-下面我们看看原始的JDBC程序是如何操作数据库的。操作步骤如下：
+## JDBC程序是如何操作数据库的
 
 1. 注册驱动
-2. 获取连接对象
-3. 执行SQL语句，返回执行结果
-4. 处理执行结果
+2. 获取连接对象 `Connection`
+3. 创建SQL语句对象 `Statement` 来执行SQL语句，返回执行结果 `ResultSet`
+4. 处理执行结果 `ResultSet`
 5. 释放资源
 
-> 在pom.xml文件中已引入MySQL驱动依赖，我们直接编写JDBC代码即可
+只需引入MySQL驱动依赖
+```xml
+<!-- mysql驱动包依赖 -->
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql-connector-j</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
 
 JDBC具体代码实现：
 
@@ -71,36 +79,26 @@ public class JdbcTest {
 }
 ```
 
-> DriverManager(类)：数据库驱动管理类。
->
-> - 作用：
->
->   1. 注册驱动
->
->   2. 创建java代码和数据库之间的连接，即获取Connection对象
->
-> Connection(接口)：建立数据库连接的对象
->
-> - 作用：用于建立java程序和数据库之间的连接
->
-> Statement(接口)： 数据库操作对象(执行SQL语句的对象)。
->
-> - 作用：用于向数据库发送sql语句
->
-> ResultSet(接口)：结果集对象（一张虚拟表）
->
-> - 作用：sql查询语句的执行结果会封装在ResultSet中
+DriverManager(类)：数据库驱动管理类。
 
-通过上述代码，我们看到直接基于JDBC程序来操作数据库，代码实现非常繁琐，所以在项目开发中，我们很少使用。  在项目开发中，通常会使用Mybatis这类的高级技术来操作数据库，从而简化数据库操作、提高开发效率。
+作用：
+1. 注册驱动
+2. 创建java代码和数据库之间的连接，即获取Connection对象
 
-```xml
-<!-- mysql驱动包依赖 -->
-<dependency>
-    <groupId>com.mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <scope>runtime</scope>
-</dependency>
-```
+Connection(接口)：建立数据库连接的对象
+
+作用：用于建立java程序和数据库之间的连接
+
+Statement(接口)： 数据库操作对象(执行SQL语句的对象)。
+
+作用：用于向数据库发送sql语句
+
+ResultSet(接口)：结果集对象（一张虚拟表）
+
+作用：sql查询语句的执行结果会封装在ResultSet中
+
+
+
 
 ## 3. 数据库连接池
 

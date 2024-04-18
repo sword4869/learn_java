@@ -50,9 +50,9 @@ IOC容器中创建、管理的对象，称之为：bean对象
 
 - `@Primary`: 确定默认的实现，配合@Component
 
-- `@Qualifier`: 指定注入的bean的名称，配合@Autowired使用
+- `@Qualifier`: 指定注入的bean的名称，配合 `@Autowired` 使用
 
-- `@Resource`：按照bean的名称进行注入，替代`@Autowird`
+- `@Resource`：按照bean的名称进行注入，替代 `@Autowired`
 
 ## @Autowird 与 @Resource的区别
 
