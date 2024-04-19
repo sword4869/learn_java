@@ -1,5 +1,23 @@
-## hutool
+- [1. Bean](#1-bean)
+  - [1.1. bean和bean之间拷贝](#11-bean和bean之间拷贝)
+  - [1.2. bean和map](#12-bean和map)
+- [bean和list](#bean和list)
+- [2. 字符串](#2-字符串)
 
+
+---
+
+```xml
+<!--hutool-->
+<dependency>
+    <groupId>cn.hutool</groupId>
+    <artifactId>hutool-all</artifactId>
+    <version>5.7.17</version>
+</dependency>
+```
+## 1. Bean
+
+### 1.1. bean和bean之间拷贝
 ```java
 // 方式1
 CourseBase courseBaseNew = new CourseBase();
@@ -10,19 +28,36 @@ BeanUtils.copyProperties(dto, courseBaseNew);
 CourseBase courseBaseNew2 = BeanUtils.copyProperties(dto, CourseBase.class);
 ```
 `BeanUtils.copyProperties()`，是根据属性名字来匹配的，如果名字不一样的话，那么就得手动get/set。所以设计dto和po之间时，要注意名字。
+### 1.2. bean和map
 
+bean→map
 ```java
-userDTO = BeanUtil.copyProperties(user, userDTO.class)
+UserDTO userDTO = new UserDTO();
 
-List<User> users = userService.listByIds(ids);
-List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
+// UserDTO的Long字段，在map中value还是Long类型
+Map<String, Object> userMap = BeanUtil.beanToMap(userDTO);
 
-map = BeanUtil.beanToMap(userDTO)
-
-userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false); // fasle表示有错就抛出
+// UserDTO的Long字段，在map中value是String类型
+Map<String, Object> userMap2 = BeanUtil.beanToMap(userDTO, new HashMap<>(),
+        CopyOptions.create()
+            .setIgnoreNullValue(true)      // 忽略 null 值的字段
+            .setFieldValueEditor((fieldName, fieldValue) -> fieldValue.toString()));    // 将 value 转化为 String 类型
 ```
 
----
+map→bean
+```java
+Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
+UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);  // fasle表示有错就抛出
+```
+
+## bean和list
+
+```java
+List<User> users = userService.listByIds(ids);
+List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
+```
+
+## 2. 字符串
 
 ```
 StrUtil.isBlank()
