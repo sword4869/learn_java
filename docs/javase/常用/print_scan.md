@@ -1,15 +1,29 @@
 - [1. println, print, printf](#1-println-print-printf)
 - [2. scan](#2-scan)
   - [2.1. 用法](#21-用法)
-  - [2.2. 细节](#22-细节)
-  - [2.3. 混用引起的后果](#23-混用引起的后果)
-  - [2.4. 中文乱码](#24-中文乱码)
+  - [2.2. 两套体系](#22-两套体系)
+    - [2.2.1. 细节](#221-细节)
+    - [2.2.2. 混用引起的后果](#222-混用引起的后果)
+- [3. 中文乱码](#3-中文乱码)
 
 
 ---
 
 ## 1. println, print, printf
-![](../../../images/image_id=408838.jpg)
+
+`\t` 在打印的时候，把前面字符串的长度补齐到8或者8的整数倍。最少补1个空格，最多补8个空格。
+
+```java
+public class Helloworld {
+    public static void main(String[] args) {
+        System.out.println("name" + '\t' + "age");
+        System.out.print1n("tom" + '\t' + "23");
+    }
+}
+// name    age
+// age     23
+```
+
 
 ```java
 // 换行
@@ -18,11 +32,66 @@ System.out.println("Hello World!");
 // 不换行
 System.out.print("Hello World!");
 
-// 不换行
+// 槽
 System.out.printf("Hello %d %s", 123, "world");
 ```
 
 ## 2. scan
+### 2.1. 用法
+
+```java
+Scanner sc = new Scanner(System.in);
+
+// 都是基本类型
+// 输入2，那么可用任意类型接收
+byte nextByte = sc.nextByte();
+short nextShort = sc.nextShort();
+int nextInt = sc.nextInt();
+long nextLong = sc.nextLong();
+
+// 输入2.3，那么可用任意类型接收
+float nextFloat = sc.nextFloat();
+double nextDouble = sc.nextDouble();
+
+// 输入true
+boolean nextBoolean = sc.nextBoolean();
+
+// 字符/字符串，都是String接收，没有char接收
+String next = sc.next();
+String nextLine = sc.nextLine();
+
+// 大数
+// import java.math.BigDecimal;
+// import java.math.BigInteger;
+BigInteger nextBigInteger = sc.nextBigInteger();
+BigDecimal nextBigDecimal = sc.nextBigDecimal();
+```
+
+```java
+Scanner sc = new Scanner(System.in);
+
+// 整数
+boolean hasNextByte = sc.hasNextByte();
+boolean hasNextShort = sc.hasNextShort();
+boolean hasNextInt = sc.hasNextInt();
+boolean hasNextLong = sc.hasNextLong();
+
+// 浮点数
+boolean hasNextFloat = sc.hasNextFloat();
+boolean hasNextDouble = sc.hasNextDouble();
+
+// 布尔
+boolean hasNextBoolean = sc.hasNextBoolean();
+
+// 字符串
+boolean hasNext = sc.hasNext();
+boolean hasNextLine = sc.hasNextLine();
+
+// BigInteger 和 BigDecimal
+boolean hasNextBigInteger = sc.hasNextBigInteger();
+boolean hasNextBigDecimal = sc.hasNextBigDecimal();
+```
+### 2.2. 两套体系
 
 键盘录入分为两套：
 
@@ -55,49 +124,7 @@ int i = Integer.parseInt(s);//想要整数再进行转换
 System.out.println("此时为整数：" + i);
 ```
 
-### 2.1. 用法
-
-```java
-/* next() */
-// 录入的所有数据都会看做是字符串
-Scanner sc = new Scanner(System.in);
-String s = sc.next();
-System.out.println(s);
-// 键盘录入：a b
-// 此时控制台打印a
-// 表示next方法在接收数据的时候，遇到空格就停止了，后面的本次不接收。
-
-
-
-/* nextInt() */
-// 只能接受整数。
-// ​键盘录入小数或者其他字母，就会报错。
-int s = sc.nextInt();		//只能录入整数
-System.out.println(s);
-// 键盘录入：1 2
-// 此时控制台打印1
-// 表示nextInt方法在接收数据的时候，遇到空格就停止了，后面的本次不接收。
-
-
-
-/* nextDouble() */
-// 能接收整数和小数，但是都会看做小数返回。
-// 录入字母会报错。
-double d = sc.nextDouble();
-System.out.println(d);
-//键盘录入：1.1 2.2
-//此时控制台打印1.1
-//表示nextDouble方法在接收数据的时候，遇到空格就停止了，后面的本次不接收。
-
-
-
-/* nextLine() */
-String s = sc.nextLine();
-System.out.println(s);
-// 123 abc  
-// 123 abc     
-```
-### 2.2. 细节
+#### 2.2.1. 细节
 
 next()，nextInt()，nextDouble()在接收数据的时候
 - 第一次遇到的**空格、回车、制表符**，会真正字符前的这些过滤掉。
@@ -147,7 +174,7 @@ true
 */
 ```
 
-### 2.3. 混用引起的后果
+#### 2.2.2. 混用引起的后果
 
 上面说的两套键盘录入不能混用，如果混用会有严重的后果。
 
@@ -183,7 +210,7 @@ System.out.println(s);
 
 所以，如果混用就会导致nextLine接收不到数据。
 
-### 2.4. 中文乱码
+## 3. 中文乱码
 
 windows键盘输入的字符编码是GBK，而java默认编码是utf-8。所以，需要设置`Scanner`的编码。
 

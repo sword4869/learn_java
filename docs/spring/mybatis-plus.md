@@ -1,4 +1,12 @@
+- [1. Mybatis导入](#1-mybatis导入)
+- [2. PO](#2-po)
+- [3. 配置](#3-配置)
+- [4. BaseMapper和IService](#4-basemapper和iservice)
+- [5. Wrapper 条件构造器](#5-wrapper-条件构造器)
+- [6. IService的lambdaQuery、lambdaUpdate](#6-iservice的lambdaquerylambdaupdate)
 
+
+---
 https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylink
 ## 1. Mybatis导入
 
@@ -48,11 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 ```
 在启动上加`@MapperScan("com.sword.crud.mapper")`。所以在mapper接口上就不用标注`@Mapper`
 
-## PO
+## 2. PO
 
-- MybatisPlus会把PO实体的类名驼峰转下划线作为表名
-- MybatisPlus会把PO实体的所有变量名驼峰转下划线作为表的字段名，并根据变量类型推断字段类型
-- MybatisPlus会把名为id的字段作为主键(变量名和数据库字段都得是`id`)
+- MybatisPlus会把PO实体的类名驼峰转下划线作为**表名**
+- MybatisPlus会把PO实体的所有变量名驼峰转下划线作为表的**字段名**，并根据变量类型推断字段类型
+- MybatisPlus会把名为id的字段作为**主键**(变量名和数据库字段都得是`id`)
 
 ```java
 public class User {
@@ -73,7 +81,7 @@ public class User {
   - 非数据库字段；自动填充
 
 
-## 配置
+## 3. 配置
 
 常用
 ```yml
@@ -93,7 +101,7 @@ mybatis-plus:
   type-aliases-package: com.itheima.mp.domain.po  # 用于mapper.xml中resultType直接写类名，也可以不配，毕竟namespace要写全包名，resultType也不差这几个字
   global-config:
     db-config:
-      id-type: auto # 全局id类型为自增长，也可以不写，MybatisPlus插件生成的就已经在每个字段上写了。
+      id-type: auto # 全局id类型为自增长，如果局部每个都写了，它就可以不写，比如，MybatisPlus插件生成的就已经在每个字段上写了。
 ```
 大多数的配置都有默认值
 ```yml
@@ -107,7 +115,7 @@ mybatis-plus:
       update-strategy: not_null # update传入po实体，只更新其非null的字段
 ```
 
-## BaseMapper和IService
+## 4. BaseMapper和IService
 
 > BaseMapper
 
@@ -117,7 +125,7 @@ mybatis-plus:
 > IService
 
 ![alt text](../../images/image-198.png)
-## Wrapper 条件构造器
+## 5. Wrapper 条件构造器
 
 ![alt text](../../images/image-196.png)
 
@@ -187,24 +195,22 @@ queryWrapper.eq(User::getName,"liangd1");
 ```
 ![alt text](../../images/image-200.png)
 
-## lambdaQuery、lambdaUpdate
+## 6. IService的lambdaQuery、lambdaUpdate
+IService的
+- `.query()` 查，`.update()` 更新
+- `.lambdaQuery()` 查，`.lambdaUpdate()` 更新
 
-lambdaQuery 查，lambdaUpdate 更新
-
-condition可选条件。
-
-one/list/page/count/exists
 
 ```java
+// 方式1：定义wrapper，service的方法传入
 LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
         .like(username != null, User::getUsername, username)
         .eq(status != null, User::getStatus, status)
         .ge(minBalance != null, User::getBalance, minBalance)
         .le(maxBalance != null, User::getBalance, maxBalance);
-// 2.查询用户
 List<User> users = userService.list(wrapper);
 
-
+// 方式2：service的lambdaQuery、lambdaUpdate
 List<User> users = userService.lambdaQuery()
         .like(username != null, User::getUsername, username)
         .eq(status != null, User::getStatus, status)
@@ -212,3 +218,7 @@ List<User> users = userService.lambdaQuery()
         .le(maxBalance != null, User::getBalance, maxBalance)
         .list();
 ```
+
+condition可选条件。
+
+one/list/page/count/exists

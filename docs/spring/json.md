@@ -1,3 +1,18 @@
+## hutool
+```xml
+<!--hutool-->
+<dependency>
+    <groupId>cn.hutool</groupId>
+    <artifactId>hutool-all</artifactId>
+    <version>5.7.17</version>
+</dependency>
+```
+```java
+String jsonstr = JSONUtil.toJsonStr(user);
+
+User user = JSONUtil.toBean(jsonstr, User.class);
+```
+
 ## fastjson
 ```xml
 <dependency>
@@ -20,6 +35,8 @@ String json = JSONObject.toJSONString(user);
     <artifactId>jackson-databind</artifactId>
 </dependency>
 ```
+- writeValueAsString
+- readValue
 ```java
 // JSON序列化工具
 ObjectMapper objectMapper = new ObjectMapper();

@@ -2,10 +2,10 @@
   - [1.1. 直接创建Jedis](#11-直接创建jedis)
   - [1.2. 连接池](#12-连接池)
 - [2. SpringDataRedis客户端](#2-springdataredis客户端)
-  - [依赖配置](#依赖配置)
-  - [2.1. 默认序列化 RedisTemplate](#21-默认序列化-redistemplate)
-  - [2.2. 自定义序列化 RedisTemplate](#22-自定义序列化-redistemplate)
-  - [2.3. StringRedisTemplate](#23-stringredistemplate)
+  - [2.1. 依赖配置](#21-依赖配置)
+  - [2.2. 默认序列化 RedisTemplate](#22-默认序列化-redistemplate)
+  - [2.3. 自定义序列化 RedisTemplate](#23-自定义序列化-redistemplate)
+  - [2.4. StringRedisTemplate](#24-stringredistemplate)
 
 ---
 
@@ -65,7 +65,7 @@ SpringDataRedis中提供了RedisTemplate工具类，其中封装了各种对Redi
 |StringRedisTemplate|将User手动解析为json字符串|好|好|
 
 
-### 依赖配置
+### 2.1. 依赖配置
 
 1. 引入依赖
 
@@ -127,7 +127,9 @@ SpringDataRedis中提供了RedisTemplate工具类，其中封装了各种对Redi
     @Autowired
     StringRedisTemplate stringRedisTemplate;
     ```
-### 2.1. 默认序列化 RedisTemplate
+### 2.2. 默认序列化 RedisTemplate
+
+[DefalutSerializationApplicationTests](../ImportRedisTemplate/defalutSerialization/src/test/java/com/sword/defalutserialization/DefalutSerializationApplicationTests.java)
 
 `ops.set("name", "Jackson")`中将`"name"`当成Object序列化（不止key，还有hashKey, value, hashValue），都使用`JdkSerializationRedisSerializer`，底层是jdk默认序列化`ObjectOutputStream`。
 
@@ -159,7 +161,9 @@ redis_hmdp:5>get \xAC\xED\x00\x05t\x00\x07person0
 
 因为是用JDK序列化，所以还得实现序列化接口，`public class User implements Serializable`
 
-### 2.2. 自定义序列化 RedisTemplate
+### 2.3. 自定义序列化 RedisTemplate
+
+[MyTest](../ImportRedisTemplate/selfDefinedSerialization/src/test/java/com/sword/selfdefinedserialization/MyTest.java)
 
 1. 写config，自定义RedisTemplate Bean。
 2. 使用重写的 redisTemplate。
@@ -175,7 +179,9 @@ centos7:13>get person
 ```
 不过，其中记录了序列化时对应的class名称，目的是为了查询时实现自动反序列化。这会带来额外的内存开销。
 
-### 2.3. StringRedisTemplate
+### 2.4. StringRedisTemplate
+
+[StringRedisTemplateApplicationTests](../ImportRedisTemplate/stringRedisTemplate/src/test/java/com/sword/stringredistemplate/StringRedisTemplateApplicationTests.java)
 
 统一使用String序列化器。当需要存储Java对象时，手动完成对象的序列化和反序列化，将其转化为Json字符串。
 

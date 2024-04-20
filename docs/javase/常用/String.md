@@ -133,6 +133,14 @@ String substring(int beginIndex)
 截取到末尾（包括）
 ```
 
+```java
+System.out.println("sdf".substring(0, 3));  // sdf
+// System.out.println("sdf".substring(0, 4));  // 不允许超出的 endIndex
+
+System.out.println("sdf".substring(3)); // 允许 beginIndex 是长度，即刚好超出1个索引
+// System.out.println("sdf".substring(4)); // 不允许超出更多的 beginIndex
+```
+
 ### 1.6. 找索引
 
 ```java

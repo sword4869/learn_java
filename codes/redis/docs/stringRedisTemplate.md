@@ -1,10 +1,17 @@
 - [1. string](#1-string)
-- [2. 将User类存储为string类型](#2-将user类存储为string类型)
-- [3. 将User类存储为hash类型](#3-将user类存储为hash类型)
+  - [1.1. 将User类存储为string类型](#11-将user类存储为string类型)
+- [2. hash](#2-hash)
+  - [2.1. 将User类存储为hash类型](#21-将user类存储为hash类型)
 
 ---
 
 [完整的用法可以看这里，偷懒没有自己写](https://blog.csdn.net/weixin_43835717/article/details/92802040)
+
+通用：想要删除整个key 
+```java
+// 不存在也不会报错
+stringRedisTemplate.delete(key);
+```
 
 ## 1. string
 
@@ -15,12 +22,24 @@ String s = stringRedisTemplate.opsForValue().get("exercise:name");
 ```
 
 [stringTest()](../stringRedisTemplateExercise/src/test/java/com/sword/stringredistemplate/StringRedisTemplateApplicationTests.java)
-## 2. 将User类存储为string类型
+
+### 1.1. 将User类存储为string类型
 
 
 [setUserByString()](../stringRedisTemplateExercise/src/test/java/com/sword/stringredistemplate/StringRedisTemplateApplicationTests.java)
 
-## 3. 将User类存储为hash类型
+## 2. hash
+删除：想要删除整个key。
+```java
+String key  = LOGIN_USER_KEY + token;
+Object[] hashKeys = stringRedisTemplate.opsForHash().keys(key).toArray();
+stringRedisTemplate.opsForHash().delete(key, hashKeys);
+
+
+String key  = LOGIN_USER_KEY + token;
+stringRedisTemplate.delete(key);
+```
+### 2.1. 将User类存储为hash类型
 
 [setUserByHash()](../stringRedisTemplateExercise/src/test/java/com/sword/stringredistemplate/StringRedisTemplateApplicationTests.java)
 ```java

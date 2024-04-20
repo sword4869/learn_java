@@ -2,7 +2,9 @@
   - [1.1. bean和bean之间拷贝](#11-bean和bean之间拷贝)
   - [1.2. bean和map](#12-bean和map)
 - [bean和list](#bean和list)
+- [Json](#json)
 - [2. 字符串](#2-字符串)
+- [Boolean](#boolean)
 
 
 ---
@@ -57,11 +59,26 @@ List<User> users = userService.listByIds(ids);
 List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
 ```
 
+## Json
+
+[json#hutool](json.md)
+
 ## 2. 字符串
 
-```
-StrUtil.isBlank()
-StrUtil.isEmpty()
+```java
+StrUtil.isBlank(s)   
+StrUtil.isEmpty(s)
 
+StrUtil.isNotBlank(s)   // 非null、非空，确实有实在的东西
+```
+```java
 UUID.randomUUID()
+```
+
+## Boolean
+
+```java
+// 解决flag是null时，返回false
+Boolean flag = null;
+boolean f = BooleanUtil.isTrue(flag);
 ```
