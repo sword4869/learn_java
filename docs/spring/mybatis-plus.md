@@ -3,6 +3,7 @@
 - [3. 配置](#3-配置)
 - [4. BaseMapper和IService](#4-basemapper和iservice)
 - [5. Wrapper 条件构造器](#5-wrapper-条件构造器)
+  - [链式编程方式的问题](#链式编程方式的问题)
 - [6. IService的lambdaQuery、lambdaUpdate](#6-iservice的lambdaquerylambdaupdate)
 
 
@@ -182,6 +183,21 @@ void testUpdateWrapper() {
 LambdaQueryWrapper解决QueryWrapper写死字段名称的问题，使用基于变量的gettter方法结合反射技术。
 
 ```java
+LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance);
+
+```
+![alt text](../../images/image-200.png)
+
+### 链式编程方式的问题
+
+new的时候泛型传递类型与否、lambda属性还是直接lambda类型。
+- `new QueryWrapper<User>().lambda()`
+- `new LambdaQueryWrapper<>()`
+```java
 // 方式1：可以直接链式编程
 LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
         .like(username != null, User::getUsername, username)
@@ -193,8 +209,41 @@ LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
 LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
 queryWrapper.eq(User::getName,"liangd1");
 ```
-![alt text](../../images/image-200.png)
+```java
+// 方式1：定义wrapper，service的方法传入
+QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", "Jack");
+List<User> users = userService.list(wrapper);
 
+QueryWrapper<User> wrapper = new QueryWrapper<>();
+wrapper.eq("username", "北京");
+List<User> users = userService.list(wrapper);
+
+
+LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance);
+List<User> users = userService.list(wrapper);
+```
+
+```java
+// 方式1：定义wrapper，service的方法传入
+LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance);
+List<User> users = userService.list(wrapper);
+
+// 方式2：service的lambdaQuery、lambdaUpdate
+List<User> users = userService.lambdaQuery()
+        .like(username != null, User::getUsername, username)
+        .eq(status != null, User::getStatus, status)
+        .ge(minBalance != null, User::getBalance, minBalance)
+        .le(maxBalance != null, User::getBalance, maxBalance)
+        .list();
+```
 ## 6. IService的lambdaQuery、lambdaUpdate
 IService的
 - `.query()` 查，`.update()` 更新
