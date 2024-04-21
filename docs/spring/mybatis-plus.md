@@ -1,10 +1,18 @@
 - [1. Mybatis导入](#1-mybatis导入)
-- [2. PO](#2-po)
-- [3. 配置](#3-配置)
+  - [1.1. 起步依赖](#11-起步依赖)
+  - [1.2. yaml配置](#12-yaml配置)
+  - [1.3. mapper,service](#13-mapperservice)
+- [2. MybatisPlus插件](#2-mybatisplus插件)
+- [3. PO](#3-po)
 - [4. BaseMapper和IService](#4-basemapper和iservice)
 - [5. Wrapper 条件构造器](#5-wrapper-条件构造器)
-  - [链式编程方式的问题](#链式编程方式的问题)
-- [6. IService的lambdaQuery、lambdaUpdate](#6-iservice的lambdaquerylambdaupdate)
+  - [5.1. 总结4种方式](#51-总结4种方式)
+- [6. 自动更新时间](#6-自动更新时间)
+- [7. 逻辑删除](#7-逻辑删除)
+- [8. page](#8-page)
+  - [8.1. mp](#81-mp)
+  - [8.2. pagehelper依赖](#82-pagehelper依赖)
+- [9. 例子](#9-例子)
 
 
 ---
@@ -16,7 +24,7 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
 - 在实体类上添加注解声明 表信息
 - 自定义Mapper，继承基础BaseMapper
 - 自定义Service接口，继承IService接口；自定义Service实现类，继承ServiceImpl类并实现自定义接口。
-
+### 1.1. 起步依赖
 
 ```xml
 <!-- mybatis起步依赖 -->
@@ -45,44 +53,7 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
 </dependency>
 ```
 
-```java
-public interface UserMapper extends BaseMapper<User> {}
-```
-```java
-public interface IUserService extends IService<User>{}
-```
-```java
-@Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {}
-```
-在启动上加`@MapperScan("com.sword.crud.mapper")`。所以在mapper接口上就不用标注`@Mapper`
-
-## 2. PO
-
-- MybatisPlus会把PO实体的类名驼峰转下划线作为**表名**
-- MybatisPlus会把PO实体的所有变量名驼峰转下划线作为表的**字段名**，并根据变量类型推断字段类型
-- MybatisPlus会把名为id的字段作为**主键**(变量名和数据库字段都得是`id`)
-
-```java
-public class User {
-    private Long id;  // 数据库不自增时
-    private String name;
-    private Integer age;
-    @TableField("isMarried")
-    private Boolean isMarried;
-    @TableField("concat")
-    private String concat;
-}
-```
-- 表名不一致 `@TableName`
-- 主键名不一致:`@TableId`
-  - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置auto必须写，否则默认是雪花算法。
-- 字段名：@TableField
-  - 不一致；is被过滤；关键字冲突要转义``` `xxx` ```；
-  - 非数据库字段；自动填充
-
-
-## 3. 配置
+### 1.2. yaml配置
 
 常用
 ```yml
@@ -116,25 +87,98 @@ mybatis-plus:
       update-strategy: not_null # update传入po实体，只更新其非null的字段
 ```
 
+### 1.3. mapper,service
+
+```java
+public interface UserMapper extends BaseMapper<User> {}
+```
+```java
+public interface IUserService extends IService<User>{}
+```
+```java
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {}
+```
+在启动上加`@MapperScan("com.sword.crud.mapper")`。所以在mapper接口上就不用标注`@Mapper`
+
+
+## 2. MybatisPlus插件
+
+直接从数据库生成po类、mapper、service、controller
+
+![alt text](../../images/image-195.png)
+
+## 3. PO
+
+- MybatisPlus会把PO实体的类名驼峰转下划线作为**表名**
+- MybatisPlus会把PO实体的所有变量名驼峰转下划线作为表的**字段名**，并根据变量类型推断字段类型
+- MybatisPlus会把名为id的字段作为**主键**(变量名和数据库字段都得是`id`)
+
+```java
+public class User {
+    private Long id;  // 数据库不自增时
+    private String name;
+    private Integer age;
+    @TableField("isMarried")
+    private Boolean isMarried;
+    @TableField("concat")
+    private String concat;
+}
+```
+- 表名不一致 `@TableName`
+- 主键名不一致:`@TableId`
+  - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置auto必须写，否则默认是雪花算法。
+- 字段名：@TableField
+  - 不一致；is被过滤；关键字冲突要转义``` `xxx` ```；
+  - 非数据库字段；自动填充
+
+
 ## 4. BaseMapper和IService
 
 > BaseMapper
 
-![alt text](../../images/image-199.png)
+![alt text](../../images/image-264.png)
 
 
 > IService
 
-![alt text](../../images/image-198.png)
+![alt text](../../images/image-265.png)
+
+> 总结
+
+单个：
+- `getById(id)`: [queryUserById()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+- `removeById(id)`: [deleteUserById()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+- `updateById(T)`: [updateUser()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+    
+    只更新传递的字段(非null)
+    
+    id为null不会报错：底层是`where id = ?`，所以id没有传递，默认值是null则无行更新；id传递了，才更新某行。
+
+    ```java
+    // 虽然id为null时，updateById也不会报错；但给前端造成好像已经更新成功的假象，比如前端忘记传参数了。
+    @Override
+    @Transactional
+    public Result updateShop(Shop shop) {
+        Long id = shop.getId();
+        if (id == null) {
+            return Result.fail("店铺id不能为空");
+        }
+        updateById(shop);
+        return Result.ok();
+    }
+    ```
+- `save(T)`：可id指定；也可无id而mp自动生成。[saveUser()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+
 ## 5. Wrapper 条件构造器
 
-![alt text](../../images/image-196.png)
+![alt text](../../images/image-262.png)
 
 ![alt text](../../images/image-197.png)
 
-两个抽象类`Wrapper`和`AbstractWrapper`，实际用的就是`QueryWrapper`和`UpdateWrapper`。
+![alt text](../../images/image-200.png)
 
-Wrapper的子类AbstractWrapper提供了where中包含的所有条件构造方法。
+1. Wrapper的子类 `AbstractWrapper` 和 `AbstractChainWrapper` 提供了where中包含的所有条件构造方法。
 
 ```java
 @Test
@@ -148,7 +192,7 @@ void testUpdateByQueryWrapper() {
 }
 ```
 
-QueryWrapper在AbstractWrapper的基础上拓展了一个select方法（允许指定SQL中的select的字段）
+2. `QueryWrapper` 在 `AbstractWrapper` 的基础上拓展了一个select方法（允许指定SQL中的select的字段）
 
 
 ```java
@@ -164,23 +208,21 @@ void testQueryWrapper() {
     users.forEach(System.out::println);
 }
 ```
-UpdateWrapper在AbstractWrapper的基础上拓展了一个set方法（允许指定SQL中的SET部分）
+3. `UpdateWrapper` 在 `AbstractWrapper` 的基础上拓展了一个set方法（允许指定SQL中的SET部分）
 
 ```java
+// `updateById(T)` 还需要先查询获取，而这种则不需要，直接更新。
 @Test
 void testUpdateWrapper() {
-    List<Long> ids = List.of(1L, 2L, 4L);
-    // 1.生成SQL
     UpdateWrapper<User> wrapper = new UpdateWrapper<User>()
             .setSql("balance = balance - 200") // SET balance = balance - 200
-            .in("id", ids); // WHERE id in (1, 2, 4)
-        // 2.更新，注意第一个参数可以给null，也就是不填更新字段和数据，
-    // 而是基于UpdateWrapper中的setSQL来更新
+            .eq("id", 1L);
+    // 注意第一个参数可以给null，也就是不填更新字段和数据，而是基于UpdateWrapper中的setSQL来更新
     userMapper.update(null, wrapper);
 }
 ```
 
-LambdaQueryWrapper解决QueryWrapper写死字段名称的问题，使用基于变量的gettter方法结合反射技术。
+4. `LambdaQueryWrapper` 解决 `QueryWrapper` 写死字段名称的问题，使用基于变量的gettter方法结合反射技术。
 
 ```java
 LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
@@ -190,53 +232,19 @@ LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
         .le(maxBalance != null, User::getBalance, maxBalance);
 
 ```
-![alt text](../../images/image-200.png)
 
-### 链式编程方式的问题
-
-new的时候泛型传递类型与否、lambda属性还是直接lambda类型。
-- `new QueryWrapper<User>().lambda()`
-- `new LambdaQueryWrapper<>()`
-```java
-// 方式1：可以直接链式编程
-LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
-        .like(username != null, User::getUsername, username)
-        .eq(status != null, User::getStatus, status)
-        .ge(minBalance != null, User::getBalance, minBalance)
-        .le(maxBalance != null, User::getBalance, maxBalance);
-
-// 方式2：不可用链式编程
-LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-queryWrapper.eq(User::getName,"liangd1");
-```
-```java
-// 方式1：定义wrapper，service的方法传入
-QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("username", "Jack");
-List<User> users = userService.list(wrapper);
-
-QueryWrapper<User> wrapper = new QueryWrapper<>();
-wrapper.eq("username", "北京");
-List<User> users = userService.list(wrapper);
-
-
-LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
-        .like(username != null, User::getUsername, username)
-        .eq(status != null, User::getStatus, status)
-        .ge(minBalance != null, User::getBalance, minBalance)
-        .le(maxBalance != null, User::getBalance, maxBalance);
-List<User> users = userService.list(wrapper);
-```
+5. `AbstractChainWrapper` 提供了将 list() 操作直接放入链式编程的。
 
 ```java
-// 方式1：定义wrapper，service的方法传入
-LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+// 定义wrapper，再userService.list(wrapper)
+LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>();
         .like(username != null, User::getUsername, username)
         .eq(status != null, User::getStatus, status)
         .ge(minBalance != null, User::getBalance, minBalance)
         .le(maxBalance != null, User::getBalance, maxBalance);
 List<User> users = userService.list(wrapper);
 
-// 方式2：service的lambdaQuery、lambdaUpdate
+// 直接将 .list() 放入 链式编程中
 List<User> users = userService.lambdaQuery()
         .like(username != null, User::getUsername, username)
         .eq(status != null, User::getStatus, status)
@@ -244,30 +252,146 @@ List<User> users = userService.lambdaQuery()
         .le(maxBalance != null, User::getBalance, maxBalance)
         .list();
 ```
-## 6. IService的lambdaQuery、lambdaUpdate
-IService的
-- `.query()` 查，`.update()` 更新
-- `.lambdaQuery()` 查，`.lambdaUpdate()` 更新
-
-
-```java
-// 方式1：定义wrapper，service的方法传入
-LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
-        .like(username != null, User::getUsername, username)
-        .eq(status != null, User::getStatus, status)
-        .ge(minBalance != null, User::getBalance, minBalance)
-        .le(maxBalance != null, User::getBalance, maxBalance);
-List<User> users = userService.list(wrapper);
-
-// 方式2：service的lambdaQuery、lambdaUpdate
-List<User> users = userService.lambdaQuery()
-        .like(username != null, User::getUsername, username)
-        .eq(status != null, User::getStatus, status)
-        .ge(minBalance != null, User::getBalance, minBalance)
-        .le(maxBalance != null, User::getBalance, maxBalance)
-        .list();
-```
-
-condition可选条件。
 
 one/list/page/count/exists
+
+
+### 5.1. 总结4种方式
+
+`AbstractWrapper`  路子：
+- 方式1：QueryWrapper
+
+    分为，普通Wrapper和LambdaWrapper。
+
+    分为，指定泛型类型的可直接链式编程，和不指定泛型类型的不可直接链式编程
+
+- 方式2：new QueryWrapper<User>().lambda() 来获取 LambdaQueryWrapper 
+
+    必须指定泛型类型
+
+`AbstractChainWrapper` 路子：
+- 方式3：显示构造 QueryChainWrapper
+
+    泛型类型指定不指定都一样，因为传入构造参数。构造参数分为，User.class 和 userMapper。
+
+- 方式4：query() 来获得 QueryChainWrapper对象
+
+    - `.query()` → `QueryChainWrapper`
+    - `.update()` → `UpdateChainWrapper`
+    - `.lambdaQuery()` → `LambdaQueryChainWrapper`
+    - `.lambdaUpdate()` → `LambdaUpdateChainWrapper`
+
+[queryUsersByCondition()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+## 6. 自动更新时间
+
+不是在mybatisplus上搞（fill什么的），而是在数据库DDL上动手。
+
+```java
+create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+```
+![alt text](../../images/image-250.png)
+
+![alt text](../../images/image-251.png)
+
+![alt text](../../images/image-252.png)
+
+![alt text](../../images/image-253.png)
+
+## 7. 逻辑删除 
+
+> 原理
+
+在表中添加一个字段标记数据是否被删除，从而不删记录
+- 当删除数据时把标记置为true 
+- 查询时过滤掉标记为true的数据 
+
+```sql
+alter table address add deleted bit default b'0' null comment '逻辑删除';
+update address set deleted = 1 where id = ? and deleted = 0
+select * from address where deleted = 0
+```
+
+缺点：不如把数据迁移到其它表的办法
+- 会导致数据库表垃圾数据越来越多，从而影响查询效率
+- SQL中全都需要对逻辑删除字段做判断，影响查询效率
+
+> mybatis-plus提供简化操作：
+
+1. 给Address实体添加deleted字段 `private Boolean deleted;` 对应数据库字段`deleted`
+2. 开启配置
+    ```yml
+    mybatis-plus:
+      global-config:
+        db-config:
+          logic-delete-field: deleted # 全局逻辑删除的实体字段名
+          # logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+          # logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+    ```
+3. 正常操作crud，就像没有一样，由mp自动处理底层sql逻辑。`addressService.removeById(59L);`
+
+[Address PO类种 deleted字段](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/po/Address.java)
+
+[AddressController 中就如往常一样增删改查，mp会自己帮我们做](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/AddressController.java)
+
+
+## 8. page
+
+[queryUsersPage, queryUsersPageByCondition, queryUsersByPH](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+### 8.1. mp
+
+定义[config类](../../codes/javaweb/crud/src/main/java/com/sword/crud/config/MybatisPlusConfig.java)，导入mp插件。
+
+1. 前端的请求参数：[分页参数的父类](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/PageQuery.java)和[继承它的业务参数](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/UserConditionQuery.java)。
+    
+    分页参数用一个类定义，业务参数类继承分页参数，实现参数复用。
+2. mp核心: 
+   - Page对象，传入第几页和页大小，添加结果排序规则；
+   - 如果无筛选条件，调用IService的`page(page)`方法。方法内部就是selectPage。
+   - 如果有筛选条件，设置wrapper对象，调用IService的`page(page, wrapper)`方法。
+   - 查询结果是原地修改的，还在Page对象里，不用返回值。
+3. 将查询结果返回给前端：
+   - 将page对象里的`PO`类集合结果转化为[`VO`](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/vo/UserVO.java)
+   - 再扔给[`PageDTO<VO>`](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/dto/PageDTO.java)统一格式，并由page对象的total属性设置总条数、pages属性设置当前页码。
+
+### 8.2. pagehelper依赖
+
+在Mapper中我们只需要进行正常的列表查询即可。
+
+在Service层中，调用Mapper的方法之前设置分页参数，在调用Mapper方法执行查询之后，解析分页结果，并将结果封装到对象中返回。
+
+1. 在pom.xml引入依赖
+
+    ```xml
+    <dependency>
+        <groupId>com.github.pagehelper</groupId>
+        <artifactId>pagehelper-spring-boot-starter</artifactId>
+        <version>1.4.2</version>
+    </dependency>
+    ```
+   
+    ```yml
+    pagehelper:
+      helper-dialect: mysql
+      reasonable: true  # 在启用合理化时，如果 pageNum<1，则会查询第一页；如果 pageNum>pages，则会查询最后一页。
+      support-methods-arguments: true # 支持通过Mapper接口参数来传递分页参数
+    ```
+   
+    不管mybatis-config.xml之类的东西，直接能用
+
+2. 遗留问题：随便翻翻，没看到有排序的的，以后再说。
+
+## 9. 例子
+
+[UserController](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
+
+- 增 `saveUser`
+- 删 `deleteUserById`
+- 查 `queryUserById`
+- 查所有 `queryUserByIds`
+- 改 `updateUser`
+- 带条件查询 `queryUsersByCondition`
+- 带条件更新 `deductBalance`
+- 批量操作 `addUsers` 
+- 自定义sql + 多表关联 `querySelfDefined`
+- 循环依赖 `queryUserWithAddressById`
+- page: `queryUsersPage`, `queryUsersPageByCondition`, `queryUsersByPH`

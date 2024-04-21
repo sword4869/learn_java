@@ -1,10 +1,11 @@
 - [1. Bean](#1-bean)
   - [1.1. bean和bean之间拷贝](#11-bean和bean之间拷贝)
   - [1.2. bean和map](#12-bean和map)
-- [bean和list](#bean和list)
-- [Json](#json)
-- [2. 字符串](#2-字符串)
-- [Boolean](#boolean)
+- [2. bean和list](#2-bean和list)
+- [3. Json](#3-json)
+- [4. 字符串](#4-字符串)
+- [5. Boolean](#5-boolean)
+- [6. 集合](#6-集合)
 
 
 ---
@@ -52,33 +53,42 @@ Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
 UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);  // fasle表示有错就抛出
 ```
 
-## bean和list
+## 2. bean和list
 
 ```java
 List<User> users = userService.listByIds(ids);
 List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
 ```
 
-## Json
+## 3. Json
 
 [json#hutool](json.md)
 
-## 2. 字符串
+## 4. 字符串
 
 ```java
 StrUtil.isBlank(s)   
 StrUtil.isEmpty(s)
 
-StrUtil.isNotBlank(s)   // 非null、非空，确实有实在的东西
+StrUtil.isNotBlank(s)   // 非null、非空、非制表换行，确实有实在的东西
+```
+```java
+String idStr = StrUtil.join(",", ids);
 ```
 ```java
 UUID.randomUUID()
 ```
 
-## Boolean
+## 5. Boolean
 
 ```java
 // 解决flag是null时，返回false
 Boolean flag = null;
 boolean f = BooleanUtil.isTrue(flag);
+```
+
+## 6. 集合
+
+```java
+CollUtil.isEmpty(records)     // null，size()==0
 ```

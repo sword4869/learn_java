@@ -7,10 +7,15 @@
     <version>5.7.17</version>
 </dependency>
 ```
-```java
-String jsonstr = JSONUtil.toJsonStr(user);
 
+```java
+// 一个对象
+String jsonstr = JSONUtil.toJsonStr(user);
 User user = JSONUtil.toBean(jsonstr, User.class);
+
+// List
+String shopTypeJson = JSONUtil.toJsonStr(shopTypes);
+List<ShopType> shopTypes = JSONUtil.toList(shopTypeJson, ShopType.class);
 ```
 
 ## fastjson

@@ -1,18 +1,23 @@
 package com.sword.crud.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.github.pagehelper.PageHelper;
+import com.sword.crud.domain.dto.PageDTO;
 import com.sword.crud.domain.po.Address;
 import com.sword.crud.domain.po.User;
+import com.sword.crud.domain.query.PageQuery;
+import com.sword.crud.domain.query.UserConditionQuery;
 import com.sword.crud.domain.vo.AddressVO;
 import com.sword.crud.domain.vo.UserVO;
 import com.sword.crud.domain.vo.UserWithAddressVO;
 import com.sword.crud.mapper.UserMapper;
 import com.sword.crud.service.IUserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,23 +37,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     UserMapper userMapper;
-
-    @Override
-    public List<User> queryUsersByCondition(String keyword, Integer status, Integer minBalance, Integer maxBalance) {
-        // LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
-        //         .like(username != null, User::getUsername, username)
-        //         .eq(status != null, User::getStatus, status)
-        //         .ge(minBalance != null, User::getBalance, minBalance)
-        //         .le(maxBalance != null, User::getBalance, maxBalance);
-        // List<User> users = list(wrapper);
-
-        return lambdaQuery()
-                .like(StrUtil.isNotEmpty(keyword), User::getUsername, keyword)
-                .eq(status!=null, User::getStatus, status)
-                .ge(minBalance!=null, User::getBalance, minBalance)
-                .le(maxBalance!=null, User::getBalance, maxBalance)
-                .list();
-    }
 
     @Override
     @Transactional
@@ -101,5 +89,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .in("u.id", List.of(1L, 2L, 4L));
         List<User> users = userMapper.querySelfDefined(wrapper);
         return BeanUtil.copyToList(users, UserVO.class);
+    }
+
+
+    @Override
+    public PageDTO<UserVO> queryUsersPage(PageQuery query) {
+        // 或者 Page<User> page = new Page<>(query.getPageNo(), query.getPageSize());
+        Page<User> page = Page.of(query.getPageNo(), query.getPageSize());
+        // 排序
+        if (query.getSortBy() != null) {
+            page.addOrder(new OrderItem(query.getSortBy(), query.getIsAsc()));
+        }else{
+            // 默认按照更新时间排序
+            page.addOrder(new OrderItem("update_time", false));
+        }
+        // 去db查
+        page(page); // IService方法内部就是 getBaseMapper().selectPage(page, emptyWrapper)
+        // 获取结果并转化为DTO类型
+        PageDTO<UserVO> pageDTO = PageDTO.of(page, UserVO.class);
+        return pageDTO;
+    }
+
+    @Override
+    public PageDTO<UserVO> queryUsersPageByCondition(UserConditionQuery query) {
+        Page<User> page = new Page<>(query.getPageNo(), query.getPageSize());
+        if (query.getSortBy() != null) {
+            page.addOrder(new OrderItem(query.getSortBy(), query.getIsAsc()));
+        }else{
+            // 默认按照更新时间排序
+            page.addOrder(new OrderItem("update_time", false));
+        }
+
+        // 这里就简单演示四种 wrapper 中的两种
+
+        LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
+                .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
+                .eq(query.getStatus() != null, User::getStatus, query.getStatus())
+                .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
+                .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance());
+        page(page, wrapper);        // 就是 userMapper.selectPage(page, wrapper);
+
+
+        lambdaQuery()
+                .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
+                .eq(query.getStatus() != null, User::getStatus, query.getStatus())
+                .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
+                .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance())
+                .page(page);
+
+        return PageDTO.of(page, UserVO.class);
+    }
+
+    @Override
+    public PageDTO<UserVO> queryUsersByPH(UserConditionQuery query) {
+        // 当前页，页大小
+        PageHelper.startPage(query.getPageNo().intValue(), query.getPageSize().intValue());
+        List<User> users = lambdaQuery()
+                .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
+                .eq(query.getStatus() != null, User::getStatus, query.getStatus())
+                .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
+                .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance())
+                .list();
+        // 转化正常查询集合→Page<T>：p,getResult()获取List<T>，p.getTotal()总条数, p.getPages()总页
+        com.github.pagehelper.Page<User> p = (com.github.pagehelper.Page<User>) users;
+        List<UserVO> vos = BeanUtil.copyToList(p.getResult(), UserVO.class);
+        PageDTO<UserVO> pageDTO = new PageDTO<UserVO>(p.getTotal(), (long) p.getPages(), vos);
+        return pageDTO;
     }
 }

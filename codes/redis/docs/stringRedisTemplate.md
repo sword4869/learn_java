@@ -23,6 +23,11 @@ String s = stringRedisTemplate.opsForValue().get("exercise:name");
 
 [stringTest()](../stringRedisTemplateExercise/src/test/java/com/sword/stringredistemplate/StringRedisTemplateApplicationTests.java)
 
+```java
+// 没有直接自动创建。
+long count = stringRedisTemplate.opsForValue().increment("icr:" + keyPrefix + ":" + date);
+```
+
 ### 1.1. 将User类存储为string类型
 
 

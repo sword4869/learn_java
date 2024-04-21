@@ -49,6 +49,12 @@
             <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
             <version>4.1.0</version>
         </dependency>
+        <!-- 仅供演示 pagehelper，完全可以被mp所代替 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.4.2</version>
+        </dependency>
         <!--web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

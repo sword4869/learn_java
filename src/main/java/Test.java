@@ -1,11 +1,19 @@
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        System.out.println("sdf".substring(0, 3));  // sdf
-        // System.out.println("sdf".substring(0, 4));  // 不允许超出的 endIndex
-        
-        System.out.println("sdf".substring(3)); // 允许 beginIndex 是长度，即刚好超出1个索引
-        // System.out.println("sdf".substring(4)); // 不允许超出更多的 beginIndex
+        // 毫秒
+        long timeMillis = System.currentTimeMillis();
+        System.out.println(timeMillis);
+        // 1713698294409
+
+
+        // 秒
+        LocalDateTime now = LocalDateTime.now();
+        long epochSecond = now.toEpochSecond(ZoneOffset.UTC);
+        System.out.println(epochSecond);
+        // 1713727209
     }
 }

@@ -22,14 +22,25 @@ public class PageDTO<T> {
     @ApiModelProperty("集合")
     private List<T> list;
 
+    public PageDTO(){}
+
+    public PageDTO(long total, long pages) {
+        this.total = total;
+        this.pages = pages;
+    }
+
+    public PageDTO(long total, long pages, List<T> list) {
+        this.total = total;
+        this.pages = pages;
+        this.list = list;
+    }
+
     public static <PO, VO> PageDTO<VO> of(Page<PO> p, Class<VO> clazz){
-        PageDTO<VO> dto = new PageDTO<>();
-        // 1.总条数
-        dto.setTotal(p.getTotal());
-        // 2.总页数
-        dto.setPages(p.getPages());
-        // 3.当前页数据
+        // 总条数 总页数
+        PageDTO<VO> dto = new PageDTO<>(p.getTotal(), p.getPages());
+        // 当前页数据
         List<PO> records = p.getRecords();
+        // 非空校验
         if (CollUtil.isEmpty(records)) {
             dto.setList(Collections.emptyList());
             return dto;
@@ -41,13 +52,11 @@ public class PageDTO<T> {
     }
 
     public static <PO, VO> PageDTO<VO> of(Page<PO> p, Function<PO, VO> convertor){
-        PageDTO<VO> dto = new PageDTO<>();
-        // 1.总条数
-        dto.setTotal(p.getTotal());
-        // 2.总页数
-        dto.setPages(p.getPages());
-        // 3.当前页数据
+        // 总条数 总页数
+        PageDTO<VO> dto = new PageDTO<>(p.getTotal(), p.getPages());
+        // 当前页数据
         List<PO> records = p.getRecords();
+        // 非空校验
         if (CollUtil.isEmpty(records)) {
             dto.setList(Collections.emptyList());
             return dto;

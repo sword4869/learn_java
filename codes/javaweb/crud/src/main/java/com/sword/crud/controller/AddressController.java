@@ -20,6 +20,6 @@ public class AddressController {
     public AddressVO getById(@PathVariable Long id){
         Address address = iAddressService.getById(id);
         return BeanUtil.copyProperties(address, AddressVO.class);
-        // ==>  Preparing: SELECT id,user_id,province,city,town,mobile,street,contact,is_default,notes,deleted FROM address WHERE id=?
+        // ==>  Preparing: SELECT id,user_id,province,city,town,mobile,street,contact,is_default,notes,【deleted】 FROM address WHERE id=?
     }
 }
