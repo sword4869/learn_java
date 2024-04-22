@@ -27,7 +27,12 @@ String s = stringRedisTemplate.opsForValue().get("exercise:name");
 // 没有直接自动创建。
 long count = stringRedisTemplate.opsForValue().increment("icr:" + keyPrefix + ":" + date);
 ```
-
+```java
+// 可能是null
+Boolean success = stringRedisTemplate.opsForValue()
+        .setIfAbsent(KEY_PREFIX + name, threadId, timeoutSec, TimeUnit.SECONDS);
+boolean success_flag = Boolean.TRUE.equals(success);
+```
 ### 1.1. 将User类存储为string类型
 
 

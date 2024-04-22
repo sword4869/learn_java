@@ -76,7 +76,7 @@ StrUtil.isNotBlank(s)   // 非null、非空、非制表换行，确实有实在�
 String idStr = StrUtil.join(",", ids);
 ```
 ```java
-UUID.randomUUID()
+String uuid = UUID.randomUUID().toString(true);   // true表示把`-`去掉
 ```
 
 ## 5. Boolean
