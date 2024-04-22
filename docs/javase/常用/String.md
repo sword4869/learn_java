@@ -16,6 +16,8 @@
 - [4. 其他](#4-其他)
     - [4.0.1. int转String](#401-int转string)
     - [4.0.2. 重复几次](#402-重复几次)
+- [Q\&A](#qa)
+  - [String为什么不可改变？](#string为什么不可改变)
 
 ---
 ## 1. String
@@ -369,3 +371,13 @@ JDK11引入
 ```java
 String a = " ".repeat(3);
 ```
+
+## Q&A
+
+### String为什么不可改变？
+
+String的底层是字节数组 `byte[]`。
+
+因为final固定字节数组value，而且private声明是私有，且没有提供setter方法。
+
+![](../../../images/image_id=412602.jpg)

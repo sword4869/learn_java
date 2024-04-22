@@ -1,19 +1,19 @@
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+public class Test {    
+    // 初始化时赋值
+    private static final int a = 1;
 
-public class Test {
-    public static void main(String[] args) throws IOException {
-        // 毫秒
-        long timeMillis = System.currentTimeMillis();
-        System.out.println(timeMillis);
-        // 1713698294409
+    // 声明时不赋值，错误
+    // private static final int b;
 
+    // 声明时不赋值，静态代码块赋值
+    private static final int c;
+    static {
+        c = 3;
+    }
 
-        // 秒
-        LocalDateTime now = LocalDateTime.now();
-        long epochSecond = now.toEpochSecond(ZoneOffset.UTC);
-        System.out.println(epochSecond);
-        // 1713727209
+    public static void main(String[] args) {
+        System.out.println(a);
+        // System.out.println(b);
+        System.out.println(c);
     }
 }

@@ -1,6 +1,13 @@
-## 4. lombok
+- [介绍](#介绍)
+- [EqualsAndHashCode](#equalsandhashcode)
+- [AllArgsConstructor](#allargsconstructor)
+- [RequiredArgsConstructor](#requiredargsconstructor)
+- [Accessors](#accessors)
+- [Slf4j](#slf4j)
 
-### 4.1 介绍
+
+---
+## 介绍
 
 Lombok会在**编译**时，会自动生成对应的java代码
 
@@ -12,6 +19,8 @@ Lombok会在**编译**时，会自动生成对应的java代码
 | @Data               | 提供了更综合的生成代码功能（@Getter  + @Setter + @ToString + @EqualsAndHashCode） |
 | @NoArgsConstructor  | 为实体类生成无参的构造器方法                                 |
 | @AllArgsConstructor | 为实体类生成除了static修饰的字段之外带有各参数的构造器方法。 |
+|@Log4j |注解在类上；为类提供一个 属性名为log 的 log4j 日志对像|
+|@Slf4j| 同上|
 
 ```xml
 <dependency>
@@ -67,3 +76,20 @@ public class UserController {
 - `prefix = {}`：过滤字段前缀，`xxName`, `prefix = {"xx"}` → `getName(), setName()`
 
 https://blog.csdn.net/sunnyzyq/article/details/119992746
+
+## Slf4j
+
+```java
+// 在类上加注释
+@Slf4j
+@SpringBootTest
+public class RedissonTest {
+    @Test
+    void method1() throws InterruptedException {
+        log.error("获取锁成功 .... ");
+        log.error("获取锁失败 .... {}", 1);
+    }
+// 2024-04-22 15:57:43.305  INFO 18768 --- [           main] com.sword.redisson01.RedissonTest        : 获取锁成功 .... 
+// 2024-04-22 15:57:43.307  INFO 18768 --- [           main] com.sword.redisson01.RedissonTest        : 获取锁失败 .... 1
+```
+`log.error/warn/debug/info()`

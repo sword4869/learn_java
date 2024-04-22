@@ -1,0 +1,14 @@
+spring:
+  redis:
+    host: 192.168.137.3
+    port: 6379
+    password: redis
+    # 默认0号数据库
+    database: 5
+    # 想要使用连接池，就必须在配置中指定，否则无效
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 1000ms
