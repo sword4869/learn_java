@@ -1,19 +1,18 @@
-public class Test {    
-    // 初始化时赋值
-    private static final int a = 1;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-    // 声明时不赋值，错误
-    // private static final int b;
-
-    // 声明时不赋值，静态代码块赋值
-    private static final int c;
-    static {
-        c = 3;
-    }
+public class Test {
 
     public static void main(String[] args) {
-        System.out.println(a);
-        // System.out.println(b);
-        System.out.println(c);
     }
 }

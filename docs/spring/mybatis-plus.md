@@ -1,30 +1,32 @@
-- [1. Mybatis导入](#1-mybatis导入)
-  - [1.1. 起步依赖](#11-起步依赖)
-  - [1.2. yaml配置](#12-yaml配置)
-  - [1.3. mapper,service](#13-mapperservice)
-- [2. MybatisPlus插件](#2-mybatisplus插件)
-- [3. PO](#3-po)
-- [4. BaseMapper和IService](#4-basemapper和iservice)
-- [5. Wrapper 条件构造器](#5-wrapper-条件构造器)
-  - [5.1. 总结4种方式](#51-总结4种方式)
-- [6. 自动更新时间](#6-自动更新时间)
-- [7. 逻辑删除](#7-逻辑删除)
-- [8. page](#8-page)
-  - [8.1. mp](#81-mp)
-  - [8.2. pagehelper依赖](#82-pagehelper依赖)
-- [9. 例子](#9-例子)
+- [Mybatis导入](#mybatis导入)
+  - [起步依赖](#起步依赖)
+  - [yaml配置](#yaml配置)
+  - [mapper,service](#mapperservice)
+- [MybatisPlus插件](#mybatisplus插件)
+- [PO](#po)
+- [BaseMapper和IService](#basemapper和iservice)
+- [Wrapper 条件构造器](#wrapper-条件构造器)
+  - [总结4种方式](#总结4种方式)
+  - [order by field](#order-by-field)
+- [常量、枚举](#常量枚举)
+- [自动更新时间](#自动更新时间)
+- [逻辑删除](#逻辑删除)
+- [page](#page)
+  - [mp](#mp)
+  - [pagehelper依赖](#pagehelper依赖)
+- [例子](#例子)
 
 
 ---
 https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylink
-## 1. Mybatis导入
+## Mybatis导入
 
 - 引入起步依赖
 - 在application.yml中根据需要添加配置
 - 在实体类上添加注解声明 表信息
 - 自定义Mapper，继承基础BaseMapper
 - 自定义Service接口，继承IService接口；自定义Service实现类，继承ServiceImpl类并实现自定义接口。
-### 1.1. 起步依赖
+### 起步依赖
 
 ```xml
 <!-- mybatis起步依赖 -->
@@ -40,8 +42,8 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
     <!--下面坐标根据自己使用的SpringBoot版本二选一-->
     <!--SpringBoot2使用此版本-->
     <artifactId>mybatis-plus-boot-starter</artifactId>
-    <!--3.5.4开始,支持SpringBoot3使用此版本-->
-    <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+    <!-- 3.5.4开始,支持SpringBoot3使用此版本 -->
+    <!-- <artifactId>mybatis-plus-spring-boot3-starter</artifactId> -->
     <version>3.5.3.1</version>
 </dependency>
 
@@ -53,7 +55,7 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
 </dependency>
 ```
 
-### 1.2. yaml配置
+### yaml配置
 
 常用
 ```yml
@@ -87,7 +89,7 @@ mybatis-plus:
       update-strategy: not_null # update传入po实体，只更新其非null的字段
 ```
 
-### 1.3. mapper,service
+### mapper,service
 
 ```java
 public interface UserMapper extends BaseMapper<User> {}
@@ -102,38 +104,55 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 在启动上加`@MapperScan("com.sword.crud.mapper")`。所以在mapper接口上就不用标注`@Mapper`
 
 
-## 2. MybatisPlus插件
+## MybatisPlus插件
 
 直接从数据库生成po类、mapper、service、controller
 
+![alt text](../../images/image-325.png)
+
+![alt text](../../images/image-326.png)
+
 ![alt text](../../images/image-195.png)
 
-## 3. PO
+> 生成完后的修改
+
+controller 类上的 RequestMapping 它默认是库名，而具体是什么，还得改成你业务需要的。
+
+用枚举类型替换Integer类型。
+
+## PO
 
 - MybatisPlus会把PO实体的类名驼峰转下划线作为**表名**
 - MybatisPlus会把PO实体的所有变量名驼峰转下划线作为表的**字段名**，并根据变量类型推断字段类型
 - MybatisPlus会把名为id的字段作为**主键**(变量名和数据库字段都得是`id`)
 
 ```java
+@TableName("tb_user")
 public class User {
-    private Long id;  // 数据库不自增时
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
     private String name;
     private Integer age;
+
     @TableField("isMarried")
     private Boolean isMarried;
+    
     @TableField("concat")
     private String concat;
+
+    @TableField(exist = false)
+    private Double distance;
 }
 ```
 - 表名不一致 `@TableName`
 - 主键名不一致:`@TableId`
-  - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置auto必须写，否则默认是雪花算法。
+  - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置 `auto_increment` 必须写 `IdType.AUTO`，否则默认是雪花算法 `IdType.ASSIGN_ID`。
 - 字段名：@TableField
   - 不一致；is被过滤；关键字冲突要转义``` `xxx` ```；
-  - 非数据库字段；自动填充
+  - 非数据库字段`@TableField(exist = false)`，我们手动维护。
 
 
-## 4. BaseMapper和IService
+## BaseMapper和IService
 
 > BaseMapper
 
@@ -170,7 +189,7 @@ public class User {
     ```
 - `save(T)`：可id指定；也可无id而mp自动生成。[saveUser()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
 
-## 5. Wrapper 条件构造器
+## Wrapper 条件构造器
 
 ![alt text](../../images/image-262.png)
 
@@ -256,7 +275,7 @@ List<User> users = userService.lambdaQuery()
 one/list/page/count/exists
 
 
-### 5.1. 总结4种方式
+### 总结4种方式
 
 `AbstractWrapper`  路子：
 - 方式1：QueryWrapper
@@ -282,7 +301,21 @@ one/list/page/count/exists
     - `.lambdaUpdate()` → `LambdaUpdateChainWrapper`
 
 [queryUsersByCondition()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
-## 6. 自动更新时间
+
+### order by field
+
+```java
+// 3.根据用户id查询用户 WHERE id IN ( 5 , 1 ) ORDER BY FIELD(id, 5, 1)
+String idStr = StrUtil.join(",", ids);    // List<Long> ids
+List<UserDTO> userDTOS = userService.query()
+        .in("id", ids).last("ORDER BY FIELD(id," + idStr + ")").list()
+```
+
+## 常量、枚举
+
+[enumtest](../../codes/javaweb/enumtest/枚举.md)
+
+## 自动更新时间
 
 不是在mybatisplus上搞（fill什么的），而是在数据库DDL上动手。
 
@@ -297,7 +330,7 @@ create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
 
 ![alt text](../../images/image-253.png)
 
-## 7. 逻辑删除 
+## 逻辑删除 
 
 > 原理
 
@@ -334,10 +367,10 @@ select * from address where deleted = 0
 [AddressController 中就如往常一样增删改查，mp会自己帮我们做](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/AddressController.java)
 
 
-## 8. page
+## page
 
 [queryUsersPage, queryUsersPageByCondition, queryUsersByPH](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
-### 8.1. mp
+### mp
 
 定义[config类](../../codes/javaweb/crud/src/main/java/com/sword/crud/config/MybatisPlusConfig.java)，导入mp插件。
 
@@ -345,15 +378,53 @@ select * from address where deleted = 0
     
     分页参数用一个类定义，业务参数类继承分页参数，实现参数复用。
 2. mp核心: 
-   - Page对象，传入第几页和页大小，添加结果排序规则；
-   - 如果无筛选条件，调用IService的`page(page)`方法。方法内部就是selectPage。
-   - 如果有筛选条件，设置wrapper对象，调用IService的`page(page, wrapper)`方法。
-   - 查询结果是原地修改的，还在Page对象里，不用返回值。
+   - Page对象，传入第几页和页大小，添加结果排序规则。
+   - 查询结果是原地修改的，还在Page对象里，不用返回值。当然也可以用返回值。
 3. 将查询结果返回给前端：
    - 将page对象里的`PO`类集合结果转化为[`VO`](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/vo/UserVO.java)
    - 再扔给[`PageDTO<VO>`](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/dto/PageDTO.java)统一格式，并由page对象的total属性设置总条数、pages属性设置当前页码。
 
-### 8.2. pagehelper依赖
+page创建方式
+```java
+// 从第一页开始
+Page<User> page = new Page<>(1, 10);
+Page<User> page = Page.of(1, 10);
+
+// 排序（可选）
+page.addOrder(new OrderItem("balance", false));
+```
+
+最简单的写法（不排序）
+```java
+// 如果无筛选条件，调用IService的`page(page)`方法。方法内部就是selectPage
+Page<Blog> page1 = blogService.page(new Page<>(current, PAGE_SIZE));
+
+// 如果有筛选条件，设置wrapper对象，调用IService的`page(page, wrapper)`方法。或者4钟wrapper方式。
+Page<Blog> page2 = blogService.query()
+        .eq("user_id", user.getId())
+        .page(new Page<>(current, PAGE_SIZE));
+
+long total = p.getTotal();  // 总条数
+long pages = p.getPages();  // 总条数可以划分为几页
+List<Blog> blogs = p.getRecords();  // 查询结果
+```
+
+两种排序方式
+
+```java
+// 在page这里排序
+Page<User> page = new Page<>(1, 10);
+page.addOrder(new OrderItem("balance", false));
+
+
+// 在wrapper排序
+Page<Blog> page = blogService.query()
+    .orderBy(query.getSortBy() == null, false, "balance")   // 默认排序
+    .orderBy(query.getSortBy() != null, false, query.getSortBy()) // 自定义排序
+    .page(new Page<>(1, 10));
+```
+
+### pagehelper依赖
 
 在Mapper中我们只需要进行正常的列表查询即可。
 
@@ -380,7 +451,7 @@ select * from address where deleted = 0
 
 2. 遗留问题：随便翻翻，没看到有排序的的，以后再说。
 
-## 9. 例子
+## 例子
 
 [UserController](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
 

@@ -80,6 +80,17 @@ System.out.println(i1 + " " + i2 + " " + map);    // 1 1 {a=2, b=1}
 i1 = map.computeIfPresent("b", (k,v) -> v + 1);   // 更新
 i2 = map.computeIfPresent("c", (k,v) -> v + 1);   // 不会执行
 System.out.println(i1 + " " + i2 + " " + map);    // 2 null {a=2, b=2}
+
+
+/*
+不存在时添加元素
+*/
+Map<String, Integer> map = new HashMap<>();
+// 不存在时返回null，存在时返回原值
+Integer e = map.putIfAbsent("d", 1);
+System.out.println(e);  // null
+e = map.putIfAbsent("d", 1);
+System.out.println(e);  // 1
 ```
 
 

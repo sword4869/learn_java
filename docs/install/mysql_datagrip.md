@@ -1,11 +1,56 @@
-- [1. mysql](#1-mysql)
-  - [1.1. 启动指令](#11-启动指令)
-  - [1.2. 客户端连接](#12-客户端连接)
-- [2. DataGrip](#2-datagrip)
+- [mysql-docker](#mysql-docker)
+- [mysql-windows](#mysql-windows)
+  - [启动指令](#启动指令)
+  - [客户端连接](#客户端连接)
+- [DataGrip](#datagrip)
 
 ---
 
-## 1. mysql
+## mysql-docker
+
+```bash
+mkdir -p /mydata/mysql/log
+mkdir -p /mydata/mysql/data
+vi /mydata/mysql/conf/my.cnf
+```
+```
+[mysqld]
+skip-name-resolve
+character_set_server=utf8
+server-id=1010
+innodb_fast_shutdown=1
+```
+```bash
+docker run -d \
+    --name mysql \
+    --restart=always
+    -p 3306:3306 \
+    -v /mydata/mysql/log:/var/log/mysql \
+    -v /mydata/mysql/data:/var/lib/mysql \
+    -v /mydata/mysql/conf:/etc/mysql/conf.d \
+    -e MYSQL_ROOT_PASSWORD=123 \
+    mysql:5.7
+```
+```bash
+# 进入数据库，允许远程登录
+[root@localhost mysql]# docker exec -it mysql mysql -uroot -p123
+
+// mysql8之前
+grant all privileges on *.* to 'root'@'%' identified by '123' with grant option;
+flush privileges;
+
+// mysql8
+update user set host='%' where user='root';
+flush privileges;
+
+
+// 验证是否成功，去另一台机子，看是否可以登录上
+mysql -h 192.168.150.3 -u root -p123
+```
+
+PS：记得重装容器的时候，清除 /mydata/mysql/data 和 log 的文件夹。
+
+## mysql-windows
 
 1. 下载链接：[mysql-installer-community-8.0.36.0.msi](https://dev.mysql.com/downloads/installer)
 
@@ -51,7 +96,7 @@
     
     所以必须修改密码：`ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';`
 8. next，finish。
-### 1.1. 启动指令
+### 启动指令
 
 - `net start mysql80`
 - `net stop mysql80`
@@ -64,7 +109,7 @@ net stop mysql80
 ```
 答案不是名字大小写，而是要用管理员权限的cmd。
 
-### 1.2. 客户端连接
+### 客户端连接
 1. `C:\Program Files\MySQL\MySQL Server 8.0\bin`有mysql.exe，可选配置环境变量。
 
     ```bash
@@ -76,7 +121,7 @@ net stop mysql80
     ![alt text](../../images/image-96.png)
 
 
-## 2. DataGrip
+## DataGrip
 
 <https://www.jetbrains.com/datagrip/download/#section=windows>
 
@@ -84,6 +129,12 @@ net stop mysql80
 
 ![alt text](../../images/image-98.png)
 
+- 查看DDL
+
+方式1：
 ![alt text](../../images/image-133.png)
+
+方式2：
+![alt text](../../images/image-334.png)
 
 - 导入sql脚本：https://blog.csdn.net/qq_44696465/article/details/131523368

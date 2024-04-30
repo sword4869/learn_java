@@ -1,7 +1,6 @@
 package com.sword.crud.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -94,49 +93,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public PageDTO<UserVO> queryUsersPage(PageQuery query) {
-        // 或者 Page<User> page = new Page<>(query.getPageNo(), query.getPageSize());
+        // 或者 Page<User> page = new Page<>(query.getPageNo(), query.getPageSize());  后面也不演示了
         Page<User> page = Page.of(query.getPageNo(), query.getPageSize());
+
         // 排序
         if (query.getSortBy() != null) {
             page.addOrder(new OrderItem(query.getSortBy(), query.getIsAsc()));
         }else{
-            // 默认按照更新时间排序
-            page.addOrder(new OrderItem("update_time", false));
+            // 默认按照balance降序
+            page.addOrder(new OrderItem("balance", false));
         }
-        // 去db查
+
+        // 可以使用原地值
         page(page); // IService方法内部就是 getBaseMapper().selectPage(page, emptyWrapper)
-        // 获取结果并转化为DTO类型
-        PageDTO<UserVO> pageDTO = PageDTO.of(page, UserVO.class);
+        PageDTO<UserVO> pageDTO = PageDTO.of(page, UserVO.class);       // 获取结果并转化为DTO类型
+        // 也可以使用返回值
+        // Page<User> paged = page(page);
+        // PageDTO<UserVO> pageDTO = PageDTO.of(paged, UserVO.class);
         return pageDTO;
     }
 
     @Override
     public PageDTO<UserVO> queryUsersPageByCondition(UserConditionQuery query) {
         Page<User> page = new Page<>(query.getPageNo(), query.getPageSize());
-        if (query.getSortBy() != null) {
-            page.addOrder(new OrderItem(query.getSortBy(), query.getIsAsc()));
-        }else{
-            // 默认按照更新时间排序
-            page.addOrder(new OrderItem("update_time", false));
-        }
 
-        // 这里就简单演示四种 wrapper 中的两种
+        boolean isAsc = query.getIsAsc() == null? false: query.getIsAsc();
 
-        LambdaQueryWrapper<User> wrapper = new QueryWrapper<User>().lambda()
-                .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
-                .eq(query.getStatus() != null, User::getStatus, query.getStatus())
-                .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
-                .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance());
+        // 这里就简单演示四种 wrapper 中的两种 + 用 wrapper 排序
+        QueryWrapper<User> wrapper = new QueryWrapper<User>()
+                .like(query.getKeyword() != null, "username", query.getKeyword())
+                .eq(query.getStatus() != null, "statue", query.getStatus())
+                .ge(query.getMinBalance() != null, "balance", query.getMinBalance())
+                .le(query.getMaxBalance() != null, "balance", query.getMaxBalance())
+                .orderBy(query.getSortBy() == null, isAsc,"balance")
+                .orderBy(query.getSortBy() != null, isAsc, query.getSortBy());
         page(page, wrapper);        // 就是 userMapper.selectPage(page, wrapper);
 
 
-        lambdaQuery()
-                .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
-                .eq(query.getStatus() != null, User::getStatus, query.getStatus())
-                .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
-                .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance())
-                .page(page);
-
+        // 这里 query.getSortBy() 与 lambda写法冲突，就不演示了
+        // lambdaQuery()
+        //         .like(query.getKeyword() != null, User::getUsername, query.getKeyword())
+        //         .eq(query.getStatus() != null, User::getStatus, query.getStatus())
+        //         .ge(query.getMinBalance() != null, User::getBalance, query.getMinBalance())
+        //         .le(query.getMaxBalance() != null, User::getBalance, query.getMaxBalance())
+        //         .page(page);
         return PageDTO.of(page, UserVO.class);
     }
 

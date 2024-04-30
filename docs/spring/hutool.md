@@ -1,11 +1,14 @@
-- [1. Bean](#1-bean)
-  - [1.1. bean和bean之间拷贝](#11-bean和bean之间拷贝)
-  - [1.2. bean和map](#12-bean和map)
-- [2. bean和list](#2-bean和list)
-- [3. Json](#3-json)
-- [4. 字符串](#4-字符串)
-- [5. Boolean](#5-boolean)
-- [6. 集合](#6-集合)
+- [Bean](#bean)
+  - [bean和bean之间拷贝](#bean和bean之间拷贝)
+    - [copyProperties](#copyproperties)
+    - [toBean](#tobean)
+  - [bean和map](#bean和map)
+- [bean和list](#bean和list)
+- [Json](#json)
+- [字符串](#字符串)
+- [Boolean](#boolean)
+- [集合](#集合)
+- [文件](#文件)
 
 
 ---
@@ -18,9 +21,10 @@
     <version>5.7.17</version>
 </dependency>
 ```
-## 1. Bean
+## Bean
 
-### 1.1. bean和bean之间拷贝
+### bean和bean之间拷贝
+#### copyProperties
 ```java
 // 方式1
 CourseBase courseBaseNew = new CourseBase();
@@ -31,7 +35,15 @@ BeanUtils.copyProperties(dto, courseBaseNew);
 CourseBase courseBaseNew2 = BeanUtils.copyProperties(dto, CourseBase.class);
 ```
 `BeanUtils.copyProperties()`，是根据属性名字来匹配的，如果名字不一样的话，那么就得手动get/set。所以设计dto和po之间时，要注意名字。
-### 1.2. bean和map
+
+#### toBean
+
+```java
+LearningLessonVO vo = BeanUtils.toBean(lesson, LearningLessonVO.class)
+```
+
+
+### bean和map
 
 bean→map
 ```java
@@ -53,18 +65,18 @@ Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
 UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);  // fasle表示有错就抛出
 ```
 
-## 2. bean和list
+## bean和list
 
 ```java
 List<User> users = userService.listByIds(ids);
 List<UserVO> userVOs = BeanUtil.copyToList(users, UserVO.class);
 ```
 
-## 3. Json
+## Json
 
 [json#hutool](json.md)
 
-## 4. 字符串
+## 字符串
 
 ```java
 StrUtil.isBlank(s)   
@@ -79,7 +91,7 @@ String idStr = StrUtil.join(",", ids);
 String uuid = UUID.randomUUID().toString(true);   // true表示把`-`去掉
 ```
 
-## 5. Boolean
+## Boolean
 
 ```java
 // 解决flag是null时，返回false
@@ -87,8 +99,16 @@ Boolean flag = null;
 boolean f = BooleanUtil.isTrue(flag);
 ```
 
-## 6. 集合
+## 集合
 
 ```java
 CollUtil.isEmpty(records)     // null，size()==0
+```
+```java
+
+```
+## 文件
+
+```java
+FileUtil.del(file);   // File file
 ```

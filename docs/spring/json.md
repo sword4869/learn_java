@@ -1,3 +1,11 @@
+- [hutool](#hutool)
+- [fastjson](#fastjson)
+- [jackson](#jackson)
+  - [枚举用jackson: @JsonValue](#枚举用jackson-jsonvalue)
+  - [如何让Jackson序列化时，忽视空值字段？](#如何让jackson序列化时忽视空值字段)
+
+
+---
 ## hutool
 ```xml
 <!--hutool-->
@@ -54,3 +62,11 @@ System.out.println(json);   // {"name":"Tom","age":18}
 // 手动反序列化
 User getUser = objectMapper.readValue(json, User.class);
 ```
+
+### 枚举用jackson: @JsonValue
+
+[enumtest](../../codes/javaweb/enumtest/枚举.md#方案3枚举魔法值mp注解json前端得到的可枚举可魔法值)
+
+### 如何让Jackson序列化时，忽视空值字段？
+
+![alt text](../../images/image-329.png)

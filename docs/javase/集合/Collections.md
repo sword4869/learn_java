@@ -1,17 +1,23 @@
+- [快速构建](#快速构建)
+  - [空](#空)
+  - [singleton](#singleton)
+- [其他](#其他)
 
-## 5. Collections工具类
+---
 
 ## 快速构建
-空
+### 空
 ```java
 List<Object> emptyList = Collections.emptyList();
 Set<Object> emptySet = Collections.emptySet();
 Map<Object, Object> emptyMap = Collections.emptyMap();
 ```
-singleton
+### singleton
+
+Set特殊一点
 ```java
-Set<Object> set = Collections.singleton(user);
 List<Object> list = Collections.singletonList(user);
+Set<Object> set = Collections.singleton(user);
 Map<Object, Object> map = Collections.singletonMap(user);
 ```
 

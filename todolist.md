@@ -1,6 +1,3 @@
-- [ ] 为什么设置401状态码？【在spring的登录、在黑马点评项目的总结】
-- [ ] session的登录校验代码，没有设置为401
-- [ ] interceptor的代码跟进
 - [ ] ![alt text](images/image-249.png) 这个final什么意思
 - [ ] 有么有区别大吗？
 
@@ -9,3 +6,14 @@
     ```
 
     涉及批量更新 `rewriteBatchedStatements=true`
+
+---
+0429
+
+- [ ] 标记
+
+    ![alt text](images/image-319.png)
+
+    ![alt text](images/image-320.png)
+
+    `import javax.validation.constraints.Min;`

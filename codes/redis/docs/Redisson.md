@@ -59,7 +59,7 @@ public class  RedissonConfig {
 }
 ```
 
-## 可重入锁
+## 可重入锁 getLock
 
 可重入锁: `RLock lock = redissonClient.getLock("lock:order:1")`
 

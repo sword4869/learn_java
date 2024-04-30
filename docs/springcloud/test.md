@@ -1,3 +1,14 @@
+- [mq](#mq)
+- [拼音自动补全](#拼音自动补全)
+- [数据同步](#数据同步)
+- [es集群](#es集群)
+- [sentinel](#sentinel)
+- [分布式事务 Seata](#分布式事务-seata)
+- [SpringAMQP](#springamqp)
+- [业务](#业务)
+- [feign远程调用、client？](#feign远程调用client)
+
+---
 ## mq
 
 1. 常量类：交换机名、队列名、routingkey
