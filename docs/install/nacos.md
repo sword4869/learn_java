@@ -1,7 +1,7 @@
 - [安装](#安装)
   - [docker](#docker)
     - [nacos + 自带数据库](#nacos--自带数据库)
-    - [nacos + mysql : 还是失败no datasource set](#nacos--mysql--还是失败no-datasource-set)
+    - [nacos + mysql](#nacos--mysql)
   - [Windows安装](#windows安装)
     - [下载安装包](#下载安装包)
     - [解压](#解压)
@@ -35,79 +35,9 @@ docker run -d \
 `http://192.168.150.3:8848` 是404，但起码证明启动成功了，否则连打开都没有。
 
 `http://192.168.150.3:8848/nacos` 是登录界面。
-### nacos + mysql : 还是失败no datasource set
+### nacos + mysql
 
-```bash
-mkdir -p /mydata/nacos/conf/             # 新建nacos的logs目录
-mkdir -p /mydata/nacos/logs/         
-vim /mydata/nacos/conf/application.properties   # 新建并修改nacos的配置文件
-```
-
-修改db相关配置：ip、用户名、密码
-```properties
-server.contextPath=/nacos
-server.servlet.contextPath=/nacos
-server.port=8848
-
-# 核心配置就这5个
-spring.datasource.platform=mysql
-db.num=1
-db.url.0=jdbc:mysql://192.168.150.3:3306/nacos?characterEncoding=utf8mb4&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&serverTimezone=UTC
-serverTimezone=UTC
-db.user=root
-db.password=123
-
-nacos.cmdb.dumpTaskInterval=3600
-nacos.cmdb.eventTaskInterval=10
-nacos.cmdb.labelTaskInterval=300
-nacos.cmdb.loadDataAtStart=false
-
-management.metrics.export.elastic.enabled=false
-
-management.metrics.export.influx.enabled=false
-
-
-server.tomcat.accesslog.enabled=true
-server.tomcat.accesslog.pattern=%h %l %u %t "%r" %s %b %D %{User-Agent}i
-
-
-nacos.security.ignore.urls=/,/**/*.css,/**/*.js,/**/*.html,/**/*.map,/**/*.svg,/**/*.png,/**/*.ico,/console-fe/public/**,/v1/auth/login,/v1/console/health/**,/v1/cs/**,/v1/ns/**,/v1/cmdb/**,/actuator/**,/v1/console/server/**
-nacos.naming.distro.taskDispatchThreadCount=1
-nacos.naming.distro.taskDispatchPeriod=200
-nacos.naming.distro.batchSyncKeyCount=1000
-nacos.naming.distro.initDataRatio=0.9
-nacos.naming.distro.syncRetryDelay=5000
-nacos.naming.data.warmup=true
-nacos.naming.expireInstance=true
-```
-```bash
-docker run -d \
-  --name nacos \
-  --restart=always \
-  -p 8848:8848 \
-  -e MODE=standalone \
-  -e JVM_XMS=512m \
-  -e JVM_XMX=512m \
-  -e MYSQL_SERVICE_HOST=192.168.150.3 \
-  -e MYSQL_SERVICE_USER=root \
-  -e MYSQL_SERVICE_PASSWORD=123 \
-  -e MYSQL_SERVICE_DB_NAME=nacos \
-  -e SPRING_DATASOURCE_PLATFORM=mysql \
-  -v /mydata/nacos/logs:/home/nacos/logs \
-  nacos/nacos-server:v2.1.0-slim
-
-
-docker run -d \
-  --name nacos \
-  --restart=always \
-  -p 8848:8848 \
-  -e MODE=standalone \
-  -e JVM_XMS=512m \
-  -e JVM_XMX=512m \
-  -v /mydata/nacos/conf/application.properties:/home/nacos/conf/application.properties \
-  -v /mydata/nacos/logs:/home/nacos/logs \
-  nacos/nacos-server:v2.1.0-slim
-```
+参见 [docker](docker/docker-compose.yml)
 
 
 ## Windows安装

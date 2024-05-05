@@ -9,28 +9,34 @@
 ## mysql-docker
 
 ```bash
+rm -rf /mydata/mysql
+
 mkdir -p /mydata/mysql/log
 mkdir -p /mydata/mysql/data
-vi /mydata/mysql/conf/my.cnf
-```
-```
+mkdir -p /mydata/mysql/conf/
+
+cat << EOF > /mydata/mysql/conf/my.cnf
 [mysqld]
 skip-name-resolve
 character_set_server=utf8
 server-id=1010
 innodb_fast_shutdown=1
-```
-```bash
+EOF
+
 docker run -d \
     --name mysql \
-    --restart=always
+    --restart=always \
     -p 3306:3306 \
     -v /mydata/mysql/log:/var/log/mysql \
     -v /mydata/mysql/data:/var/lib/mysql \
     -v /mydata/mysql/conf:/etc/mysql/conf.d \
     -e MYSQL_ROOT_PASSWORD=123 \
     mysql:5.7
+
+# -e MYSQL_DATABASE=nacos 初始化时创建库
+
 ```
+验证了，好像不用就可以。
 ```bash
 # 进入数据库，允许远程登录
 [root@localhost mysql]# docker exec -it mysql mysql -uroot -p123

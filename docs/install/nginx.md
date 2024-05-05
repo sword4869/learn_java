@@ -1,5 +1,6 @@
 - [导读](#导读)
 - [conf编写](#conf编写)
+  - [本地html](#本地html)
   - [最常用：公共 listen 和server\_name](#最常用公共-listen-和server_name)
   - [域名解析：多个server](#域名解析多个server)
   - [ngix反向代理、负载均衡](#ngix反向代理负载均衡)
@@ -10,8 +11,6 @@
 - html：静态资源
 
 `nginx -s reload | stop`。可执行文件，windows执行在nginx目录下，linux在nginx的sbin下。
-
-
 
 nginx网关，负载均衡：`http://192.168.101.65:9000`→`http://localhost/video`。
 
@@ -24,7 +23,61 @@ nginx 有2个线程，work和master。
 - 每个server主要有三项，listen端口，server_name域名，location路径。location可以有多个。
 - 当多个server的listen和server_name都相同时，可以写在http中作为公共的。
 
+```nginx
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    server {
+        listen       80;
+        server_name  localhost;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        # redirect server error pages to the static page /50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+```
+
+### 本地html
+
+```bash
+location /test1 {
+    root   html;            
+    index  test.html;
+}
+
+location /test2 {
+    alias   html;
+    index  test.html;
+}
+```
+
+root会拼接传入路径，而alias不会。
+
+`http://192.168.150.3:8800/test1`是找到的是 `nginx/html/test1/test.html`. 
+
+`http://192.168.150.3:8800/test2`是找到的是 `nginx/html/test.html`
+
+
+
 ### 最常用：公共 listen 和server_name
+
+`server_name` 是 `www.org.com`之类的，不是让你填写ip。
+
+浏览器使用ip`http://192.168.150.3:8800/test`, `server_name`不论写什么都能访问到，就保持`localhost`就行。
 ```bash
 http {
     # 公共

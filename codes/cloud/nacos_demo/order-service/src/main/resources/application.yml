@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: orderservice
+  cloud:
+    nacos:
+      server-addr: 192.168.150.3:8848   # nacos服务器地址
+      discovery:
+        cluster-name: HZ # 集群名称，默认是DEFAULT
+    # 由于我们用的版本新而使用spring-cloud-starter-loadbalancer，需要让其开启使用nacos（默认false）。否则，是不分集群位置的轮询
+    loadbalancer:
+      nacos:
+        enabled: true
+
+logging:
+  level:
+    com.com.sword: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS

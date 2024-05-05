@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: orderservice
+  cloud:
+    nacos:
+      server-addr: 192.168.150.3:8848   # nacos服务器地址
+      discovery:
+        cluster-name: HZ
+    # 由于我们用的版本新而使用spring-cloud-starter-loadbalancer，需要让其开启使用nacos（默认false）。否则，是不分集群位置的轮询
+    loadbalancer:
+      nacos:
+        enabled: true
+feign:
+  httpclient:
+    enabled: true # 开启feign对HttpClient的支持
+    max-connections: 200            # 最大的连接数
+    max-connections-per-route: 50   # 每个路径的最大连接数
+
+logging:
+  level:
+    com.com.sword: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS

@@ -1,0 +1,4 @@
+test:
+    name: userservice-dev.yml
+    nameNacos: userservice-dev.yml
+    nacosDev: true

@@ -6,7 +6,6 @@
 - [分布式事务 Seata](#分布式事务-seata)
 - [SpringAMQP](#springamqp)
 - [业务](#业务)
-- [feign远程调用、client？](#feign远程调用client)
 
 ---
 ## mq
@@ -236,8 +235,3 @@ admin模块修改mysql，同步demo模块的es，demo展示给前段。
     为什么增改一样？ es的增改操作一样 + 拿着id去mysql找新的数据。
 
 > 业务隔离
-
-feign远程调用、client？
-----
-
-

@@ -1,0 +1,4 @@
+test:
+  name: application.yml
+  nameLocal: application.yml
+  application: true

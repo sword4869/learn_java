@@ -1,0 +1,4 @@
+test:
+  name: shared.yml
+  nameNacos: shared.yml
+  nacosShared: true

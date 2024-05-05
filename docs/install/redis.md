@@ -17,7 +17,11 @@
 ## 1. 服务端：安装Redis docker
 
 ```bash
-docker run --name redis -p 6379:6379 -d redis redis-server --appendonly yes
+docker run -d \
+    --name redis \ 
+    -p 6379:6379 \ 
+    redis \
+    redis-server --appendonly yes
 ```
 
 

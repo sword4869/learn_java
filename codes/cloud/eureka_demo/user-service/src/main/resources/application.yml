@@ -1,0 +1,16 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: userservice # 服务名称
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+
+logging:
+  level:
+    com.sword: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS

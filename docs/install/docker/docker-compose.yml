@@ -1,0 +1,140 @@
+version: "3.2"
+
+services:
+  es:
+    image: elasticsearch:7.12.1
+    container_name: es
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+    volumes:
+      - "./es/data:/usr/share/elasticsearch/data"
+      - "./es/plugins:/usr/share/elasticsearch/plugins"
+    restart: always
+
+  mq:
+    image: rabbitmq:3.8-management
+    container_name: mq
+    hostname: mq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: mq
+      RABBITMQ_DEFAULT_PASS: 123
+    volumes:
+      - "./mq/plugins:/plugins"
+      - "./mq/data:/var/lib/rabbitmq"
+      - "./mq/conf:/etc/rabbitmq"
+    restart: always
+
+  # 已验证
+  mysql:
+    build:
+      context: .
+      dockerfile: ./mysql-5.7-Dockerfile
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_DATABASE=nacos      # 初始化时创建库
+    volumes:
+      - "./mysql/conf:/etc/mysql/conf.d"
+      - "./mysql/data:/var/lib/mysql"
+      - "./mysql/log:/var/lib/log"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "-h", "localhost", "-uroot", "-p123", "ping"]    # 要加-p123，网上的不加密码自然报错 Access denied for user ‘root‘@‘localhost
+      interval: 5s
+      timeout: 10s
+      retries: 10
+  
+  # 已验证
+  nacos:
+    image: nacos/nacos-server:v2.1.0-slim
+    container_name: nacos
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql  # 使用mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_PORT=3306   # 默认就是这个，不写也行
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=123
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true    # serverTimezone, mysql也是 Asia/Shanghai。有人是UTC，因为它mysql默认时区UTC
+      - JVM_XMS=512m    # 默认1g
+      - JVM_XMX=512m    # 默认1g
+    ports:
+      - "8848:8848"
+    restart: always
+    depends_on:   # 依赖，决定启动顺序
+      mysql:
+        condition: service_healthy
+
+  # 已验证
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/conf/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/html:/etc/nginx/html"
+    restart: always
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "./redis/conf:/usr/local/etc/redis"
+      - "./redis/data:/tmp"
+    restart: always
+    entrypoint: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+  
+  seata:
+    image: seataio/seata-server
+    container_name: seata
+    ports:
+      - "8099:8099"
+      - "7099:7099"
+    environment:
+      SEATA_IP: 192.168.150.101
+    volumes:
+      - "./seata:/seata-server/resources"
+    networks:
+      - new
+    restart: always
+    depends_on:
+      - mysql
+      - nacos
+
+  sentinel:
+    image: bladex/sentinel-dashboard
+    container_name: sentinel
+    environment:
+      - SERVER_PORT=8090
+    ports:
+      - "8090:8090"
+    restart: always
+
+  xxl-job:
+    image: xuxueli/xxl-job-admin:2.3.0
+    container_name: xxljob
+    ports:
+      - "8880:8880"
+    volumes:
+      - "./xxl-job/logs:/data/applogs"
+      - "./xxl-job/application.properties:/config/application.properties"
+    networks:
+      - new
+    restart: always
+    depends_on:
+      - mysql
