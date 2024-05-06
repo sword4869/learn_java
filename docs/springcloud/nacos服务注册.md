@@ -7,6 +7,7 @@
 - [nacos环境隔离](#nacos环境隔离)
 - [nacos创建namespace](#nacos创建namespace)
 - [nacos非临时实例](#nacos非临时实例)
+- [nacos的ip是虚拟网卡](#nacos的ip是虚拟网卡)
 
 ---
 
@@ -199,3 +200,19 @@ spring:
 ```
 
 ![alt text](../../images/image-359.png)
+
+## nacos的ip是虚拟网卡
+
+nacos是在虚拟中起的 `192.168.150.3:8848`。
+
+服务显示的地址是`192.168.150.1`，是vmnet8的虚拟网卡地址。
+
+如果想要修改的话，是
+```yml
+spring:
+  cloud:
+    nacos:
+      server-addr: 192.168.150.3:8848 # nacos注册中心
+      discovery:
+        ip: 192.168.150.1   # 一般不写，nacos会自动检测。
+```

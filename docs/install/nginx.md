@@ -55,7 +55,7 @@ http {
 
 ```bash
 location /test1 {
-    root   html;            
+    root   html;            # 当前nginx的html下
     index  test.html;
 }
 
