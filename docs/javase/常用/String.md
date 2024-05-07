@@ -18,6 +18,8 @@
     - [4.0.2. 重复几次](#402-重复几次)
 - [Q\&A](#qa)
   - [String为什么不可改变？](#string为什么不可改变)
+  - [String 为什么要设计成不可变的](#string-为什么要设计成不可变的)
+  - [StringBuffer和StringBuilder谁是线程安全的](#stringbuffer和stringbuilder谁是线程安全的)
 
 ---
 ## 1. String
@@ -381,3 +383,17 @@ String的底层是字节数组 `byte[]`。
 因为final固定字节数组value，而且private声明是私有，且没有提供setter方法。
 
 ![](../../../images/image_id=412602.jpg)
+
+### String 为什么要设计成不可变的
+
+- 效率：由于String是不可变的，可以在多个地方共享相同的String对象，避免了重复创建开销。
+- 线程安全：多个线程可以同时访问同一个String对象而无需担心数据被修改。
+- 安全性：String在很多安全框架和API中广泛使用，如密码学中的加密操作。如果String是可变的，攻击者可以修改String中的值，对应用程序的安全性造成潜在的风险。 
+- 缓存Hash值：String不变则hashCode不变，可以将String用在哈希表的Key
+- Hash值不变性：当拥有对String对象的引用时，无法更改String对象的内容，这意味着String对象可以被安全地用作哈希表中的Key，而保持哈希值的不变性。
+
+需要频繁地字符串拼接，可以使用StringBuilder或StringBuffer类来提高效率。
+
+### StringBuffer和StringBuilder谁是线程安全的
+
+StringBuffer是线程安全的。
