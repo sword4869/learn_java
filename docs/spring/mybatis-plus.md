@@ -234,7 +234,8 @@ void testQueryWrapper() {
 @Test
 void testUpdateWrapper() {
     UpdateWrapper<User> wrapper = new UpdateWrapper<User>()
-            .setSql("balance = balance - 200") // SET balance = balance - 200
+            .set("status", "1")    // 一般属性更新
+            .setSql("balance = balance - 200") // 自定义sql，SET balance = balance - 200
             .eq("id", 1L);
     // 注意第一个参数可以给null，也就是不填更新字段和数据，而是基于UpdateWrapper中的setSQL来更新
     userMapper.update(null, wrapper);
