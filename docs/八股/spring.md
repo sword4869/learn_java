@@ -23,16 +23,16 @@
 Spring AOP的实现方式有两种：**动态代理和字节码操作**。
 - 动态代理: **JDK动态代理和CGLIB动态代理**
 
-    如果被代理的目标对象实现了 `InvocationHandler` 接口，Spring AOP将使用JDK动态代理来创建代理对象；如果目标对象没有实现接口，Spring AOP将使用CGLIB动态代理来创建代理对象。
+    如果被代理的目标对象实现了 `InvocationHandler` 接口，Spring AOP将使用JDK动态代理来创建代理对象；如果没有实现接口，将使用CGLIB动态代理来创建代理对象。
 
    - JDK 动态代理：通过反射来接收被代理的类，使用 JDK 的 java.lang.reflect.Proxy 类来创建代理对象。
    - CGLIB 动态代理：CGLIB 则是一个代码生成的类库，CGLIB 是基于继承的代理，通过CGLIB库生成目标对象的子类来实现代理
 
 - 字节码操作：AspectJ AOP
     
-    AspectJ是一个独立的AOP框架，Spring可以集成AspectJ。
+    AspectJ 是一个独立的AOP框架，Spring可以集成AspectJ。
     
-    使用AspectJ注解或XML配置来定义切面和切点。通过修改字节码，Spring AOP可以在方法调用前后插入额外的代码。
+    通过使用AspectJ注解或XML配置来修改字节码。
 
 
 
@@ -48,7 +48,7 @@ Spring AOP的实现方式有两种：**动态代理和字节码操作**。
 
 ## Spring AOP概念
 
-在Spring中，AOP通过在运行时动态地将切面织入到目标对象的方法中，从而实现横切关注点的模块化。
+在Spring中，AOP通过将切面织入到目标对象的方法中，从而实现横切关注点的模块化。
 
 当目标对象的方法被调用时，AOP代理会在方法执行前、执行后或抛出异常时执行切面的相关逻辑，实现横切关注点的功能，如日志记录、事务管理等。
 -   **关键概念**：
