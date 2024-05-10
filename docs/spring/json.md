@@ -37,6 +37,7 @@ List<ShopType> shopTypes = JSONUtil.toList(shopTypeJson, ShopType.class);
 ```java
 // 手动序列化
 User user = new User("Tom", 18);
+// 默认null不处理
 String json = JSONObject.toJSONString(user);
 ```
 

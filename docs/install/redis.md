@@ -16,6 +16,7 @@
 
 ## 1. 服务端：安装Redis docker
 
+默认配置启动
 ```bash
 docker run -d \
     --name redis \ 
@@ -24,6 +25,9 @@ docker run -d \
     redis-server --appendonly yes
 ```
 
+带配置启动：
+
+https://www.cnblogs.com/junyi-bk/p/15056343.html
 
 ## 2. 服务端：安装Redis压缩包
 

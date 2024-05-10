@@ -1,30 +1,45 @@
-# Gogs
+- [总结](#总结)
+- [构建： jenkins的 tjxt-dev-build](#构建-jenkins的-tjxt-dev-build)
+  - [拉取源码](#拉取源码)
+  - [打包](#打包)
+
+---
+
+# 总结
+
+分两步走：
+1. 构建：tjxt-dev-build。拉远程代码、打包
+2. 布署：根据构建出来的最新的包，创建对应docker镜像、启动容器。
+
+![alt text](../../images/image-381.png)
+
+此外，gogs远程仓库还设置了**钩子**，来自动构建。
 
 ![alt text](../../images/image-380.png)
-# jenkins的 tjxt-dev-build
+
+
+# 构建： jenkins的 tjxt-dev-build
 
 ![alt text](../../images/image-379.png)
-## 源码管理
+
+## 拉取源码
 
 远程仓库地址和分支
 
 ![alt text](../../images/image-350.png)
 
-## Build
+## 打包
 
 ![alt text](../../images/image-335.png)
 
+
 ```
+# 清理、打包且跳过测试
 clean package -DskipTests=true
 ```
 
-# 总结
+这里的跳过测试，我本地打包是一遇到测试就报错，过不了。原来jenkins能打包是因为这个啊。
 
-![alt text](../../images/image-381.png)
-
-tjxt-dev-build是拉远程代码。
-
-之后具体的微服务任务，会构建docker镜像
 
 ![alt text](../../images/image-383.png)
 
