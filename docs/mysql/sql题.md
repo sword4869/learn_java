@@ -76,9 +76,8 @@ where s.salary =
 ### sql217 t_rank
 ```sql
 --- 1 2 2 3  薪资排序
-
--- rank函数
-select emp_no, salary, dense_rank() over (order by salary desc) as 'rank'
+-- 窗口函数
+select emp_no, salary, dense_rank() over (order by salary desc) as t_rank
 from salaries
 order by salary desc, emp_no asc;
 
@@ -92,6 +91,7 @@ SELECT s1.emp_no, s1.salary,
 ) AS `rank`  -- 去重：计算并列排名
 FROM salaries s1 
 ORDER BY s1.salary DESC, s1.emp_no;
+
 
 -- salary 和 排名， salary作为连接的关键字
 select s.emp_no, s.salary, t3.t_rank
@@ -117,6 +117,11 @@ order by t_rank;
 ```
 发散：
 ```sql
+
+select emp_no, salary, row_number() over (order by salary desc) as t_rank
+from salaries
+order by salary desc, emp_no asc;
+
 --- 1 2 3 4  员工排名
 select t3.emp_no, s.salary, t3.t_rank
 from 

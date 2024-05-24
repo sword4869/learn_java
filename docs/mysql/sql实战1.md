@@ -6,15 +6,6 @@
 
 ---
 
-DDL, 数据定义语言，定义数据库对象结构(数据库，表，字段).
-
-DML，数据操作语言，对表中的数据，增、删、改.
-
-DQL，数据查询语言，对表中的数据，查.
-
-DCL，数据控制语言，用来管理数据库用户、控制数据库的访问权限
-
-
 # DDL 
 
 ```sql
@@ -47,12 +38,15 @@ desc 表名;
 show create table 表名 ;
 ```
 ```sql
-create table tb_user(
-    -- 字段1 字段1类型
-    id int(10) comment '编号',
-    name varchar(50) comment '姓名',
-    age int comment '年龄',
-    gender char(1) comment '性别'
+-- 表名和字段名不需要用引号括起来，加了反而错！！！
+create table tb_user
+(
+    -- 字段名 字段类型
+    id      int(10)        not null   comment '编号',
+    name    varchar(50)    not null   comment '姓名',
+    age     int            not null   comment '年龄',
+    gender  char(1)        not null   comment '性别',
+    primary key (id)
 ) comment '用户表';
 ```
 ```sql

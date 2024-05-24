@@ -9,8 +9,9 @@
 - [limit](#limit)
 - [子查询](#子查询)
 - [聚合函数](#聚合函数)
-- [别名](#别名)
+- [窗口函数](#窗口函数)
 - [函数](#函数)
+- [别名](#别名)
 - [distinct](#distinct)
 
 ---
@@ -84,7 +85,17 @@ select * from emp where idcard like '%X';
 
 在on中是相等。在where中是null。
 
-> 隐式内连接
+
+
+> 连接中的null
+
+`on t1.name = t2.name`中，null不参与比较，则都被过滤，null只有is null/is not null.
+
+inner join 不对null 的记录进行连接（都匹配才行）
+
+left / right /full join 都会对null的记录进行连接 （即使没有匹配）
+
+> 多表笛卡尔: 隐式内连接
 
 ```sql
 -- 显式内连接
@@ -97,15 +108,56 @@ select a.name
 from a, b
 where a.name = b.name and date = '1920';
 ```
+```sql
+-- sql 218
+select t1.*
+from 
+(
+    select de.dept_no, e.emp_no, s.salary
+    from employees e, dept_emp de, salaries s
+    where e.emp_no = de.emp_no and de.emp_no = s.emp_no 
+) t1
+join dept_manager t2 on t1.dept_no = t2.dept_no
+where t1.emp_no != t2.emp_no
 
-> 连接中的null
+SELECT de.dept_no,  e.emp_no, s.salary 
+FROM employees e, dept_emp de, dept_manager dm, salaries s 
+WHERE
+    e.emp_no = de.emp_no 
+    AND de.emp_no = s.emp_no         -- e.emp_no = s.emp_no
+    AND de.dept_no = dm.dept_no 
+    AND s.emp_no != dm.emp_no;        -- s.emp_no，换成 e,de,s都行
+```
+sql219就不建议了，说是笛卡尔的结果$n^4$。
+```sql
+-- sql219
+select t1.emp_no, t2.emp_no,t1.salary, t2.salary
+from
+-- 员工、部门、员工薪资
+(
+    select de.emp_no, de.dept_no, s.salary
+    from dept_emp de join salaries s on de.emp_no = s.emp_no
+) t1
+join
+-- 领导、部门、领导薪资
+(
+    select dm.emp_no, dm.dept_no, s.salary
+    from dept_manager dm join salaries s on dm.emp_no = s.emp_no
+) t2
+-- 部门为连接，员工-部门-领导-员工薪资-领导薪资
+on t1.dept_no = t2.dept_no
+-- 非领导、薪资高
+where t1.emp_no != t2.emp_no and t1.salary > t2.salary;
 
-`on t1.name = t2.name`中，null不参与比较，则都被过滤，null只有is null/is not null.
 
-inner join 不对null 的记录进行连接（都匹配才行）
-
-left / right /full join 都会对null的记录进行连接 （即使没有匹配）
-
+select de.emp_no, dm.emp_no, s1.salary, s2.salary
+from dept_emp de, dept_manager dm, salaries s1, salaries s2
+where de.emp_no = s1.emp_no         -- 员工薪资
+    and dm.emp_no = s2.emp_no       -- 领导薪资
+    and de.dept_no = dm.dept_no     -- 部分为连接
+    and de.emp_no != dm.emp_no      -- 非领导
+    and s1.salary > s2.salary;      -- 高薪资
+```
 
 > mysql实现不支持的 full join 。
 
@@ -191,10 +243,31 @@ select * from emp limit 10,10;
 
 ## 子查询
 
+如果子查询只有一行，那ok
 ```sql
-select * 
-from employees
-where hire_date = (select max(hire_date) from employees);
+-- 用 `= (子查询)`
+select * from table1 where id = (select id from table2);
+```
+
+如果子查询不止一行，那么就会报错 Subquery returns more than 1 row，等于符号不能用了
+
+1）如果是写入重复，去掉重复数据。
+```sql
+select * from table1 where id = (select distinct id from table2);
+```
+2）在子查询条件语句加limit 1 ,找到一个符合条件的就可以了
+```sql
+select * from table1 where id = (select id from table2 limit 1);
+```
+3）在子查询前加any关键字 🚀
+```sql
+select * from table1 where id = any(select id from table2);
+```
+
+4）=换成in
+
+```sql
+select * from table1 where id in (select id from table2);
 ```
 
 ## 聚合函数
@@ -238,79 +311,92 @@ FROM salaries s1
 ORDER BY s1.salary DESC, s1.emp_no;
 ```
 
-## 别名
-
-都可以省略as
+## 窗口函数
+窗口函数写在select子句中
 ```sql
-SELECT 字段1 [ [AS] 字段别名1 ] , 字段2 [ [AS] 字段别名2 1 ] ... 
-FROM 表名 [ [AS] 表别名1 ];
+-- 分组，组内排名
+<窗口函数> over ( [partition by <用于分组的列名>] [order by <用于排序的列名>])
 ```
+`<窗口函数>`: 
 
-> 引号问题
+- 专用窗口函数，比如rank, dense_rank, row_number
+- 聚合函数，如sum. avg, count, max, min
 
-列别名的引号，有没有都行。除非列名和关键字冲突
-```sql
-SELECT emp_no as rank     -- error, rank是关键字
-SELECT emp_no as 'rank'     -- ok
-```
-
-表别名不能有引号。`from employees 'e'` 错。
-
-而比较的字符串，必须有引号 `last_name != 'Mary'`
-
-> 其他
+> 省略分组：当前行及其之上
 
 ```sql
-select d.dept_no dept_no, count(dept_no) sum    -- 前面的别名就可以用于聚合函数中了
-
-select t1.emp_no emp_no, count(t1.emp_no) sum   -- 但如果别名和两表中列名重复了，那么别名就是模糊的，不能使用
-from
-(
-    select emp_no, salary
-    from salaries
-    order by salary desc, emp_no asc
-) t1 
-join
-(
-    select emp_no, salary
-    from salaries
-    order by salary desc, emp_no asc
-) t2
-on t1.salary <= t2.salary 
-group by t1.emp_no;
+select *,
+    -- 并列名次的行，会占用下一名次的位置。
+    rank() over (order by 成绩 desc) as ranking,
+    -- 并列名次的行，不占用下一名次的位置
+    dense_rank() over (order by 成绩 desc) as dese_rank,
+    -- 不考虑并列名次
+    row_number() over (order by 成绩 desc) as row_num
+from 班级表
 ```
+![alt text](../../images/image-394.png)
 
-在GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。
-
-> 一定要给子表起别名
 
 ```sql
--- 错误
-select emp_no emp_no, count(emp_no) sum
-from
-(
-    select emp_no, salary
-    from salaries
-    order by salary desc, emp_no asc
-) 
-group by emp_no;
-
--- 正确
-select t1.emp_no emp_no, count(t1.emp_no) sum
-from
-(
-    select emp_no, salary
-    from salaries
-    order by salary desc, emp_no asc
-) t1     -- 起别名
-group by t1.emp_no;
+select *,
+    sum(成绩) over (order by 学号) as current_sum,
+    avg(成绩) over (order by 学号) as current_avg,
+    count(成绩) over (order by 学号) as current_count,
+    max(成绩) over (order by 学号) as current_max,
+    min(成绩) over (order by 学号) as current_min
+from 班级表
 ```
 
+![alt text](../../images/image-395.png)
+
+> 例子：sql217
+
+![alt text](../../images/image-396.png)
+
+```sql
+-- 不分组、不排序：整张表的和
+select emp_no, salary, sum(emp_no) over () as t_rank
+from salaries
+```
+![alt text](../../images/image-398.png)
+```sql
+-- 不分组，72527有3个10001 10002 10004：看的是所有的72527
+select emp_no, salary, sum(emp_no) over (order by salary desc) as t_rank
+from salaries
+```
+![alt text](../../images/image-397.png)
+
+```sql
+-- 72527组有两个10002 10004
+select emp_no, salary, sum(emp_no) over (partition by salary) as t_rank
+from salaries
+```
+![alt text](../../images/image-399.png)
+
+```sql
+select emp_no, salary, sum(emp_no) over (partition by salary order by salary desc) as t_rank
+from salaries
+```
+![alt text](../../images/image-400.png)
+
+> 可以多列
+
+```sql
+-- SQL220
+select distinct de.dept_no, d.dept_name, t.title, count(1) over (partition by dept_no, title)
+from dept_emp de, titles t, departments d
+where de.emp_no = t.emp_no and de.dept_no = d.dept_no
+order by dept_no, title
+```
+
+> 与group的区别：不会减少原表中的行数
+
+![alt text](../../images/image-393.png)
 
 ## 函数
 字符串函数
 ```sql
-select concat('Hello' , ' MySQL');
+select concat('Hello', ' ', ' MySQL');
 select lower('Hello');
 select upper('Hello');
 select lpad('13', 5, '0');    -- 统一为5位数，目前不足5位数的全部在前面补0
@@ -364,6 +450,93 @@ from emp;
 (case when math >= 85 then '优秀' when math >=60 then '及格' else '不及格' end )
 '数学',
 ```
+
+## 别名
+
+都可以省略as
+```sql
+SELECT 字段1 [ [AS] 字段别名1 ] , 字段2 [ [AS] 字段别名2 1 ] ... 
+FROM 表名 [ [AS] 表别名1 ];
+```
+
+> 多表引用名
+
+如果唯一，那么不用指定表名；不唯一，则需要指定表名。
+
+嫌指定表明麻烦，可以使用别名。
+
+> 引号问题
+
+列别名的引号，有没有都行。除非列名和关键字冲突
+```sql
+SELECT emp_no as rank     -- error, rank是关键字
+SELECT emp_no as 'rank'     -- ok
+```
+
+表别名不能有引号。`from employees 'e'` 错。
+
+而比较的字符串，必须有引号 `last_name != 'Mary'`
+
+> 在GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。但注意别名模糊问题
+
+```sql
+select d.dept_no dept_no, count(dept_no) sum    -- 前面的别名就可以用于聚合函数中了
+
+select t1.emp_no emp_no, count(t1.emp_no) sum   -- error: 但如果别名和两表中列名重复了，那么别名就是模糊的，不能使用
+from
+(
+    select emp_no, salary
+    from salaries
+    order by salary desc, emp_no asc
+) t1 
+join
+(
+    select emp_no, salary
+    from salaries
+    order by salary desc, emp_no asc
+) t2
+on t1.salary <= t2.salary 
+group by emp_no;        -- 应该是t1.emp_no
+```
+Select后执行的语句（union order by）是根据select选择的列名，不存在模糊问题。
+```sql
+select distinct de.dept_no, d.dept_name, t.title, de.emp_no, count(1) over (partition by dept_no, title)
+from dept_emp de, titles t, departments d
+where de.emp_no = t.emp_no and de.dept_no = d.dept_no
+order by dept_no, title, emp_no     -- 这里的dept_no，emp_no
+
+
+-- error：除非 de.dept_no, d.dept_no 又引起模糊了
+select distinct de.dept_no, d.dept_no, d.dept_name, t.title, count(1) over (partition by dept_no, title)
+from dept_emp de, titles t, departments d
+where de.emp_no = t.emp_no and de.dept_no = d.dept_no
+order by dept_no, title
+```
+
+> 一定要给子表起别名
+
+```sql
+-- 错误
+select emp_no, count(emp_no)
+from
+(
+    select emp_no, salary
+    from salaries
+    order by salary desc, emp_no asc
+) 
+group by emp_no;
+
+-- 正确
+select t1.emp_no, count(t1.emp_no)
+from
+(
+    select emp_no, salary
+    from salaries
+    order by salary desc, emp_no asc
+) t1     -- 起别名
+group by t1.emp_no;
+```
+
 
 ## distinct
 

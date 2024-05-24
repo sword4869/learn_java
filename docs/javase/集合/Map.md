@@ -56,7 +56,9 @@ System.out.println(size);
 // 打印集合
 System.out.println(map);
 
-// get会返回null，还得if(null)再处理。
+/*
+ get会返回null，还得if(null)再处理。
+*/
 System.out.println(map.get("郭靖"));    // 黄蓉
 System.out.println(map.get("张无忌"));  // null
 System.out.println(map.getOrDefault("张", "三"));  // 三
@@ -67,7 +69,7 @@ Integer v = map.get("a");
 if(v == null)   map.put("a", 1);
 */
 // 创建或更新一个键值对
-Integer i1 = map.compute("a", (k,v)-> v == null ? 1 : v + 1);    
+Integer i1 = map.compute("a", (k, v) -> v == null ? 1 : v + 1);    
 Integer i2 = map.compute("a", (k, v) -> v == null ? 1 : v + 1);
 System.out.println(i1 + " " + i2 + " " + map);    // 1 2 {a=2}
 

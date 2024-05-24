@@ -1,5 +1,4 @@
 - [1. Object](#1-object)
-- [为什么说是几乎所有对象实例都存在于堆中呢？](#为什么说是几乎所有对象实例都存在于堆中呢)
   - [1.1. equals()](#11-equals)
   - [1.2. toString()](#12-tostring)
   - [1.3. clone()](#13-clone)
@@ -20,11 +19,7 @@
    - `protected Object clone()`
    - `protected void finalize()`: JDK9被弃用
 
-## 为什么说是几乎所有对象实例都存在于堆中呢？ 
-
-这是因为 HotSpot 虚拟机引入了 JIT 优化之后，会对对象进行逃逸分析。
-
-如果发现某一个对象并没有逃逸到方法外部，那么就可能通过标量替换来实现栈上分配，而避免堆上分配内存。
+![](../../../images/image_id=413197.jpg)
 
 ### 1.1. equals()
 
@@ -44,7 +39,109 @@ IDEA自动重写
 
 ### 1.3. clone()
 
-浅克隆
+![](../../../images/image_id=413187.jpg)
+
+![](../../../images/image_id=412989.jpg)
+
+![](../../../images/image_id=412990.jpg)
+
+![](../../../images/image_id=412992.jpg)
+
+![](../../../images/image_id=413188.jpg)
+
+![](../../../images/image_id=413189.jpg)
+
+![](../../../images/image_id=413192.jpg)
+
+![](../../../images/image_id=413193.jpg)
+
+![](../../../images/image_id=413196.jpg)
+
+
+
+```java
+// 证明浅克隆
+public class Mytest {
+    public static void main(String[] args) {
+        Address address = new Address();
+        address.setName("杭州");
+
+        Person person1 = new Person();
+        person1.setId(1);
+        person1.setGender("男");
+        person1.setAddress(address);
+
+        Person person2 = person1.clone();
+        // 1. 克隆的对象是一个新对象
+        System.out.println(person1 == person2); // false
+        // 2. 克隆的基本类型字段是值相等的
+        System.out.println(person1.getId() == person2.getId()); // true
+        // 3. 克隆的引用类型字段是同一个对象
+        // 用引用对象的引用字段的内容、地址的来验证
+        System.out.println(person1.getAddress() == person2.getAddress()); // true
+        System.out.println(person1.getAddress().getName() == person2.getAddress().getName()); // true
+        address.setName("北京");
+        System.out.println(person2.getAddress().getName()); // 北京
+        System.out.println(person1.getAddress().getName()); // 北京
+        System.out.println(person1.getAddress().getName() == person2.getAddress().getName()); // true
+
+        System.out.println(person1.getGender() == person2.getGender()); // true
+        person1.setGender("女");
+        System.out.println(person1.getGender() == person2.getGender()); // false
+    }
+}
+ class Address{
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+ class Person implements Cloneable {
+    private int id;
+    private String gender;
+    private Address address;
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender){
+        this.gender = gender;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    @Override
+    public Person clone() {
+        try {
+            Person person = (Person) super.clone();
+            return person;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+}
+```
 
 ## 2. Objects
 
