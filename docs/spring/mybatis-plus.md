@@ -374,7 +374,7 @@ select * from address where deleted = 0
 [queryUsersPage, queryUsersPageByCondition, queryUsersByPH](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
 ### mp
 
-定义[config类](../../codes/javaweb/crud/src/main/java/com/sword/crud/config/MybatisPlusConfig.java)，导入mp插件。
+定义 [config类](../../codes/javaweb/crud/src/main/java/com/sword/crud/config/MybatisPlusConfig.java) 去导入mp分页插件。
 
 1. 前端的请求参数：[分页参数的父类](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/PageQuery.java)和[继承它的业务参数](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/UserConditionQuery.java)。
     
@@ -399,16 +399,16 @@ page.addOrder(new OrderItem("balance", false));
 最简单的写法（不排序）
 ```java
 // 如果无筛选条件，调用IService的`page(page)`方法。方法内部就是selectPage
-Page<Blog> page1 = blogService.page(new Page<>(current, PAGE_SIZE));
+Page<Blog> page = blogService.page(new Page<>(current, PAGE_SIZE));
 
 // 如果有筛选条件，设置wrapper对象，调用IService的`page(page, wrapper)`方法。或者4钟wrapper方式。
-Page<Blog> page2 = blogService.query()
+Page<Blog> page = blogService.query()
         .eq("user_id", user.getId())
         .page(new Page<>(current, PAGE_SIZE));
 
-long total = p.getTotal();  // 总条数
-long pages = p.getPages();  // 总条数可以划分为几页
-List<Blog> blogs = p.getRecords();  // 查询结果
+long total = page.getTotal();  // 总条数
+long pages = page.getPages();  // 总条数可以划分为几页
+List<Blog> blogs = page.getRecords();  // 查询结果
 ```
 
 两种排序方式

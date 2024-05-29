@@ -48,7 +48,6 @@ ctrl+alt+t: try-catch捕获
 
 ## 插件
 
-![alt text](../../images/image-74.png)
 
 MyBatisX: mybatis的sql之xml配置
 

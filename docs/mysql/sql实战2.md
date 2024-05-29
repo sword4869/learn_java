@@ -611,6 +611,9 @@ SELECT * FROM d1, d2;
 
 ### 递归 with recursive
 
+标志字段：id和parent_id
+
+A到B：都是`父id = 子的parent_id`，区别是父或者子来作为递归临时表。
 ```sql
 -- 父到子
 with recursive 临时表名(自定义列名,自定义列名) as
@@ -618,19 +621,19 @@ with recursive 临时表名(自定义列名,自定义列名) as
     -- 父
     select 自定义列名,自定义列名 from e where parent_id is null
     union all
-    -- on 子的parent_id = 父id
+    -- on 父id = 子的parent_id
     select 自定义列名,自定义列名
-    from e join 临时表名 on e.parent_id = 临时表名.id
+    from e join 临时表名 on 临时表名.id = e.parent_id
 ) 
 select * from 临时表名;
 
 -- 子到父
 with recursive 临时表名(自定义列名,自定义列名) as
 (
-    -- 父
+    -- 某个子
     select 自定义列名,自定义列名 from e where id = 123
     union all
-    -- on 子id = 父的parent_id
+    -- on 父id = 子的parent_id
     select 自定义列名,自定义列名
     from e join 临时表名 on e.id = 临时表名.parent_id
 ) 
@@ -744,13 +747,13 @@ INSERT INTO employees VALUES(29, 'Pedro', 198),(72, 'Pierre', 29),(123, 'Adil', 
 ```sql
 WITH RECURSIVE employee_paths(id, name, manager_id, PATH, level) AS
 (
-    -- 父id
+    -- 父
     SELECT id,name,manager_id, CAST(id AS CHAR(200)), 1 LEVEL
     FROM employees WHERE manager_id IS NULL
     UNION all
     SELECT e.*, CONCAT(ep.path, '->', e.id), ep.level + 1
-    -- on 子的parentId = 父的id
-    FROM employees e join employee_paths ep ON e.manager_id = ep.id
+    -- on 父的id = 子的parentId
+    FROM employees e join employee_paths ep ON ep.id = e.manager_id
 )
 SELECT * FROM employee_paths;
 +------+---------+------------+--------------------+-------+
@@ -814,9 +817,9 @@ WITH RECURSIVE employee_paths(id, name, manager_id, PATH) AS
 	SELECT id,name,manager_id, CAST(id AS CHAR(200))
 	FROM employees WHERE id = 72
 	UNION all
-    -- on 子的id = 父的parent_id
+    -- on 子的parent_id = 父的id
 	SELECT e.*, CONCAT(ep.path, '<-', e.id)
-	FROM employees e join employee_paths ep ON e.id = ep.manager_id
+	FROM employees e join employee_paths ep ON ep.manager_id = e.id
 )
 SELECT * FROM employee_paths ORDER BY path;
 +------+---------+------------+------------------+
@@ -836,4 +839,4 @@ SELECT * FROM employee_paths ORDER BY path;
 
 > 递归限制
 
-`cte_max_recursion_depth` 递归次数，`max_execution_time` 递归执行时间.
+`cte_max_recursion_depth` 递归次数1000，`max_execution_time` 递归执行时间.

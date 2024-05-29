@@ -4,13 +4,25 @@
 ---
 ## 跨域问题
 
+> 介绍
+
+CORS（cross origin resource share 跨域资源共享）
+
+跨域条件：协议（http和https）、主机、端口。只要一个不满足就触发跨域。
+
 跨域问题：**浏览器**禁止请求的发起者与服务端发生跨域**ajax**请求，请求**被浏览器拦截**的问题。
 
 8800 Browser-----ajax----->Server 10010
 
-条件：域名不同、或端口不同、或http和https协议不同
+> 三种解决方法：jsonp、响应头、nginx
 
-解决：CORS
+jsonp: 通过`<script>`标签。
+
+响应头：服务器在响应中添加头 `Access-Control-Allow-Origin: *`。
+
+![alt text](../../images/image-404.png)
+
+nginx代理：nginx服务端和后端服务端之间没有跨域问题。
 
 > 为什么后端的远程调用 RestTemplate, feign 不会遇到跨域问题?
 

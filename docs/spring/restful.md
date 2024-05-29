@@ -12,7 +12,6 @@ http://localhost:8080/users    PUT：修改用户
 http://localhost:8080/users/1  DELETE：删除id为1的用户
 ```
 
-
 ## 开发规范-统一响应结果
 
 前后端工程在进行交互时，使用统一响应结果 Result。
