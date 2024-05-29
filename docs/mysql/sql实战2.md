@@ -13,6 +13,8 @@
 - [函数](#函数)
 - [别名](#别名)
 - [distinct](#distinct)
+- [with](#with)
+  - [递归 with recursive](#递归-with-recursive)
 
 ---
 
@@ -45,15 +47,16 @@ union
 order by <字段名>
 limit <限制行数>
 ```
-1. SELECT语句总是写在最前面，但在大部分语句之后才执行。所以在SQL语句中，我们不能在WHERE、GROUP BY、 HAVING语句中使用在 SELECT 中设定的别名
 
-但是MYSQL有个特性，在GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。这不是因为MYSQL中会提前执行SELECT，而是因为在GROUP BY这一步返回了游标，大家了解一下就好
+(1) 在SQL语句中，我们不能在WHERE、GROUP BY、 HAVING语句中使用在 SELECT 中设定的别名。因为SELECT在之后才执行。
 
-2. FROM才是SQL语句执行的第一步，并非SELECT。数据库在执行SQL语句的第一步是将数据从硬盘加载到数据缓冲区中，以便对这些数据进行操作。
+但是MYSQL有个特性，在GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。
 
-3. 所有的筛选完成后，才 select 选择结果表中的列。
+(2) FROM才是SQL语句执行的第一步，并非SELECT。数据库在执行SQL语句的第一步是将数据从硬盘加载到数据缓冲区中，以便对这些数据进行操作。
 
-3. 无论是书写顺序，还是执行顺序，UNION 都是排在 ORDER BY 前面的。SQL语句会将所有UNION 段合并后，再进行排序。
+(3) 所有的筛选完成后，才 select 选择结果表中的列。
+
+(4) 无论是书写顺序，还是执行顺序，UNION 都是排在 ORDER BY 前面的。SQL语句会将所有UNION 段合并后，再进行排序。
 ## select
 
 
@@ -403,6 +406,8 @@ select lpad('13', 5, '0');    -- 统一为5位数，目前不足5位数的全部
 select rpad('13', 5, '-');  
 select trim(' Hello MySQL ');
 select substring('Hello MySQL',1,3);  -- 从第1个字符开始，截取3个字符。结果是Hel
+-- cast 函数，负责类型转化。这里是转换数值型为字符串，好让concat拼接。
+select concat('Prices: ', cast(buyprice AS CHAR))   
 ```
 数值函数
 
@@ -561,3 +566,274 @@ from salaries s1 join salaries s2 on s1.salary <= s2.salary        -- 自连接�
 group by s1.salary                     -- 当s1<=s2链接并以s1.salary分组时一个s1会对应多个s2
 having count(distinct s2.salary) = 2;   -- (去重之后的数量就是对应的名次)
 ```
+
+## with
+
+> with语句：CTE(common table expression) 通用表表达式。
+>
+> 分为非递归式 CTE 和 递归式CTE。
+
+with可以大大减少临时表的数量
+
+```sql
+-- 格式：
+with 临时表名(自定义列名) as (查询语句) select * from 临时表名;
+
+-- 例子1：不用with写法 和 用with抽取临时表的写法。
+select * from (select 1) d1;
+
+WITH d1(id) AS (SELECT 1)
+SELECT * FROM d1;
++----+
+| id |
++----+
+|  1 |
++----+
+
+-- 例子2：自定义列名可以省略
+WITH d1 AS (SELECT 1) 
+SELECT * FROM d1;
++---+
+| 1 |
++---+
+| 1 |
++---+
+
+-- 例子3：可以定义多个临时表，并且临时表中可以使用已经定义的临时表
+WITH d1(id) AS (SELECT 1), d2(id) AS (SELECT id+1 FROM d1)
+SELECT * FROM d1, d2;
++----+----+
+| id | id |
++----+----+
+|  1 |  2 |
++----+----+
+```
+
+### 递归 with recursive
+
+```sql
+-- 父到子
+with recursive 临时表名(自定义列名,自定义列名) as
+(
+    -- 父
+    select 自定义列名,自定义列名 from e where parent_id is null
+    union all
+    -- on 子的parent_id = 父id
+    select 自定义列名,自定义列名
+    from e join 临时表名 on e.parent_id = 临时表名.id
+) 
+select * from 临时表名;
+
+-- 子到父
+with recursive 临时表名(自定义列名,自定义列名) as
+(
+    -- 父
+    select 自定义列名,自定义列名 from e where id = 123
+    union all
+    -- on 子id = 父的parent_id
+    select 自定义列名,自定义列名
+    from e join 临时表名 on e.id = 临时表名.parent_id
+) 
+select * from 临时表名;
+```
+
+<details>
+<summary>递归解析</summary>
+
+> 例子1
+
+```sql
+WITH RECURSIVE a(n) AS (
+    SELECT 1                        -- 递归初始值，叫做定位点
+)
+SELECT * FROM a;
++---+
+| n |
++---+
+| 1 |
++---+
+
+WITH RECURSIVE a(n) AS (            -- 多个语句union
+    SELECT 1
+    UNION all
+    SELECT 2
+)
+SELECT * FROM a;
++---+
+| n |
++---+
+| 1 |
+| 2 |
++---+
+
+WITH RECURSIVE a(n) AS (
+    SELECT 1                         -- 初始值，也就是说，a表中现在列n是1.
+    UNION all
+    SELECT n+1 FROM a WHERE n < 1    -- n 是小于1的，不符合条件
+)
+SELECT * FROM a;
+
++------+
+| n    |
++------+
+|    1 |
++------+
+
+WITH RECURSIVE a(n) AS (
+    SELECT 1
+    UNION all
+    SELECT n+1 FROM a WHERE n < 2    -- n=1<2，满足，递归一次
+)
+SELECT * FROM a;
+
++------+
+| n    |
++------+
+|    1 |
+|    2 |
++------+
+```
+
+> 例子2：斐波那契数列
+
+```sql
+WITH RECURSIVE f(a,b) AS (
+    SELECT 0, 1
+    UNION all
+    SELECT b, a+b FROM f WHERE b < 10
+)
+SELECT a FROM f;
+
++------+
+| a    |
++------+
+|    0 |
+|    1 |
+|    1 |
+|    2 |
+|    3 |
+|    5 |
+|    8 |
++------+
+```
+
+> 例子3：由父及子
+
+```sql
+CREATE TABLE employees(
+    id INT NOT NULL,
+    NAME CHAR(10) NOT null,
+    manager_id INT 
+);
+
+INSERT INTO employees VALUES(29, 'Pedro', 198),(72, 'Pierre', 29),(123, 'Adil', 692),(198, 'John', 333), (333, 'Yasmina', NULL), (692, 'Tarek', 333), (4610, 'Sarah', 29);
+
++------+---------+------------+
+| id   | name    | manager_id |
++------+---------+------------+
+|   29 | Pedro   |        198 |
+|   72 | Pierre  |         29 |
+|  123 | Adil    |        692 |
+|  198 | John    |        333 |
+|  333 | Yasmina |       NULL |
+|  692 | Tarek   |        333 |
+| 4610 | Sarah   |         29 |
++------+---------+------------+
+```
+
+```sql
+WITH RECURSIVE employee_paths(id, name, manager_id, PATH, level) AS
+(
+    -- 父id
+    SELECT id,name,manager_id, CAST(id AS CHAR(200)), 1 LEVEL
+    FROM employees WHERE manager_id IS NULL
+    UNION all
+    SELECT e.*, CONCAT(ep.path, '->', e.id), ep.level + 1
+    -- on 子的parentId = 父的id
+    FROM employees e join employee_paths ep ON e.manager_id = ep.id
+)
+SELECT * FROM employee_paths;
++------+---------+------------+--------------------+-------+
+| id   | name    | manager_id | PATH               | level |
++------+---------+------------+--------------------+-------+
+|  333 | Yasmina |       NULL | 333                |     1 |
+|  198 | John    |        333 | 333->198           |     2 |
+|  692 | Tarek   |        333 | 333->692           |     2 |
+|   29 | Pedro   |        198 | 333->198->29       |     3 |
+|  123 | Adil    |        692 | 333->692->123      |     3 |
+|   72 | Pierre  |         29 | 333->198->29->72   |     4 |
+| 4610 | Sarah   |         29 | 333->198->29->4610 |     4 |
++------+---------+------------+--------------------+-------+
+
+-- PS：不包含自己就是 select * from employee_paths where manager_id is not null;
+```
+理解
+```sql
+-- 递归初始值
+WITH RECURSIVE employee_paths(id, name, manager_id, path) AS
+(
+    SELECT id,name,manager_id, CAST(id AS CHAR(200))
+    FROM employees WHERE manager_id IS NULL
+)
+SELECT * FROM employee_paths;
++-----+---------+------------+------+
+| id  | name    | manager_id | path |
++-----+---------+------------+------+
+| 333 | Yasmina |       NULL | 333  |
++-----+---------+------------+------+
+
+
+-- 使用递归的level
+WITH RECURSIVE employee_paths(id, name, manager_id, PATH, level) AS
+(
+    SELECT id,name,manager_id, CAST(id AS CHAR(200)), 1 LEVEL
+    FROM employees WHERE manager_id IS NULL
+    UNION all
+    SELECT e.*, CONCAT(ep.path, '->', e.id), ep.level + 1
+    FROM employees e join employee_paths ep ON e.manager_id = ep.id 
+    WHERE ep.level < 2      -- 控制级别
+)
+SELECT * FROM employee_paths;
++------+---------+------------+----------+-------+
+| id   | name    | manager_id | PATH     | level |
++------+---------+------------+----------+-------+
+|  333 | Yasmina |       NULL | 333      |     1 |
+|  198 | John    |        333 | 333->198 |     2 |
+|  692 | Tarek   |        333 | 333->692 |     2 |
++------+---------+------------+----------+-------+
+```
+![alt text](../../images/image-129.png)
+
+
+> 例子4：由子及父
+
+```sql
+WITH RECURSIVE employee_paths(id, name, manager_id, PATH) AS
+(
+    -- 子
+	SELECT id,name,manager_id, CAST(id AS CHAR(200))
+	FROM employees WHERE id = 72
+	UNION all
+    -- on 子的id = 父的parent_id
+	SELECT e.*, CONCAT(ep.path, '<-', e.id)
+	FROM employees e join employee_paths ep ON e.id = ep.manager_id
+)
+SELECT * FROM employee_paths ORDER BY path;
++------+---------+------------+------------------+
+| id   | name    | manager_id | PATH             |
++------+---------+------------+------------------+
+|   72 | Pierre  |         29 | 72               |
+|   29 | Pedro   |        198 | 72<-29           |
+|  198 | John    |        333 | 72<-29<-198      |
+|  333 | Yasmina |       NULL | 72<-29<-198<-333 |
++------+---------+------------+------------------+
+
+-- PS：不包含自己就是 select * from employee_paths where manager_id is not null;
+```
+
+</details>
+
+
+> 递归限制
+
+`cte_max_recursion_depth` 递归次数，`max_execution_time` 递归执行时间.

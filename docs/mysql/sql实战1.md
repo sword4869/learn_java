@@ -1,7 +1,11 @@
 - [DDL](#ddl)
   - [数据库](#数据库)
   - [表](#表)
+- [索引](#索引)
 - [DML](#dml)
+  - [insert](#insert)
+  - [update](#update)
+  - [delete](#delete)
 - [DCL](#dcl)
 
 ---
@@ -42,19 +46,30 @@ show create table 表名 ;
 create table tb_user
 (
     -- 字段名 字段类型
-    id      int(10)        not null   comment '编号',
+    id      int(10)        not null   comment '编号' primary key,
     name    varchar(50)    not null   comment '姓名',
     age     int            not null   comment '年龄',
-    gender  char(1)        not null   comment '性别',
-    primary key (id)
+    gender  char(1)        not null   comment '性别'
 ) comment '用户表';
+
+
+create table xttblog
+(
+    id int not null,
+    k int,
+    primary key (id),       -- 主键 primary key
+    index (k)               -- 索引 index (column_name)
+) engine = InnoDB;
 ```
 ```sql
 -- 修改表名 rename to
 alter table 表名 rename to 新表名;
 
 -- 添加字段 add
-alter table 表名 add 字段名 类型 (长度) [ COMMENT 1 注释 ] [ 约束 ];
+-- 默认最后一列增加列：alter table 表名 add column ……
+-- 指定位置增加列：alter table 表名 add column …… after 列名
+-- 在第一列增加列：alter table 表名 add column …… first
+alter table actor add column create_date datetime not null default '2020-10-01 00:00:00';
 
 -- 修改数据类型 modify
 alter table 表名 modify 字段名 新数据类型 (长度);
@@ -74,8 +89,45 @@ DROP TABLE [ IF EXISTS ] 表名;
 TRUNCATE TABLE 表名;
 ```
 
+# 索引
+```sql
+-- 查看
+show index from employees;
+```
+```sql
+-- 一次可以创建多个索引
+alter table actor add primary key (id),
+                  add index idx_lastname(last_name),
+                  add unique index uniq_idx_firstname(first_name), 
+                  add fulltext index fulltext_idx_text(text)
+                  add spatial index spatial_idx_text(geo);
+
+-- 但不能创建 primary key
+create [unique | fulltext | spatial] index idx_name on table_name(col_list);
+```
+
+```sql
+-- 删除
+alter table table_name drop index index_name;
+alter table table_name drop primary key;
+
+drop index index_name on table_name;
+```
+
+```sql
+-- 强制使用索引，from 表后面 force index(idx_name)。
+select * from user force index(idx_name) where age = 18;
+
+-- 例子：使用不同的索引而导致查询时间不同
+-- 没有指定索引：Mysql选择使用userid这个索引，而userid这个查询只有下界，没有上界，从而需要查询的数据量就很大了，查询时间太长了
+SELECT * FROM `pay` WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' AND updatetime <= 'xxxx-xx-xx xx:xx:xx' GROUP BY userid
+-- 强制MySQL使用updatetime这个索引，范围小，查询快。
+SELECT * FROM `pay` FORCE INDEX(updatetime) WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' AND updatetime <= 'xxxx-xx-xx xx:xx:xx' GROUP BY userid
+```
+
 # DML
 
+## insert
 ```sql
 -- 指定字段添加数据
 INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...);
@@ -85,7 +137,23 @@ INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...), (值1
 INSERT INTO 表名 VALUES (值1, 值2, ...);
 INSERT INTO 表名 VALUES (值1, 值2, ...), (值1, 值2, ...);
 ```
+mysql中常用的三种插入数据的语句:
+- `insert into`表示插入数据. 
+  
+    数据库会检查主键，如果出现重复会报错；
+- `insert ignore`表示只插入不存在的数据.
+    
+    表示如果中已经存在主键相同的记录，则忽略当前新数据，否则插入；
+- `replace into`表示插入替换数据
+  
+    需求表中有PrimaryKey 或者unique索引.
+    
+    如果数据库已经存在数据，则用新数据替换，如果没有数据效果则和insert into一样；
+```sql
+insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
+```
 
+## update
 ```sql
 UPDATE 表名 SET 字段名1 = 值1 , 字段名2 = 值2 , .... 1 [ WHERE 条件 ] ;
 -- 指定行
@@ -93,7 +161,7 @@ update employee set name = 'itheima' where id = 1;
 -- 所有行
 update employee set name = 'itheima';
 ```
-
+## delete
 ```sql
 DELETE FROM 表名 [ WHERE 条件 ] ;
 delete from employee 1 where gender = '女';

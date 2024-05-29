@@ -320,8 +320,9 @@ List<UserDTO> userDTOS = userService.query()
 
 不是在mybatisplus上搞（fill什么的），而是在数据库DDL上动手。
 
-```java
+```sql
 create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ```
 ![alt text](../../images/image-250.png)
 
