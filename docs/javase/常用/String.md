@@ -144,6 +144,11 @@ System.out.println("sdf".substring(3)); // 允许 beginIndex 是字符串长度�
 ### 找索引
 
 ```java
+boolean f = "abc".contains("a");
+boolean f2 = "abc".indexOf("a") >= 0;
+```
+
+```java
 // indexOf: 找到第一个匹配的字符或字符串的位置，找不到返回-1
 // lastIndexOf: 找到最后一个匹配的字符或字符串的位置，找不到返回-1
 String a = "abcdabc";
