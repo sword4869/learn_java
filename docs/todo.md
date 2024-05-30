@@ -267,4 +267,4 @@ cookie被拿到以后，通常可以换一个机器访问。
 ----
 
 
-- [ ] `#{id}` `parameterType="string"`
+- [ ] `#{id}` `parameterType="string"`, `parameterType="long"` 怎么是小写？

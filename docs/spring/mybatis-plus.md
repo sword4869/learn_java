@@ -14,6 +14,7 @@
 - [page](#page)
   - [mp](#mp)
   - [pagehelper依赖](#pagehelper依赖)
+- [动态sql查询](#动态sql查询)
 - [例子](#例子)
 
 
@@ -452,6 +453,51 @@ Page<Blog> page = blogService.query()
     不管mybatis-config.xml之类的东西，直接能用
 
 2. 遗留问题：随便翻翻，没看到有排序的的，以后再说。
+
+## 动态sql查询
+
+`${ew.customSqlSegment}` 是MyBatis Plus提供的动态SQL语句拼接功能。
+
+可以通过Wrapper对象来构建查询条件。Wrapper对象可以通过链式调用的方式动态添加查询条件，包括等于、大于、小于等各种条件。
+
+方式一：注解
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+@Select("SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id ${ew.customSqlSegment}")
+List<User> querySelfDefined(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+```
+方式二：xml
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined2(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+
+// xml中
+<select id="querySelfDefined2" resultType="com.sword.crud.domain.po.User">
+    SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id  ${ew.customSqlSegment}
+</select>
+```
 
 ## 例子
 

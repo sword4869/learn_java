@@ -79,14 +79,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public List<UserVO> querySelfDefined() {
-        QueryWrapper<User> q1 = new QueryWrapper<>();
-        q1.eq("username", "北京");
-
-
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("a.city", "北京")
                 .in("u.id", List.of(1L, 2L, 4L));
-        List<User> users = userMapper.querySelfDefined(wrapper);
+        List<User> users = userMapper.querySelfDefined(wrapper);        // 方式一：注解
+        // List<User> users = userMapper.querySelfDefined2(wrapper);       // 方式二：xml
         return BeanUtil.copyToList(users, UserVO.class);
     }
 

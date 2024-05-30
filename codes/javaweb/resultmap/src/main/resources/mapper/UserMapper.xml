@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sword.resultmap.mapper.UserMapper">
+    <!-- 最简单 -->
+    <select id="getUsers" resultType="com.sword.resultmap.domain.po.User">
+        select * from user
+    </select>
+
+
+    <!-- resultMap -->
+    <resultMap id="user_cardass" type="com.sword.resultmap.domain.dto.UserCardAssociation">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <association property="card" javaType="com.sword.resultmap.domain.dto.Card">
+            <id column="card_id" property="cardId"/>
+            <result column="card_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getUsersCardAssociation" resultMap="user_cardass">
+        select u.id, u.name, c.card_id, c.name card_name
+        from user u, card_association c
+        where u.id = c.user_id
+    </select>
+
+
+    <!-- collection -->
+    <resultMap id="user_cardcol" type="com.sword.resultmap.domain.dto.UserCardCollection">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <collection property="cards" ofType="com.sword.resultmap.domain.dto.Card">
+            <id column="card_id" property="cardId"/>
+            <result column="card_name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUsersCardCollection" resultMap="user_cardcol">
+        select u.id, u.name, c.card_id, c.name card_name
+        from user u, card_collection c
+        where u.id = c.user_id
+    </select>
+
+
+    <!-- discriminator -->
+    <resultMap id="carddis" type="com.sword.resultmap.domain.dto.CardDis">
+        <id column="card_id" property="cardId" />
+        <result column="type" property="type" />
+        <discriminator javaType="int" column="type">
+            <case value="0" resultMap="card1"></case>
+            <case value="1" resultMap="card2"></case>
+        </discriminator>
+    </resultMap>
+
+    <resultMap id="card1" extends="carddis" type="com.sword.resultmap.domain.dto.CardDis1">
+        <result column="name" property="dis1Name"></result>
+    </resultMap>
+    <resultMap id="card2" extends="carddis" type="com.sword.resultmap.domain.dto.CardDis2">
+        <result column="name" property="dis2Name"></result>
+    </resultMap>
+
+    <select id="getCardDiscriminator" resultMap="carddis">
+        select *
+        from card_discriminator
+    </select>
+</mapper>

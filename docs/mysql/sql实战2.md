@@ -834,6 +834,32 @@ SELECT * FROM employee_paths ORDER BY path;
 -- PS：不包含自己就是 select * from employee_paths where manager_id is not null;
 ```
 
+> 例子5：使用自连接查询固定的层级
+
+```sql
+-- 只查询一级目录下的二级目录
+
+SELECT one.*, two.*
+FROM employees one join employees two ON two.manager_id = one.id
+where one.manager_id is null        -- 所有一级目录
++-----+---------+------------+-----+-------+------------+
+| id  | NAME    | manager_id | id  | NAME  | manager_id |
++-----+---------+------------+-----+-------+------------+
+| 333 | Yasmina |       NULL | 198 | John  |        333 |
+| 333 | Yasmina |       NULL | 692 | Tarek |        333 |
++-----+---------+------------+-----+-------+------------+
+
+SELECT one.*, two.*
+FROM employees one join employees two ON two.manager_id = one.id
+where two.manager_id = 333          -- 指定一级目录
++-----+---------+------------+-----+-------+------------+
+| id  | NAME    | manager_id | id  | NAME  | manager_id |
++-----+---------+------------+-----+-------+------------+
+| 333 | Yasmina |       NULL | 198 | John  |        333 |
+| 333 | Yasmina |       NULL | 692 | Tarek |        333 |
++-----+---------+------------+-----+-------+------------+
+```
+
 </details>
 
 

@@ -1,12 +1,19 @@
-- [1. Mybatis导入](#1-mybatis导入)
-- [2. 注解](#2-注解)
-  - [2.1. 参数占位符](#21-参数占位符)
-  - [2.2. 主键返回](#22-主键返回)
-  - [2.3. 数据封装](#23-数据封装)
-- [3. XML](#3-xml)
+- [Mybatis导入](#mybatis导入)
+- [编写mapper查询](#编写mapper查询)
+- [编写mapper查询之注解](#编写mapper查询之注解)
+  - [参数占位符](#参数占位符)
+  - [主键返回](#主键返回)
+  - [数据封装](#数据封装)
+- [编写mapper查询之XML](#编写mapper查询之xml)
+  - [resultType](#resulttype)
+  - [resultMap](#resultmap)
+    - [基本](#基本)
+    - [一对一 association](#一对一-association)
+    - [一对多 collection](#一对多-collection)
+    - [多对多 discriminator](#多对多-discriminator)
 
 ---
-## 1. Mybatis导入
+# Mybatis导入
 
 ```xml
 <!-- mybatis起步依赖 -->
@@ -57,9 +64,52 @@
 
 @Mapper注解：表示是mybatis中的Mapper接口。程序运行时：框架会自动生成接口的实现类对象(代理对象)，并给交Spring的IOC容器管理
 
+# 编写mapper查询
 
+一种方式是注解，一种是XML。
 
-## 2. 注解
+方式一：注解
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+@Select("SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id ${ew.customSqlSegment}")
+List<User> querySelfDefined(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+```
+方式二：xml
+
+![alt text](../../images/image-151.png)
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined2(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+
+// xml中
+<select id="querySelfDefined2" resultType="com.sword.crud.domain.po.User">
+    SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id  ${ew.customSqlSegment}
+</select>
+```
+
+# 编写mapper查询之注解
 @Select、@Delete、@Insert、@Update
 
 ```java
@@ -81,7 +131,7 @@ public interface UserMapper {
 }
 ```
 
-### 2.1. 参数占位符
+## 参数占位符
 
 在Mybatis中提供的参数占位符有两种：`${...}` 、`#{...}`。里面的属性名可以随便写，但是建议保持表字段名字一致。
 
@@ -100,12 +150,13 @@ public interface UserMapper {
 1. 性能更高: 只编译一次，编译后的SQL语句缓存起来，后面再次执行这条语句时，不会再次编译。（只是输入的参数不同）
 2. 更安全(防止SQL注入)：不采用字符串拼接，而是将敏感字进行转义
 
-### 2.2. 主键返回
+## 主键返回
 
 默认情况下，执行插入操作时，是不会主键值返回的。
 
 如果我们想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性`useGeneratedKeys=true`和`keyProperty="实体类属性名"`
-### 2.3. 数据封装
+
+## 数据封装
 - 实体类属性名和数据库表查询返回的字段名一致，mybatis会自动封装。
 - 如果实体类属性名和数据库表查询返回的字段名不一致，不能自动封装。
 
@@ -141,7 +192,11 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 ```
-## 3. XML
+# 编写mapper查询之XML
+
+https://blog.csdn.net/li_w_ch/article/details/109802957
+
+https://www.cnblogs.com/kenhome/p/7764398.html
 
 > 作用
 
@@ -155,20 +210,6 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 ```
 
 > 写法
-
-
-![alt text](../../images/image-151.png)
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="">
- 
-</mapper>
-```
-
 
 
 `<select>`、`<insert>`、`<update>`、`<delete>`:
@@ -188,61 +229,218 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 | choose | 选择 | `<when test="">` + `<otherwise>`|
 | trim | 去除 | prefix, prefixOverrides |
 
+## resultType
 ```xml
-<select id="list" resultType="com.itheima.pojo.Emp">
-    select * from emp       
-    <where>
-        <if test="name != null">
-            and name like concat('%',#{name},'%')
-        </if>
-        <if test="gender != null">
-            and gender = #{gender}
-        </if>
-    </where>
-    order by update_time desc
-</select>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
+    <!-- id 对应函数名, resultType 对应pojo类 -->
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        select * from emp       
+        <where>
+            <if test="name != null">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
 
-<update id="update">
-    update emp
-    <set>
-        <if test="username != null">
-            username=#{username},
-        </if>
-        <if test="gender != null">
-            gender=#{gender}
-    </set>
-    where id=#{id}
-</update>
+    <update id="update">
+        update emp
+        <set>
+            <if test="username != null">
+                username=#{username},
+            </if>
+            <if test="gender != null">
+                gender=#{gender}
+        </set>
+        where id=#{id}
+    </update>
 
-<!-- delete from emp where id in (1,2,3); -->
-<delete id="deleteByIds">
-    delete from emp where id in
-    <foreach collection="ids" item="id" separator="," open="(" close=")">
-        #{id}
-    </foreach>
-</delete>
+    <!-- delete from emp where id in (1,2,3); -->
+    <delete id="deleteByIds">
+        delete from emp where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
 
 
-<sql id="commonSelect">
- 	select id, username, password, name, gender, image, job, entrydate, dept_id, create_time, update_time from emp
-</sql>
-<select id="list" resultType="com.itheima.pojo.Emp">
-    <include refid="commonSelect"/>
-    <where>
-        <if test="name != null">
-            name like concat('%',#{name},'%')
-        </if>
-        <if test="gender != null">
-            and gender = #{gender}
-        </if>
-        <if test="begin != null and end != null">
-            and entrydate between #{begin} and #{end}
-        </if>
-    </where>
-    order by update_time desc
-</select>
+    <sql id="commonSelect">
+        select id, username, password, name, gender, image, job, entrydate, dept_id, create_time, update_time from emp
+    </sql>
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        <include refid="commonSelect"/>
+        <where>
+            <if test="name != null">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+</mapper>
 ```
 
-MybatisX插件
+## resultMap
 
-![alt text](../../images/image-74.png)
+```xml
+<resultMap id="唯一的标识" type="pojo对象A">
+    <id column="select出来的主键列名" property="pojo对象A的属性名" />
+    <result column="select出来的其他列名" property="pojo对象A的属性名"/>
+    <result ..."/>
+
+    <association property="pojo对象A的属性名" javaType="pojo对象B">
+        <id column="select出来的主键列名"  property="pojo对象B的属性名"/>
+        <result column="select出来的其他列名" property="pojo对象B的属性名"/>
+    </association>
+
+    <collection property="pojo对象A的属性名" ofType="集合中的pojo对象C">
+        <id column="select出来的主键列名" property="pojo对象C的属性名" />
+        <result column="select出来的其他列名"  property="pojo对象C的属性名" />  
+    </collection>
+
+    <discri
+</resultMap>
+```
+column是sql中select 查询出来的名字，property 是javabean类的字段名，type/javaType/ofType是javabean的全类名。
+
+
+### 基本
+
+[code: resultMap项目](../../codes/javaweb/resultmap/src/main/java/com/sword/resultmap/mapper/UserMapper.java)
+
+```xml
+    <select id="getUsers" resultType="com.sword.resultmap.domain.po.User">
+        select * from user
+    </select>
+```
+
+### 一对一 association
+
+```java
+    <resultMap id="user_cardass" type="com.sword.resultmap.domain.dto.UserCardAssociation">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <association property="card" javaType="com.sword.resultmap.domain.dto.Card">
+            <id column="card_id" property="cardId"/>
+            <result column="card_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getUsersCardAssociation" resultMap="user_cardass">
+        select u.id, u.name, c.card_id, c.name card_name
+        from user u, card_association c
+        where u.id = c.user_id
+    </select>
+```
+
+![alt text](../../images/image-409.png)
+
+`c.name cardname` 冲突必须要起别名，不然就是
+```json
+  {
+    "id": 1,
+    "name": "张三",
+    "cardAssociation": {
+      "userId": 1,
+      "name": "张三"
+    }
+  },
+```
+
+### 一对多 collection
+
+```xml
+    <resultMap id="user_cardcol" type="com.sword.resultmap.domain.dto.UserCardCollection">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <collection property="cards" ofType="com.sword.resultmap.domain.dto.Card">
+            <id column="card_id" property="cardId"/>
+            <result column="card_name" property="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUsersCardCollection" resultMap="user_cardcol">
+        select u.id, u.name, c.card_id, c.name card_name
+        from user u, card_collection c
+        where u.id = c.user_id
+    </select>
+```
+```json
+[
+  {
+    "id": 1,
+    "name": "张三",
+    "cards": [
+      {
+        "cardId": 20,
+        "name": "张三的卡1"
+      },
+      {
+        "cardId": 21,
+        "name": "张三的卡2"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "李四",
+    "cards": [
+      {
+        "cardId": 22,
+        "name": "李四的卡"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "王五",
+    "cards": [
+      {
+        "cardId": 23,
+        "name": "王五的卡"
+      }
+    ]
+  }
+]
+```
+
+### 多对多 discriminator
+
+```xml
+    <resultMap id="card1" extends="carddis" type="com.sword.resultmap.domain.dto.CardDis1">
+        <result column="name" property="dis1Name"></result>
+    </resultMap>
+    <resultMap id="card2" extends="carddis" type="com.sword.resultmap.domain.dto.CardDis2">
+        <result column="name" property="dis2Name"></result>
+    </resultMap>
+
+    <select id="getCardDiscriminator" resultMap="carddis">
+        select *
+        from card_discriminator
+    </select>
+```
+
+```json
+[
+  {
+    "cardId": 30,
+    "type": 0,
+    "dis1Name": "卡1"
+  },
+  {
+    "cardId": 31,
+    "type": 1,
+    "dis2Name": "卡2"
+  }
+]
+```
