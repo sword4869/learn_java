@@ -147,14 +147,14 @@ public class User {
 - 表名不一致 `@TableName`
 - 主键名不一致:`@TableId`
   - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置 `auto_increment` 必须写 `IdType.AUTO`，否则默认是雪花算法 `IdType.ASSIGN_ID`。
-- 字段名：@TableField
+- 字段名：`@TableField`
   - 不一致；is被过滤；关键字冲突要转义``` `xxx` ```；
   - 非数据库字段`@TableField(exist = false)`，我们手动维护。
 
 
 ## BaseMapper和IService
 
-> BaseMapper
+> BaseMapper 和 IService 对比
 
 ![alt text](../../images/image-264.png)
 

@@ -10,10 +10,3 @@
 ---
 0429
 
-- [ ] 标记
-
-    ![alt text](images/image-319.png)
-
-    ![alt text](images/image-320.png)
-
-    `import javax.validation.constraints.Min;`

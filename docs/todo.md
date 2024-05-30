@@ -261,3 +261,10 @@ cookie被拿到以后，通常可以换一个机器访问。
 消息队列，削峰什么
 
 ![alt text](../images/image-115.png)
+
+
+
+----
+
+
+- [ ] `#{id}` `parameterType="string"`

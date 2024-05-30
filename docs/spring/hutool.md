@@ -3,7 +3,7 @@
     - [copyProperties](#copyproperties)
     - [toBean](#tobean)
   - [bean和map](#bean和map)
-- [bean和list](#bean和list)
+  - [bean和list](#bean和list)
 - [Json](#json)
 - [字符串](#字符串)
 - [Boolean](#boolean)
@@ -65,7 +65,7 @@ Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);
 UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);  // fasle表示有错就抛出
 ```
 
-## bean和list
+### bean和list
 
 ```java
 List<User> users = userService.listByIds(ids);
