@@ -131,7 +131,11 @@ http {
 ```
 ### ngix反向代理、负载均衡
 
-`http://192.168.101.64:9000/content/coursepreview/74`→`http://localhost/api/content/coursepreview/74`
+`http://192.168.101.64:9000/content/coursepreview/74`
+
+→
+
+`http://localhost/api/content/coursepreview/74`
 ```bash
 http {
     # 默认

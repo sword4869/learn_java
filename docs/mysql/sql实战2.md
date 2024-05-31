@@ -837,10 +837,10 @@ SELECT * FROM employee_paths ORDER BY path;
 > 例子5：使用自连接查询固定的层级
 
 ```sql
--- 只查询一级目录下的二级目录
+-- 只查询一级目录和二级目录
 
 SELECT one.*, two.*
-FROM employees one join employees two ON two.manager_id = one.id
+FROM employees one left join employees two ON two.manager_id = one.id
 where one.manager_id is null        -- 所有一级目录
 +-----+---------+------------+-----+-------+------------+
 | id  | NAME    | manager_id | id  | NAME  | manager_id |
@@ -850,7 +850,7 @@ where one.manager_id is null        -- 所有一级目录
 +-----+---------+------------+-----+-------+------------+
 
 SELECT one.*, two.*
-FROM employees one join employees two ON two.manager_id = one.id
+FROM employees one left join employees two ON two.manager_id = one.id
 where two.manager_id = 333          -- 指定一级目录
 +-----+---------+------------+-----+-------+------------+
 | id  | NAME    | manager_id | id  | NAME  | manager_id |
@@ -859,6 +859,8 @@ where two.manager_id = 333          -- 指定一级目录
 | 333 | Yasmina |       NULL | 692 | Tarek |        333 |
 +-----+---------+------------+-----+-------+------------+
 ```
+
+注意是left join，不然没有二级目录的一级目录不会显示出来。
 
 </details>
 

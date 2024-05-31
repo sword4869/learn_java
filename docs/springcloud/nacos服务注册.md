@@ -142,15 +142,15 @@ nacos实现热更新，控制服务访问。
 
 ## nacos环境隔离
 
-Nacos环境隔离：（对服务发现和配置中心都有效）
-- namespace用来做环境隔离
-- 每个namespace都有唯一 id
-- 不同namespace 下的服务不可见.
+Nacos环境隔离：（服务发现和配置中心都有）
+- namespace。开发环境、测试环境、生产环境。
+- group。区分项目。
 
 ![alt text](../../images/image-354.png)
 
 使用命名空间需要先在nacos控制平台中创建，而group不用，直接在yml中配置就行。
 ```yml
+# 服务注册
 spring:
   cloud:
     nacos:
@@ -163,6 +163,22 @@ spring:
 结果：
 
 ![alt text](../../images/image-366.png)
+
+```yaml
+# 配置中心
+spring:
+  application:
+    name: userservice           # dataid的部分1
+  # profiles: 
+  #   active: dev                 # dataid的部分2。默认没有。
+  cloud:
+    nacos:
+      server-addr: 192.168.150.3:8848 
+      config:
+        # namespace: dev                  # 定位1。默认public
+        # group: xuecheng-plus-project    # 定位2。默认DEFAULT_GROUP
+        file-extension: yml    # dataid的部分3。必须改，因为默认是properties
+```
 
 ## nacos创建namespace
 
@@ -203,7 +219,7 @@ spring:
 
 ## nacos的ip是虚拟网卡
 
-nacos是在虚拟中起的 `192.168.150.3:8848`。
+nacos是在虚拟机中起的 `192.168.150.3:8848`。
 
 服务显示的地址是`192.168.150.1`，是vmnet8的虚拟网卡地址。
 

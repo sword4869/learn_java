@@ -15,6 +15,7 @@
   - [mp](#mp)
   - [pagehelper依赖](#pagehelper依赖)
 - [动态sql查询](#动态sql查询)
+- [循环依赖](#循环依赖)
 - [例子](#例子)
 
 
@@ -498,6 +499,16 @@ List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param
     SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id  ${ew.customSqlSegment}
 </select>
 ```
+
+## 循环依赖
+
+service之间互相调用。
+
+解决方式：
+
+（1）service不调用另一个service，而是调用另一个service对应的mapper
+
+（2）Db静态。
 
 ## 例子
 

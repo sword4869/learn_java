@@ -88,6 +88,8 @@ List<User> querySelfDefined(@Param("ew") QueryWrapper<User> wrapper); // @Param(
 方式二：xml
 
 ![alt text](../../images/image-151.png)
+
+![alt text](../../images/image-410.png)
 ```java
 // Service中
 @Override
@@ -229,25 +231,10 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 | choose | 选择 | `<when test="">` + `<otherwise>`|
 | trim | 去除 | prefix, prefixOverrides |
 
-## resultType
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itheima.mapper.EmpMapper">
-    <!-- id 对应函数名, resultType 对应pojo类 -->
-    <select id="list" resultType="com.itheima.pojo.Emp">
-        select * from emp       
-        <where>
-            <if test="name != null">
-                name like concat('%',#{name},'%')
-            </if>
-            <if test="gender != null">
-                and gender = #{gender}
-            </if>
-        </where>
-        order by update_time desc
-    </select>
-
     <update id="update">
         update emp
         <set>
@@ -267,6 +254,23 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
             #{id}
         </foreach>
     </delete>
+</mapper>
+```
+## resultType
+```xml
+    <!-- id 对应函数名, resultType 对应pojo类 -->
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        select * from emp       
+        <where>
+            <if test="name != null">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
 
 
     <sql id="commonSelect">
@@ -287,8 +291,8 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
         </where>
         order by update_time desc
     </select>
-</mapper>
 ```
+
 
 ## resultMap
 
@@ -308,7 +312,10 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
         <result column="select出来的其他列名"  property="pojo对象C的属性名" />  
     </collection>
 
-    <discri
+    <discriminator javaType="int" column="type">
+        <case value="0" resultMap="card1"></case>
+        <case value="1" resultMap="card2"></case>
+    </discriminator>
 </resultMap>
 ```
 column是sql中select 查询出来的名字，property 是javabean类的字段名，type/javaType/ofType是javabean的全类名。
@@ -342,6 +349,15 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
         where u.id = c.user_id
     </select>
 ```
+```
++----+------+---------+-----------+
+| id | name | card_id | card_name |
++----+------+---------+-----------+
+|  1 | 张三 |      10 | 张三的卡  |
+|  2 | 李四 |      11 | 李四的卡  |
+|  3 | 王五 |      12 | 王五的卡  |
++----+------+---------+-----------+
+```
 
 ![alt text](../../images/image-409.png)
 
@@ -374,6 +390,16 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
         from user u, card_collection c
         where u.id = c.user_id
     </select>
+```
+```sql
++----+------+---------+-----------+
+| id | name | card_id | card_name |
++----+------+---------+-----------+
+|  1 | 张三 |      20 | 张三的卡1 |
+|  1 | 张三 |      21 | 张三的卡2 |
+|  2 | 李四 |      22 | 李四的卡  |
+|  3 | 王五 |      23 | 王五的卡  |
++----+------+---------+-----------+
 ```
 ```json
 [
@@ -417,6 +443,14 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
 ### 多对多 discriminator
 
 ```xml
+    <resultMap id="carddis" type="com.sword.resultmap.domain.dto.CardDis">
+        <id column="card_id" property="cardId" />
+        <result column="type" property="type" />
+        <discriminator javaType="int" column="type">
+            <case value="0" resultMap="card1"></case>
+            <case value="1" resultMap="card2"></case>
+        </discriminator>
+    </resultMap>
     <resultMap id="card1" extends="carddis" type="com.sword.resultmap.domain.dto.CardDis1">
         <result column="name" property="dis1Name"></result>
     </resultMap>
@@ -429,7 +463,14 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
         from card_discriminator
     </select>
 ```
-
+```
++---------+------+------+
+| card_id | name | type |
++---------+------+------+
+|      30 | 卡1  |    0 |
+|      31 | 卡2  |    1 |
++---------+------+------+
+```
 ```json
 [
   {
