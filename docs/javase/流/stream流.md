@@ -3,6 +3,8 @@
 - [中间方法](#中间方法)
 - [终结方法](#终结方法)
 - [其他](#其他)
+  - [组合流](#组合流)
+  - [Stream.iterate()代替for循环](#streamiterate代替for循环)
 
 
 ---
@@ -99,12 +101,7 @@ int[] arr1 = {1,2,3,4,5,6,7,8,9,10};
 Stream.of(arr1).forEach(s-> System.out.println(s));//[I@41629346
 ```
 
-`Stream.iterate()`代替for循环
-```java
-Stream<Integer> intStream = Stream.iterate(0, i -> i+1);
 
-Stream.iterate(0, i -> i+1).limit(10).forEach(System.out::println);
-```
 ## 中间方法
 
 ```java
@@ -260,7 +257,7 @@ System.out.println(mapGroup);    // {14=[周芷若-女-14], 15=[张无忌-男-15
 ```
 
 ## 其他
-
+### 组合流
 ```java
 // 组合 concat
 // static <T> Stream<T> concat(Stream<? extends T> a, Stream<? extends T> b);
@@ -268,4 +265,23 @@ System.out.println("=================concat================");
 Stream<String> stream1 = Stream.of("张无忌", "周芷若", "赵敏");
 Stream<String> stream2 = Stream.of("张强", "张三丰", "张翠山", "张良", "王二麻子", "谢广坤");
 Stream.concat(stream1, stream2).forEach(s -> System.out.println(s));
+```
+### Stream.iterate()代替for循环
+`Stream<Integer> intStream = Stream.iterate(0, i -> i+1);`
+```java
+for(int i = 0; i < 10; i++){
+    System.out.println(i);
+}
+
+Stream.iterate(0, i -> i+1).limit(10).forEach(System.out::println);
+```
+```java
+List<File> files = new ArrayList<>();
+for(int i = 0; i < 10; i++){
+    File file = new File("file" + i + ".txt");
+    files.add(file);
+}
+
+List<File> files2 = Stream.iterate(0, i -> i+1).limit(10)
+    .map(i -> new File("file" + i + ".txt")).collect(Collectors.toList());
 ```

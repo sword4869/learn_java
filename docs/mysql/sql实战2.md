@@ -9,7 +9,10 @@
 - [limit](#limit)
 - [子查询](#子查询)
 - [聚合函数](#聚合函数)
-- [窗口函数](#窗口函数)
+- [窗口函数 over](#窗口函数-over)
+  - [partition by, order by](#partition-by-order-by)
+  - [rank, dense\_rank, row\_number](#rank-dense_rank-row_number)
+  - [与group的区别：不会减少原表中的行数](#与group的区别不会减少原表中的行数)
 - [函数](#函数)
 - [别名](#别名)
 - [distinct](#distinct)
@@ -314,18 +317,72 @@ FROM salaries s1
 ORDER BY s1.salary DESC, s1.emp_no;
 ```
 
-## 窗口函数
+## 窗口函数 over
 窗口函数写在select子句中
 ```sql
 -- 分组，组内排名
-<窗口函数> over ( [partition by <用于分组的列名>] [order by <用于排序的列名>])
+<窗口函数> over ( [partition by <用于分组的列名>] [order by <用于排序的列名>] )
 ```
 `<窗口函数>`: 
 
 - 专用窗口函数，比如rank, dense_rank, row_number
 - 聚合函数，如sum. avg, count, max, min
 
-> 省略分组：当前行及其之上
+### partition by, order by
+
+（1）partition by：只算组内的
+
+省略partition by：不分组，那么整体就是一个组。表示**当前行及其之上**。
+
+（2）order by：组内排序。
+
+省略排序：保持原来的相对顺序。
+
+顺序会影响窗口函数计算。
+
+> sql217
+
+![alt text](../../images/image-396.png)
+
+```sql
+-- 不分组、不排序：整张表的和
+select emp_no, salary, sum(emp_no) over () as t_rank
+from salaries
+```
+![alt text](../../images/image-398.png)
+```sql
+-- 不分组、排序：72527有3个10001 10002 10004：看的是所有的72527
+select emp_no, salary, sum(emp_no) over (order by salary desc) as t_rank
+from salaries
+```
+![alt text](../../images/image-397.png)
+
+```sql
+-- 分组、不排序：72527组有两个10002 10004
+select emp_no, salary, sum(emp_no) over (partition by salary) as t_rank
+from salaries
+```
+![alt text](../../images/image-399.png)
+
+```sql
+-- 分组、排序
+select emp_no, salary, sum(emp_no) over (partition by salary order by salary desc) as t_rank
+from salaries
+```
+![alt text](../../images/image-400.png)
+
+> 分组可以多列
+
+```sql
+-- SQL220
+select distinct de.dept_no, d.dept_name, t.title, count(1) over (partition by dept_no, title)
+from dept_emp de, titles t, departments d
+where de.emp_no = t.emp_no and de.dept_no = d.dept_no
+order by dept_no, title
+```
+![alt text](../../images/image-419.png)
+
+### rank, dense_rank, row_number
 
 ```sql
 select *,
@@ -352,47 +409,9 @@ from 班级表
 
 ![alt text](../../images/image-395.png)
 
-> 例子：sql217
+### 与group的区别：不会减少原表中的行数
 
-![alt text](../../images/image-396.png)
-
-```sql
--- 不分组、不排序：整张表的和
-select emp_no, salary, sum(emp_no) over () as t_rank
-from salaries
-```
-![alt text](../../images/image-398.png)
-```sql
--- 不分组，72527有3个10001 10002 10004：看的是所有的72527
-select emp_no, salary, sum(emp_no) over (order by salary desc) as t_rank
-from salaries
-```
-![alt text](../../images/image-397.png)
-
-```sql
--- 72527组有两个10002 10004
-select emp_no, salary, sum(emp_no) over (partition by salary) as t_rank
-from salaries
-```
-![alt text](../../images/image-399.png)
-
-```sql
-select emp_no, salary, sum(emp_no) over (partition by salary order by salary desc) as t_rank
-from salaries
-```
-![alt text](../../images/image-400.png)
-
-> 可以多列
-
-```sql
--- SQL220
-select distinct de.dept_no, d.dept_name, t.title, count(1) over (partition by dept_no, title)
-from dept_emp de, titles t, departments d
-where de.emp_no = t.emp_no and de.dept_no = d.dept_no
-order by dept_no, title
-```
-
-> 与group的区别：不会减少原表中的行数
+![alt text](../../images/image-394.png)
 
 ![alt text](../../images/image-393.png)
 
@@ -427,10 +446,23 @@ select lpad(round(rand()*1000000 , 0), 6, '0');
 select curdate();     -- 2024-05-10
 select curtime();     -- 19:18:28
 select now();         -- 2024-05-10 19:18:28
-select YEAR(now());   -- 2024
-select MONTH(now());  -- 5
-select DAY(now());    -- 10
-select date_add(now(), INTERVAL 70 YEAR );    -- 2094-05-10 19:19:32
+
+-- 极强兼容性
+select date("2024-05-31 12:23:33")   -- 2024-05-31
+select date("2024-5-31 12:23:33");   -- 2024-05-31
+select date("24-5-31 12:23:33");     -- 2024-05-31
+select date("2024/05/31 12:23:33");  -- 2024-05-31
+select date("2024/5/31 12:23:33");   -- 2024-05-31
+select date("24/5/31 12:23:33");     -- 2024-05-31
+
+select year("2024-05-31 12:23:33");   -- 2024
+select month("2024-05-31 12:23:33");  -- 5
+select day("2024-05-31 12:23:33");    -- 31
+select hour("2024-05-31 12:23:33");   -- 12
+select minute("2024-05-31 12:23:33"); -- 23
+select second("2024-05-31 12:23:33"); -- 33
+
+select date_add(now(), interval 70 year );    -- 2094-05-31 23:29:11
 select datediff('2021-10-01', '2021-12-01');  -- -61  返回天
 数
 ```

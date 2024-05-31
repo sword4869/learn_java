@@ -3,6 +3,7 @@
   - [sql212 禁止order by](#sql212-禁止order-by)
   - [sql217 t\_rank](#sql217-t_rank)
 - [sql215](#sql215)
+- [同时在线人数](#同时在线人数)
 
 ---
 ## sql206
@@ -165,3 +166,32 @@ join
 on t1.emp_no = t2.emp_no 
 order by growth;
 ```
+
+## 同时在线人数
+
+```sql
+select date(login_time) login_date, hour(login_time) login_hour, max(online_user_cnt) online_user_cnt_max 
+from 
+( 
+    select user_id, login_time, sum(index1) over(order by login_time)  online_user_cnt 
+    from 
+    ( 
+        select user_id, login_time, 1 as index1 from login_data 
+        union all 
+        select user_id, exit_time, -1 as index1 from login_data 
+    )a
+)b 
+group by date(login_time) , hour(login_time)
+```
+
+![alt text](../../images/image-420.png)
+
+(1) 把原始数据中的user_id和登录时间(login_time)取出来，然后给一个index，每个用户的登录时都给一个1，然后union all 结束时间，给结束时间(exit_time)时一个-1
+
+(2) 这样我们就能在这个子查询的外层以sum()和开窗函数(over)配合，并且以登录时间升序，这样，每次遇到登录时间的时候就能加1，遇到退出时间就能减1了
+
+![alt text](../../images/Snipaste_2024-05-31_23-58-34.png)
+
+(3) 我们得到秒级的用户登录量，然后我们求出每小时最大的值，就是以天和小时进行分组，然后取最大值就能得到我们每小时最大在线量了。当然我们也可以直接以天进行分组，得到每天的最大量，因为我们已经求到了秒级的最大量
+
+![alt text](../../images/Snipaste_2024-05-31_23-59-39.png)
