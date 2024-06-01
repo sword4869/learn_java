@@ -105,20 +105,46 @@ public void addMediaFilesToMinIO(byte[] bytes, String bucket, String objectName)
 ```
 ## minio删除文件
 ```java
-    @Test
-    public void deleteTest() {
-        try {
-            RemoveObjectArgs removeObjectArgs = RemoveObjectArgs
-                    .builder()
-                    .bucket("testbucket")
-                    .object("pic01.png")
-                    .build();
-            minioClient.removeObject(removeObjectArgs);
-            System.out.println("删除成功");
-        } catch (Exception e) {
-            System.out.println("删除失败");
-        }
+public void deleteObject() {
+    try {
+        RemoveObjectArgs removeObjectArgs = RemoveObjectArgs
+                .builder()
+                .bucket("testbucket")
+                .object("pic01.png")
+                .build();
+        minioClient.removeObject(removeObjectArgs);
+        System.out.println("删除成功");
+    } catch (Exception e) {
+        System.out.println("删除失败");
     }
+}
+
+public void deleteObjects(String chunkFileFolderPath, int chunkTotal) throws IOException {
+    // 各分块
+    try {
+        List<DeleteObject> objects = Stream.iterate(0, i -> i + 1).limit(10)
+                .map(i-> new DeleteObject(chunkFileFolderPath.concat(Integer.toString(i))))
+                .collect(Collectors.toList());
+        RemoveObjectsArgs removeObjectsArgs = RemoveObjectsArgs
+                .builder()
+                .bucket("testbucket")
+                .objects(objects)
+                .build();
+        // 遍历返回结果 get()后才真正删除
+        Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectsArgs);
+        results.forEach(
+            f -> {
+                try {
+                    DeleteError deleteError = f.get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        );
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+}
 ```
 ## minio检测文件是否存在
 
