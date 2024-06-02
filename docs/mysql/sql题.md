@@ -1,3 +1,4 @@
+- [字符串练习](#字符串练习)
 - [sql206](#sql206)
 - [排序](#排序)
   - [sql212 禁止order by](#sql212-禁止order-by)
@@ -6,6 +7,19 @@
 - [同时在线人数](#同时在线人数)
 
 ---
+
+## 字符串练习
+
+```sql
+-- SQL245 查找字符串中逗号出现的次数
+select id, length(string)-length(replace(string, ',', ''))
+from strings
+
+-- SQL246 按照first_name最后两个字母升序进行输出
+select first_name from employees
+order by substring(first_name, length(first_name) - 1, length(first_name))
+```
+
 ## sql206
 
 ```sql

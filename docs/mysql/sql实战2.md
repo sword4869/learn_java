@@ -4,20 +4,24 @@
 - [连接 join](#连接-join)
 - [where](#where)
 - [group by](#group-by)
+  - [group by having中使用 select 别名](#group-by-having中使用-select-别名)
+  - [group\_concat](#group_concat)
 - [union](#union)
 - [order by](#order-by)
 - [limit](#limit)
 - [子查询](#子查询)
 - [聚合函数](#聚合函数)
 - [窗口函数 over](#窗口函数-over)
-  - [partition by, order by](#partition-by-order-by)
+  - [partition by order by](#partition-by-order-by)
   - [rank, dense\_rank, row\_number](#rank-dense_rank-row_number)
   - [与group的区别：不会减少原表中的行数](#与group的区别不会减少原表中的行数)
 - [函数](#函数)
 - [别名](#别名)
 - [distinct](#distinct)
 - [with](#with)
+  - [普通with](#普通with)
   - [递归 with recursive](#递归-with-recursive)
+  - [with普通和递归不能连用](#with普通和递归不能连用)
 
 ---
 
@@ -61,8 +65,6 @@ limit <限制行数>
 
 (4) 无论是书写顺序，还是执行顺序，UNION 都是排在 ORDER BY 前面的。SQL语句会将所有UNION 段合并后，再进行排序。
 ## select
-
-
 ### 条件
 ```sql
 -- `=` 
@@ -186,14 +188,29 @@ select * from user where id in ( 5, 1) order by field(id, 5, 1)
 
 ## group by
 
-
+```sql
+-- 单个字段
+select gender 数量 from emp group by gender;
+-- 多个字段
+select workaddress, gender 数量 from emp group by gender , workaddress;
+-- 使用聚合函数后的age结果就只有一个，ok
+select gender, age from emp group by gender;   -- error，因为每个组中的 age 有多个值，不知道选哪个
+select gender, max(age) from emp group by gender;
+```
+### group by having中使用 select 别名
 ```sql
 select emp_no, count(*) as t
 from salaries
 group by emp_no     -- 每组emp_no 有多行
 having t > 15;      -- 去掉不符合结果的组。本来这里是 count(*) > 15，但GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。
 ```
+### group_concat
 
+```sql
+-- SQL247 按照dept_no进行汇总
+select dept_no, group_concat(emp_no) as employees
+from dept_emp group by dept_no
+```
 
 ## union
 
@@ -257,20 +274,25 @@ select * from table1 where id = (select id from table2);
 
 如果子查询不止一行，那么就会报错 Subquery returns more than 1 row，等于符号不能用了
 
-1）如果是写入重复，去掉重复数据。
+一、转化为一个
+
+1）如果是写入重复，去掉重复数据，只剩一个
 ```sql
 select * from table1 where id = (select distinct id from table2);
 ```
 2）在子查询条件语句加limit 1 ,找到一个符合条件的就可以了
+
 ```sql
 select * from table1 where id = (select id from table2 limit 1);
 ```
-3）在子查询前加any关键字 🚀
+二、真不止一个
+
+3）🚀在子查询前加any关键字  `=any()` / `!=any()`
 ```sql
 select * from table1 where id = any(select id from table2);
 ```
 
-4）=换成in
+4）=换成in, `in ()` / `not in ()`
 
 ```sql
 select * from table1 where id in (select id from table2);
@@ -288,19 +310,12 @@ NULL值是不参与所有聚合函数运算的。
 - 分组之后，查询的字段一般为**分组字段、聚合函数**，查询其他字段无任何意义
 
 ```sql
--- select
-select min(age) 最小值 from emp;
+-- 获取salary最大值
+select max(salary) from salaries
 
-
--- 单个字段
-select gender 数量 from emp group by gender;
--- 多个字段
-select workaddress, gender 数量 from emp group by gender , workaddress;
-
-
--- 聚合函数
-select gender, age from emp group by gender;   -- error，因为每个组中的 age 有多个值，不知道选哪个
-select gender, max(age) from emp group by gender;   -- 使用聚合函数后的age结果就只有一个，ok
+-- 获取salary最大值的员工的数据
+select emp_no, max(salary) from salaries -- error
+select * from salaries where salary in (select max(salary) from salaries)
 ```
 
 > 比较奇特的写法
@@ -328,7 +343,7 @@ ORDER BY s1.salary DESC, s1.emp_no;
 - 专用窗口函数，比如rank, dense_rank, row_number
 - 聚合函数，如sum. avg, count, max, min
 
-### partition by, order by
+### partition by order by
 
 （1）partition by：只算组内的
 
@@ -418,13 +433,15 @@ from 班级表
 ## 函数
 字符串函数
 ```sql
-select concat('Hello', ' ', ' MySQL');
+select concat('Hello', ' ', ' MySQL'); -- Hello MySQL
+select concat('Hello', "'", ' MySQL'); -- Hello'MySQL
 select lower('Hello');
 select upper('Hello');
 select lpad('13', 5, '0');    -- 统一为5位数，目前不足5位数的全部在前面补0
 select rpad('13', 5, '-');  
 select trim(' Hello MySQL ');
 select substring('Hello MySQL',1,3);  -- 从第1个字符开始，截取3个字符。结果是Hel
+select length(name)     -- 5
 -- cast 函数，负责类型转化。这里是转换数值型为字符串，好让concat拼接。
 select concat('Prices: ', cast(buyprice AS CHAR))   
 ```
@@ -502,13 +519,15 @@ FROM 表名 [ [AS] 表别名1 ];
 
 嫌指定表明麻烦，可以使用别名。
 
-> 引号问题
+> 引号问题（关键字冲突）
 
 列别名的引号，有没有都行。除非列名和关键字冲突
 ```sql
 SELECT emp_no as rank     -- error, rank是关键字
 SELECT emp_no as 'rank'     -- ok
 ```
+
+其他关键字：`row`, `rows`
 
 表别名不能有引号。`from employees 'e'` 错。
 
@@ -600,6 +619,7 @@ having count(distinct s2.salary) = 2;   -- (去重之后的数量就是对应的
 ```
 
 ## with
+### 普通with
 
 > with语句：CTE(common table expression) 通用表表达式。
 >
@@ -900,3 +920,19 @@ where two.manager_id = 333          -- 指定一级目录
 > 递归限制
 
 `cte_max_recursion_depth` 递归次数1000，`max_execution_time` 递归执行时间.
+
+### with普通和递归不能连用
+
+```sql
+with base(dept_no, emp_no, r) as (
+    select dept_no, emp_no, row_number() over (partition by dept_no order by emp_no) 
+    from dept_emp
+)
+with recursive d1(dept_no, employees, r) as (
+    select dept_no, emp_no, r from base
+    union all
+    select dept_no, concat(d1.emp_no, base.emp_no), r + 1
+    from base join d1 on d1.r + 1 = base.r 
+)
+select dept_no, employees from d1
+```

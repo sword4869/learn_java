@@ -2,10 +2,13 @@
   - [数据库](#数据库)
   - [表](#表)
 - [索引](#索引)
+- [外键](#外键)
 - [DML](#dml)
   - [insert](#insert)
-  - [update](#update)
   - [delete](#delete)
+    - [不能对同一个表来边查边删](#不能对同一个表来边查边删)
+  - [update](#update)
+    - [replace函数](#replace函数)
 - [DCL](#dcl)
 
 ---
@@ -58,7 +61,8 @@ create table xttblog
     id int not null,
     k int,
     primary key (id),       -- 主键 primary key
-    index (k)               -- 索引 index (column_name)
+    index (k),               -- 索引 index (column_name)
+    foreign key (k) references employees_test(id)   -- 外键
 ) engine = InnoDB;
 ```
 ```sql
@@ -125,6 +129,21 @@ SELECT * FROM `pay` WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' A
 SELECT * FROM `pay` FORCE INDEX(updatetime) WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' AND updatetime <= 'xxxx-xx-xx xx:xx:xx' GROUP BY userid
 ```
 
+# 外键
+
+```sql
+-- 方式一：alter
+alter table audit add constraint foreign key (emp_no) references employees_test(id)
+
+-- 方式二：创建时
+CREATE TABLE audit (
+    EMP_no INT NOT NULL,
+    create_date datetime NOT NULL,
+    -- 一样的语法
+    foreign key (emp_no) references employees_test(id)
+);
+```
+
 # DML
 
 ## insert
@@ -153,14 +172,6 @@ mysql中常用的三种插入数据的语句:
 insert ignore into actor values("3","ED","CHASE","2006-02-15 12:34:33");
 ```
 
-## update
-```sql
-UPDATE 表名 SET 字段名1 = 值1 , 字段名2 = 值2 , .... 1 [ WHERE 条件 ] ;
--- 指定行
-update employee set name = 'itheima' where id = 1;
--- 所有行
-update employee set name = 'itheima';
-```
 ## delete
 ```sql
 DELETE FROM 表名 [ WHERE 条件 ] ;
@@ -172,6 +183,55 @@ delete from employee;
 对，`DELETE FROM 商品 WHERE 价格>3000`
 
 DELETE不需要列名或通配符。DELETE 语句不能删除某一个字段的值(可以使用UPDATE，将该字段值置为NULL即可)，只能删除整行。
+
+### 不能对同一个表来边查边删
+
+```sql
+-- SQL236 删除emp_no重复的记录，只保留最小的id对应的
+
+-- 错误
+delete from titles_test where id not in
+(
+   select min(id) from titles_test group by emp_no
+)
+
+-- 再套一层起别名，就正确了
+delete from titles_test where id not in
+(
+   select * from
+   (select min(id) from titles_test group by emp_no) a
+)
+```
+
+
+## update
+
+```sql
+update 表名 set 字段名1 = 值1 , 字段名2 = 值2 , .... 1 [ WHERE 条件 ] ;
+-- 指定行
+update employee set name = 'itheima' where id = 1;
+-- 所有行
+update employee set name = 'itheima';
+```
+
+### replace函数
+
+`字段 = replace(字段，目标老值，新值)`
+
+```sql
+-- sql238 将id=5以及emp_no=10001的行数据替换成id=5以及emp_no=10005,其他数据保持不变
+update titles_test set emp_no = replace(emp_no, 10001, 10005) where id = 5
+
+-- 等同
+update titles_test set emp_no = 10005 where id = 5 and emp_no = 10001
+```
+
+PS：好像是只能指定字段？不能用列值
+
+```sql
+-- sql 242 自定义。
+update salaries set salary = replace(salary, salary, slary * 1.1) -- error
+```
 
 # DCL
 
