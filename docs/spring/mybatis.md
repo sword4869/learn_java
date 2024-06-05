@@ -1,6 +1,7 @@
 - [Mybatis导入](#mybatis导入)
 - [编写mapper查询](#编写mapper查询)
 - [编写mapper查询之注解](#编写mapper查询之注解)
+  - [@Param注解](#param注解)
   - [参数占位符](#参数占位符)
   - [主键返回](#主键返回)
   - [数据封装](#数据封装)
@@ -132,6 +133,14 @@ public interface UserMapper {
     public void update(Emp emp);
 }
 ```
+
+## @Param注解
+
+```java
+List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+```
+
+当名字不一致时
 
 ## 参数占位符
 

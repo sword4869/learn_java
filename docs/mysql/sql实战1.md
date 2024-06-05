@@ -2,7 +2,9 @@
   - [数据库](#数据库)
   - [表](#表)
 - [索引](#索引)
-- [外键](#外键)
+- [约束](#约束)
+  - [外键](#外键)
+  - [唯一](#唯一)
 - [DML](#dml)
   - [insert](#insert)
   - [delete](#delete)
@@ -129,7 +131,9 @@ SELECT * FROM `pay` WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' A
 SELECT * FROM `pay` FORCE INDEX(updatetime) WHERE userid > 100 AND updatetime >= 'xxxx-xx-xx xx:xx:xx' AND updatetime <= 'xxxx-xx-xx xx:xx:xx' GROUP BY userid
 ```
 
-# 外键
+# 约束
+
+## 外键
 
 ```sql
 -- 方式一：alter
@@ -141,6 +145,15 @@ CREATE TABLE audit (
     create_date datetime NOT NULL,
     -- 一样的语法
     foreign key (emp_no) references employees_test(id)
+);
+```
+## 唯一
+
+```sql
+-- 方式二：创建时
+CREATE TABLE audit (
+    file_id varchar(120),
+    constraint unique_fileid unique(file_id)
 );
 ```
 
