@@ -22,4 +22,11 @@ public class AddressController {
         return BeanUtil.copyProperties(address, AddressVO.class);
         // ==>  Preparing: SELECT id,user_id,province,city,town,mobile,street,contact,is_default,notes,【deleted】 FROM address WHERE id=?
     }
+
+    @GetMapping("/classpath")
+    public String getClassPath(){
+        String classpath = this.getClass().getResource("/").getPath();
+        System.out.println(classpath);
+        return classpath;
+    }
 }

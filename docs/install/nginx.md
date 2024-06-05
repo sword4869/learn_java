@@ -54,14 +54,16 @@ http {
 ### 本地html
 
 ```bash
-location /test1 {
-    root   html;            # 当前nginx的html下
-    index  test.html;
-}
+server {
+    location /test1 {
+        root   html;            # 当前nginx的html下
+        index  test.html;
+    }
 
-location /test2 {
-    alias   html;
-    index  test.html;
+    location /test2 {
+        alias   html;
+        index  test.html;
+    }
 }
 ```
 
