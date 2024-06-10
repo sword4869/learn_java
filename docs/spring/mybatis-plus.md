@@ -44,9 +44,10 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
     <!--下面坐标根据自己使用的SpringBoot版本二选一-->
     <!--SpringBoot2使用此版本-->
     <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.5.3</version>
     <!-- 3.5.4开始,支持SpringBoot3使用此版本 -->
     <!-- <artifactId>mybatis-plus-spring-boot3-starter</artifactId> -->
-    <version>3.5.3.1</version>
+    <!-- <version>3.5.5</version> -->
 </dependency>
 
 <!-- mysql驱动包依赖 -->

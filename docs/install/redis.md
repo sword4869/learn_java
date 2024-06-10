@@ -18,11 +18,7 @@
 
 默认配置启动
 ```bash
-docker run -d \
-    --name redis \ 
-    -p 6379:6379 \ 
-    redis \
-    redis-server --appendonly yes
+docker run -d --name redis -p 6379:6379 redis redis-server --appendonly yes
 ```
 
 带配置启动：
