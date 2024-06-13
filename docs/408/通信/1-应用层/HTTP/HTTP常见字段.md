@@ -4,7 +4,7 @@
 
 ​	*Accept* 客户端可接受的数据格式
 
-​	*Accept-Encoding*  客户端可接受的压缩格式
+​	*Accept-Encoding*  客户端可接受的压缩body的格式
 
 响应
 
@@ -12,7 +12,7 @@
 
 ​	*Content-Type* 数据格式
 
-​	*Content-Encoding* 压缩格式
+​	*Content-Encoding* 压缩body的格式
 
 
 
