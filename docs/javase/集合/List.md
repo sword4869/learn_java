@@ -140,7 +140,7 @@ ArrayList<String> a = new ArrayList<>(m.values());
 
 还实现了Deque接口。
 
-![alt text](../../../images/image-16.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images202406122313615.png)
 
 注意：是栈，则一定是`push`，而不是`add`
 
