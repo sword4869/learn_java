@@ -438,7 +438,7 @@ select concat('Hello', "'", ' MySQL'); -- Hello'MySQL
 select lower('Hello');
 select upper('Hello');
 select lpad('13', 5, '0');    -- 统一为5位数，目前不足5位数的全部在前面补0
-select rpad('13', 5, '-');  
+select rpad('13', 5, '-');    -- 13--- 
 select trim(' Hello MySQL ');
 select substring('Hello MySQL',1,3);  -- 从第1个字符开始，截取3个字符。结果是Hel
 select length(name)     -- 5
@@ -452,12 +452,24 @@ select ceil(1.1);
 select floor(1.9);
 select mod(7,4);    -- 7%4
 select rand();      -- [0.0, 1.0]
-select round(2.344,2);  -- 保留2位小数
+select round(2.344, 2);  -- 保留2位小数
 
 -- 生成一个六位数的随机验证码。
 select lpad(round(rand()*1000000 , 0), 6, '0');
 ```
 日期函数
+
+datetime: 
+
+当下：curdate, curtime, now
+
+截取：date, time
+
+​	再细: year, month, day
+
+​		 hour, minute, second
+
+运算：date_add, datediff
 
 ```sql
 select curdate();     -- 2024-05-10
@@ -472,6 +484,8 @@ select date("2024/05/31 12:23:33");  -- 2024-05-31
 select date("2024/5/31 12:23:33");   -- 2024-05-31
 select date("24/5/31 12:23:33");     -- 2024-05-31
 
+select time("2024-05-31 12:23:33");	 -- 12:23:33
+
 select year("2024-05-31 12:23:33");   -- 2024
 select month("2024-05-31 12:23:33");  -- 5
 select day("2024-05-31 12:23:33");    -- 31
@@ -480,6 +494,8 @@ select minute("2024-05-31 12:23:33"); -- 23
 select second("2024-05-31 12:23:33"); -- 33
 
 select date_add(now(), interval 70 year );    -- 2094-05-31 23:29:11
+select date_add(now(), interval -70 year );	  -- 1954-06-17 13:36:47
+select date_add(curdate(), interval -70 year ); -- 1954-06-17
 select datediff('2021-10-01', '2021-12-01');  -- -61  返回天
 数
 ```
@@ -598,7 +614,8 @@ group by t1.emp_no;
 
 - select中
 - 聚合函数中
-    
+  
+
 1、distinct语句中select显示的字段只能是distinct指定的字段，其他字段是不可能出现的。
 ```sql
 -- 单个去重

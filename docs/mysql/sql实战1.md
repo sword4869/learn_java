@@ -15,7 +15,7 @@
 
 ---
 
-# DDL 
+# DDL
 
 ```sql
 -- 查询所有数据库
@@ -26,7 +26,7 @@ use 数据库名;
 -- 查询当前数据库所有表
 show tables;
 ```
-## 数据库
+## DDL数据库
 ```sql
 create database [ if not exists ] 数据库名 [ default charset 字符集 ] [ collate 排序
 规则 ];
@@ -39,7 +39,7 @@ create database itheima default charset utf8mb4;
 drop database [ if exists ] 数据库名;
 ```
 
-## 表
+## DDL表（有前缀 table）
 ```sql
 -- 查看指定表结构
 desc 表名;
@@ -157,7 +157,7 @@ CREATE TABLE audit (
 );
 ```
 
-# DML
+# DML（没有前缀）
 
 ## insert
 ```sql
@@ -174,7 +174,7 @@ mysql中常用的三种插入数据的语句:
   
     数据库会检查主键，如果出现重复会报错；
 - `insert ignore`表示只插入不存在的数据.
-    
+  
     表示如果中已经存在主键相同的记录，则忽略当前新数据，否则插入；
 - `replace into`表示插入替换数据
   
