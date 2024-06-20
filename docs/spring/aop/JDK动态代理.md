@@ -1,9 +1,9 @@
-我们只需要定义目标接口和实现目标接口的目标类，JDK动态代理会在运行时在内存中动态地创建一个实现目标接口的代理类。
 
 
+JDK动态代理使用Java**反射机制**生成代理对象。我们只需要**定义目标接口**和**实现目标接口的目标类**，JDK动态代理会在运行时在内存中动态地创建一个实现目标接口的代理类。
 
-JDK动态代理使用Java反射机制生成代理对象：`java.lang.reflect` 包中的两个类 `Proxy`和`InvocationHandler`
 
+`java.lang.reflect` 包中的两个类 `Proxy`和`InvocationHandler`
 -  `InvocationHandler`：实现该接口的`invoke`方法，定义横切逻辑，然后通过反射机制调用目标类的代码。动态的将横切逻辑和业务逻辑编织在一起。 
 - `Proxy`: 类是所有动态代理类的父类，它有一个名为 `newProxyInstance`的方法，这个方法生成动态代理对象
   方法接收三个参数： 
