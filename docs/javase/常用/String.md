@@ -50,9 +50,19 @@ s6额外产生了4个字符串
 
 char和byte数组还可以指定起始下标和个数。`new String(chs, 0, count)`
 
-具体区别：
-- 只有直接赋值的 `String a = "abc";`，JVM会在字符串常量池中创建String对象，字符串相同就复用，不创建新的。所以地址值相同，都指向字符串常量池。
-- 而new的不在这里 `String a = new String(...);` 不复用，每次都会在堆上创建String对象，虽然内容相同，但是地址不同。
+### String a = "abc"和String a = new String(...)
+
+只有直接赋值的 `String a = "abc";`，JVM会在字符串常量池中创建String对象，字符串相同就复用3，不创建新的。所以地址值相同，都指向字符串常量池。
+
+new的不在这里 `String a = new String(...);` 不复用，每次都会在堆上创建String对象，虽然内容相同，但是地址不同。
+
+### String str = new String(“abc”)，一共创建了几个对象
+
+1个或2个
+
+"abc"，在字符串常量池中，有则复用，没有则创建。
+
+new String(“abc”)，每次都会在堆上创建String对象。
 
 ![](../../../images/image_id=410724.jpg)
 
@@ -252,7 +262,7 @@ System.out.println(length);
     String s2 = "b";
     String s3 = "c";
     String s4 = s1 + s2 + s3;
-
+    
     // 预估两次
     String s1 = "a";
     String s2 = s1 + "b";

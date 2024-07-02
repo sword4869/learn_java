@@ -29,7 +29,7 @@
 
 不是循环等待，而是利用**信号量和PubSub机制**实现等待唤醒。
 
-## redisson 超时续约
+## redisson 超时续约：看门狗
 
 利用**watchDog**机制，每隔一段时间(releaseTime/3)，重置超时时间。
 
