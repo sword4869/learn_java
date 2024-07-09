@@ -60,20 +60,28 @@ PS：记得重装容器的时候，清除 /mydata/mysql/data 和 log 的文件�
 
 1. 下载链接：[mysql-installer-community-8.0.36.0.msi](https://dev.mysql.com/downloads/installer)
 
-    ![alt text](../../images/image-89.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616938.png)
 
-    ![alt text](../../images/image-90.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616210.png)
 
 2. 没有Custom type，就选Full type吧。
 
-    ![alt text](../../images/image-91.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616212.png)
 
 3. Type and Networking：就用默认端口3306，直接next
 
-4. Accounts and Roles：设置密码123456（后面来讲，其实不用设置）
+4. Accounts and Roles：
 
-    ![alt text](../../images/image-92.png)
-5. 安装失败
+    【有密码方式】
+
+    设置密码 `mysql`
+
+    ![image-20240709162853602](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091628701.png)
+
+    【空密码方式】
+
+    安装失败
+
     > Attempting to start service MySQL80...
     > Failed to start service MySQL80.
     > 只有在任务处于完成状态(RanToCompletion、Faulted 或 Canceled)时才能释放它。
@@ -81,27 +89,36 @@ PS：记得重装容器的时候，清除 /mydata/mysql/data 和 log 的文件�
     > ....
     > 
     搜索“服务”。
-    
+
     “服务” → 在里面找到 “mysqlXX” → 右键 “属性” → 点击“登录”选项卡。选择 本地统账> 户后 点击确定 ，然后再 右键 启动 就可以了。
-    
-    ![alt text](../../images/image-93.png)
-    
-    ![alt text](../../images/image-94.png)
-    
+
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616214.png)
+
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616215.png)
+
     接着安装 execute 就没问题了
 
-6. MySQL Router Configuration：finish
+5. MySQL Router Configuration：finish
 
-7. Connect To Server：密码123456失败，不管直接next。
-   
+6. Connect To Server：
+
+    【有密码方式】
+
+    ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091633518.png)
+
+    【空密码方式】
+
+    密码123456失败，不管直接next。
+
     因为“本地系统账户”这种方式登录应该是没有密码的，因为默认windows管理员账户是没密码的，因此也就不可能进行connect to server的测试，所以点“Cancel”取消这一步即可。
 
-    ![alt text](../../images/image-95.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616216.png)
 
     虽然可以登录`mysql -u root -p`或`mysql-cli`直接回车登录MySQL，但是DataGrip配置空密码就链接不上。
-    
+
     所以必须修改密码：`ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';`
-8. next，finish。
+
+7. next，finish。
 ### 启动指令
 
 - `net start mysql80`
@@ -124,23 +141,23 @@ net stop mysql80
 
 2. MySQL COmmand Line Client
 
-    ![alt text](../../images/image-96.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616217.png)
 
 
 ## DataGrip
 
 <https://www.jetbrains.com/datagrip/download/#section=windows>
 
-![alt text](../../images/image-97.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616218.png)
 
-![alt text](../../images/image-98.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616219.png)
 
 - 查看DDL
 
 方式1：
-![alt text](../../images/image-133.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616220.png)
 
 方式2：
-![alt text](../../images/image-334.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091616221.png)
 
 - 导入sql脚本：https://blog.csdn.net/qq_44696465/article/details/131523368
