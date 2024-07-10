@@ -1,11 +1,3 @@
-- [mysql-docker](#mysql-docker)
-- [mysql-windows](#mysql-windows)
-  - [启动指令](#启动指令)
-  - [客户端连接](#客户端连接)
-- [DataGrip](#datagrip)
-
----
-
 ## mysql-docker
 
 ```bash
@@ -108,7 +100,7 @@ PS：记得重装容器的时候，清除 /mydata/mysql/data 和 log 的文件�
 
     【空密码方式】
 
-    密码123456失败，不管直接next。
+    不管直接next。
 
     因为“本地系统账户”这种方式登录应该是没有密码的，因为默认windows管理员账户是没密码的，因此也就不可能进行connect to server的测试，所以点“Cancel”取消这一步即可。
 
@@ -116,7 +108,7 @@ PS：记得重装容器的时候，清除 /mydata/mysql/data 和 log 的文件�
 
     虽然可以登录`mysql -u root -p`或`mysql-cli`直接回车登录MySQL，但是DataGrip配置空密码就链接不上。
 
-    所以必须修改密码：`ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';`
+    所以必须修改密码：`ALTER USER 'root'@'localhost' IDENTIFIED BY 'mysql';`
 
 7. next，finish。
 ### 启动指令

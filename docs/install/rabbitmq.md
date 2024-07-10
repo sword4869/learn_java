@@ -14,18 +14,24 @@
 
 ## RabbitMQ
 
-`xxx/sbin`: bat脚本
+（1）环境变量`xxx/sbin`: bat脚本
 
-启动服务、关闭服务。
+​	启动服务、关闭服务。
 
-![image-20240709223102803](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407092231866.png)
+​	![image-20240709223102803](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407092231866.png)
+
+（2）启动服务，这样才会产生`C:\Windows\System32\config\systemprofile\.erlang.cookie`。
 
 ```
 $ rabbitmq-plugins enable rabbitmq_management
 $ rabbitmqctl status
 ```
 
-`C:\Users\xxx\.erlang.cookie`和`C:\Windows\System32\config\systemprofile\.erlang.cookie`不一致，让前者和后者一致即可。
+（3）`rabbitmqctl status`报错
+
+​	`C:\Users\xxx\.erlang.cookie`和`C:\Windows\System32\config\systemprofile\.erlang.cookie`不一致，让前者和后者一致即可。
+
+​	然后不用重启服务，直接`rabbitmqctl status`就能显示正确。
 
 ## 测试
 
