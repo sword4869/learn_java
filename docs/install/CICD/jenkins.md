@@ -1,36 +1,29 @@
-- [总结](#总结)
-- [构建： jenkins的 tjxt-dev-build](#构建-jenkins的-tjxt-dev-build)
-  - [拉取源码](#拉取源码)
-  - [打包](#打包)
-
----
-
-# 总结
+## 总结
 
 分两步走：
 1. 构建：tjxt-dev-build。拉远程代码、打包
 2. 布署：根据构建出来的最新的包，创建对应docker镜像、启动容器。
 
-![alt text](../../images/image-381.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313757.png)
 
 此外，gogs远程仓库还设置了**钩子**，来自动构建。
 
-![alt text](../../images/image-380.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313758.png)
 
 
-# 构建： jenkins的 tjxt-dev-build
+## 构建： jenkins的 tjxt-dev-build
 
-![alt text](../../images/image-379.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313759.png)
 
 ## 拉取源码
 
 远程仓库地址和分支
 
-![alt text](../../images/image-350.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313760.png)
 
 ## 打包
 
-![alt text](../../images/image-335.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313761.png)
 
 
 ```
@@ -41,9 +34,9 @@ clean package -DskipTests=true
 这里的跳过测试，我本地打包是一遇到测试就报错，过不了。原来jenkins能打包是因为这个啊。
 
 
-![alt text](../../images/image-383.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313762.png)
 
-![alt text](../../images/image-382.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102313763.png)
 ```bash
 #! /bin/sh
 cd /usr/local/src/script || exit 1

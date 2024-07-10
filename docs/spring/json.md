@@ -71,3 +71,14 @@ User getUser = objectMapper.readValue(json, User.class);
 ### 如何让Jackson序列化时，忽视空值字段？
 
 ![alt text](../../images/image-329.png)
+
+## 忽略？？？
+
+```
+import com.alibaba.fastjson.annotation.JSONField;
+@JSONField(serialize = false)
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+@JsonIgnore
+```
