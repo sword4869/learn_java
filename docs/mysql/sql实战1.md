@@ -1,19 +1,4 @@
-- [DDL](#ddl)
-  - [DDL数据库](#ddl数据库)
-  - [DDL表（有前缀 table）](#ddl表有前缀-table)
-- [索引](#索引)
-- [约束](#约束)
-  - [外键](#外键)
-  - [唯一](#唯一)
-- [DML（没有前缀）](#dml没有前缀)
-  - [insert](#insert)
-  - [delete](#delete)
-    - [不能对同一个表来边查边删](#不能对同一个表来边查边删)
-  - [update](#update)
-    - [replace函数](#replace函数)
-- [DCL](#dcl)
 
----
 
 # DDL
 
@@ -264,7 +249,7 @@ DROP USER '用户名'@'主机名' ;
 • 主机名可以使用 % 通配
 ```
 
-![alt text](../../images/image-392.png)‘
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153008.png)‘
 
 ```sql
 -- 查询权限

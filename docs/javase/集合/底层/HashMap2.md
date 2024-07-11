@@ -6,7 +6,7 @@ HashMap底层是哈希表结构的
 注意：
 - 依赖hashCode方法和equals方法保证**键的唯一**
 - 如果键要存储的是自定义对象，需要重写hashCode和equals方法
-![Alt text](../../../../images/image-45.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112132159.png)
 
 ### 2.1. 底层
 

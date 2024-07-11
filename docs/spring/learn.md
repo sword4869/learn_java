@@ -59,4 +59,4 @@ IOC容器中创建、管理的对象，称之为：bean对象
 - @Autowired 是spring框架提供的注解，而@Resource是JDK提供的注解
 - @Autowired 默认是按照类型注入，而@Resource是按照名称注入
 
-![alt text](../../images/image-211.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112201180.png)

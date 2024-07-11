@@ -1,14 +1,14 @@
 ## redis命令：EVAL
 
-![alt text](../../../images/image-276.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112219844.png)
 
-![alt text](../../../images/image-277.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112219845.png)
 
 ## EVAL对应的Java的 RedisTemplate的API
 
 1. lua脚本位置放在classpath下
 
-    ![alt text](../../../images/image-278.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112219846.png)
 
 2. `stringRedisTemplate.execute()`
 

@@ -1,25 +1,3 @@
-- [Mybatis导入](#mybatis导入)
-  - [起步依赖](#起步依赖)
-  - [yaml配置](#yaml配置)
-  - [mapper,service](#mapperservice)
-- [MybatisPlus插件](#mybatisplus插件)
-- [PO](#po)
-- [BaseMapper和IService](#basemapper和iservice)
-- [Wrapper 条件构造器](#wrapper-条件构造器)
-  - [总结4种方式](#总结4种方式)
-  - [order by field](#order-by-field)
-- [常量、枚举](#常量枚举)
-- [自动更新时间](#自动更新时间)
-- [逻辑删除](#逻辑删除)
-- [page](#page)
-  - [mp](#mp)
-  - [pagehelper依赖](#pagehelper依赖)
-- [动态sql查询](#动态sql查询)
-- [循环依赖](#循环依赖)
-- [例子](#例子)
-
-
----
 https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylink
 ## Mybatis导入
 
@@ -111,11 +89,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
 直接从数据库生成po类、mapper、service、controller
 
-![alt text](../../images/image-325.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416624.png)
 
-![alt text](../../images/image-326.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416626.png)
 
-![alt text](../../images/image-195.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416627.png)
 
 > 生成完后的修改
 
@@ -159,12 +137,12 @@ public class User {
 
 > BaseMapper 和 IService 对比
 
-![alt text](../../images/image-264.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416628.png)
 
 
 > IService
 
-![alt text](../../images/image-265.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416629.png)
 
 > 总结
 
@@ -172,7 +150,7 @@ public class User {
 - `getById(id)`: [queryUserById()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
 - `removeById(id)`: [deleteUserById()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
 - `updateById(T)`: [updateUser()](../../codes/javaweb/crud/src/main/java/com/sword/crud/controller/UserController.java)
-    
+  
     只更新传递的字段(非null)
     
     id为null不会报错：底层是`where id = ?`，所以id没有传递，默认值是null则无行更新；id传递了，才更新某行。
@@ -194,11 +172,11 @@ public class User {
 
 ## Wrapper 条件构造器
 
-![alt text](../../images/image-262.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416630.png)
 
-![alt text](../../images/image-197.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416631.png)
 
-![alt text](../../images/image-200.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416632.png)
 
 1. Wrapper的子类 `AbstractWrapper` 和 `AbstractChainWrapper` 提供了where中包含的所有条件构造方法。
 
@@ -327,13 +305,13 @@ List<UserDTO> userDTOS = userService.query()
 create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
 update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ```
-![alt text](../../images/image-250.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416633.png)
 
-![alt text](../../images/image-251.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416634.png)
 
-![alt text](../../images/image-252.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416635.png)
 
-![alt text](../../images/image-253.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416636.png)
 
 ## 逻辑删除 
 
@@ -380,7 +358,7 @@ select * from address where deleted = 0
 定义 [config类](../../codes/javaweb/crud/src/main/java/com/sword/crud/config/MybatisPlusConfig.java) 去导入mp分页插件。
 
 1. 前端的请求参数：[分页参数的父类](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/PageQuery.java)和[继承它的业务参数](../../codes/javaweb/crud/src/main/java/com/sword/crud/domain/query/UserConditionQuery.java)。
-    
+   
     分页参数用一个类定义，业务参数类继承分页参数，实现参数复用。
 2. mp核心: 
    - Page对象，传入第几页和页大小，添加结果排序规则。
@@ -444,15 +422,28 @@ Page<Blog> page = blogService.query()
         <version>1.4.2</version>
     </dependency>
     ```
-   
+
     ```yml
     pagehelper:
       helper-dialect: mysql
       reasonable: true  # 在启用合理化时，如果 pageNum<1，则会查询第一页；如果 pageNum>pages，则会查询最后一页。
       support-methods-arguments: true # 支持通过Mapper接口参数来传递分页参数
+      # close-conn: true	# 默认true关闭。当使用运行时动态数据源或没有设置 helperDialect 属性自动获取数据库类型时，会自动获取一个数据库连接， 通过该属性来设置是否关闭获取的这个连接，设置为 false 后，不会关闭获取的连接，这个参数的设置要根据自己选择的数据源来决定。
     ```
-   
+
     不管mybatis-config.xml之类的东西，直接能用
+
+    ```java
+    PageHelper.startPage(query.getPageNum().intValue(), query.getPageSize().intValue());		// 都要求是int值，这里是从Long转
+    // .....查询：得到List<User> users;
+    // 转化正常查询集合→Page<T>：p,getResult()获取List<T>，p.getTotal()总条数, p.getPages()总页
+    Page<User> p = (Page)users;
+    // 返回结果
+    List<UserVO> vos = BeanUtil.copyToList(p.getResult(), UserVO.class);
+    PageDTO<UserVO> pageDTO = new PageDTO<UserVO>(p.getTotal(), (long) p.getPages(), vos);
+    ```
+
+    
 
 2. 遗留问题：随便翻翻，没看到有排序的的，以后再说。
 

@@ -1,19 +1,19 @@
 
 ## 修改默认配置
 
-![alt text](../../images/image-254.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323063.png)
 
 ## 使用
 
 ### 打开
 
-![alt text](../../images/image-255.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323065.png)
 
 ### 显示内容
 
 > 六大内容
 
-![alt text](../../images/image-256.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323066.png)
 
 属性
 
@@ -30,28 +30,28 @@ Properties
 
 > 访问等级
 
-![alt text](../../images/image-258.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323067.png)
 
 > 箭头
 
-![alt text](../../images/image-260.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323068.png)
 
 纯虚线箭头：依赖
 
-![alt text](../../images/image-261.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323069.png)
 ### 删除不关心的类
 右击Delete即可
 
 ### 添加类
 
-![alt text](../../images/image-257.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323070.png)
 
 添加实现类
 
-![alt text](../../images/image-259.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323071.png)
 
 添加父类
 
 ### 查看源码
 
-![alt text](../../images/image-263.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111323072.png)

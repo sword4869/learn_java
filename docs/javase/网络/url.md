@@ -1,4 +1,4 @@
-![Alt text](../../../images/image-9.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112136936.png)
 
 ```java
 import java.io.BufferedInputStream;

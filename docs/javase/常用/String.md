@@ -1,22 +1,4 @@
-- [String](#string)
-  - [创建String对象](#创建string对象)
-  - [键入String](#键入string)
-  - [比较String](#比较string)
-  - [修改某个字符](#修改某个字符)
-  - [子串 substring()方法](#子串-substring方法)
-  - [找索引](#找索引)
-  - [大小写](#大小写)
-  - [分割](#分割)
-- [StringBuilder: 快速拼接字符串。](#stringbuilder-快速拼接字符串)
-  - [字符串拼接](#字符串拼接)
-  - [手动StringBuilder提高字符串效率](#手动stringbuilder提高字符串效率)
-  - [和String比较](#和string比较)
-- [StringJoiner](#stringjoiner)
-- [其他](#其他)
-    - [int转String](#int转string)
-    - [重复几次](#重复几次)
 
----
 ## String
 
 - String 类在 java.lang 包下，所以使用的时候不需要导包
@@ -26,11 +8,11 @@
 
 创建了几个字符串
 
-![](../../../images/image_id=410717.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112117467.jpg)
 
 s6额外产生了4个字符串
 
-![](../../../images/image_id=410772.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112117468.jpg)
 
 ### 创建String对象
 
@@ -64,9 +46,9 @@ new的不在这里 `String a = new String(...);` 不复用，每次都会在堆�
 
 new String(“abc”)，每次都会在堆上创建String对象。
 
-![](../../../images/image_id=410724.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112117469.jpg)
 
-![](../../../images/image_id=410727.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112117470.jpg)
 
 ### 键入String
 
@@ -320,7 +302,7 @@ String s = sb.toString();
 
 ### 和String比较
 
-![](../../../images/image_id=412988.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112117471.jpg)
 
 ## StringJoiner
 

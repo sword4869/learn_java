@@ -1,13 +1,3 @@
-- [介绍](#介绍)
-- [@EqualsAndHashCode](#equalsandhashcode)
-- [@AllArgsConstructor](#allargsconstructor)
-- [@RequiredArgsConstructor](#requiredargsconstructor)
-- [@Accessors](#accessors)
-- [@Builder](#builder)
-- [@Slf4j](#slf4j)
-
-
----
 ## 介绍
 
 Lombok会在**编译**时，会自动生成对应的java代码
@@ -63,8 +53,8 @@ User user = User.of("Tom", 123);
 
 自动注入的原理是基于Spring构造函数注入，像这样：
 
-![alt text](../../images/image-307.png)
- 
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112201611.png)
+
 但是，如果需要注入的属性较多，构造函数就会非常臃肿，代码写起来也比较麻烦。
 
 ```java
@@ -91,7 +81,7 @@ https://blog.csdn.net/sunnyzyq/article/details/119992746
 
 ## @Builder
 
-![alt text](../../images/image-331.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112201612.png)
 
 ## @Slf4j
 

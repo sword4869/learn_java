@@ -2,7 +2,7 @@
 
 IDEA自动重写: alt + insert 
 
-![](../../images/image_id=412987.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047993.jpg)
 
 Java Bean生成： IDEA自动重写
 - constructor: 'Select None' 和 全选
@@ -34,9 +34,9 @@ ctrl+alt+d：surround with。try是6.
 
 ctrl+alt+t: try-catch捕获
 
-导入jar包：![Alt text](../../images/image-8.png)
+导入jar包：![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047994.png)
 
-![Alt text](../../images/image-53.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047995.png)
 - 第一个函数是自己的。
 - 第二个函数是`→`，表示继承自`Map`中。
 - 第三个函数是`↑`，表示继承并重写自`Map`中。
@@ -44,7 +44,7 @@ ctrl+alt+t: try-catch捕获
 
 ## jar包
 
-![alt text](../../images/image-61.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047996.png)
 
 ## 插件
 
@@ -53,13 +53,13 @@ MyBatisX: mybatis的sql之xml配置
 
 Grep Console: console 高亮某个字段
 
-![alt text](../../images/image-78.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047997.png)
 
-![alt text](../../images/image-77.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047998.png)
 
 编译
 
-![alt text](../../images/image-102.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112047999.png)
 
 - 选中文件，View->show Bytecode With Jclasslib
 - 如果更改后，需要重新编译。直接Run 或者 Build-> Recompile xxx.java

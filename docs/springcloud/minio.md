@@ -1,14 +1,6 @@
-- [md5](#md5)
-- [创建MinioClient对象](#创建minioclient对象)
-- [minio上传文件](#minio上传文件)
-- [minio删除文件](#minio删除文件)
-- [minio检测文件是否存在](#minio检测文件是否存在)
-- [minio获取文件](#minio获取文件)
-- [minio合并分块](#minio合并分块)
 
 
----
-![alt text](../../images/image-416.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209803.png)
 
 ```xml
 <dependency>

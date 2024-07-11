@@ -1,13 +1,3 @@
-- [mq](#mq)
-- [拼音自动补全](#拼音自动补全)
-- [数据同步](#数据同步)
-- [es集群](#es集群)
-- [sentinel](#sentinel)
-- [分布式事务 Seata](#分布式事务-seata)
-- [SpringAMQP](#springamqp)
-- [业务](#业务)
-
----
 ## mq
 
 1. 常量类：交换机名、队列名、routingkey
@@ -69,7 +59,7 @@ es集群节点的角色：
 
 新增文档流程
 
-![alt text](../../images/image-13.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211767.png)
 
 查询流程：
 - 分散阶段：协调节点分发请求到各分片
@@ -121,7 +111,7 @@ sentinel实现了后三种。
 
 熔断降级：
 
-![alt text](../../images/image-30.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211768.png)
 
 - 慢调用比例：慢调用，业务的响应时间RT长。
 - 异常比例
@@ -231,7 +221,7 @@ SpringAMQP中处理消息确认的几种情况: 消息发送到MQ（交换机和
 
 admin模块修改mysql，同步demo模块的es，demo展示给前段。
 - 修改mysql只需两个方法：增改一样、删
-    
+  
     为什么增改一样？ es的增改操作一样 + 拿着id去mysql找新的数据。
 
 > 业务隔离

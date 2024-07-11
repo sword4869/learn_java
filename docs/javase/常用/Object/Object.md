@@ -1,23 +1,48 @@
-# Object的五个方法
+## Object的方法
 
 1. 所有类直接或间接地继承Object类
-   
-    ![](../../../../images/image_id=412982.jpg)
 
-2. Object有5个虚方法，只要继承Object类就自动会获得这么5个虚方法:
-   - `public int hashCode()`
-   - `public boolean equals(Object obj)`
-   - `public String toString()`
-   - `protected Object clone()`
-   - `protected void finalize()`: JDK9被弃用
+    ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111044320.jpg)
 
-![](../../../../images/image_id=413197.jpg)
+2. 所有方法
 
+    打印和比较
 
+    - `public String toString()`: 如果没有重写，应用对象将打印的是地址值
+    - `public boolean equals(Object obj)`: 如果没有重写，比较对象的地址值
+    - `public native int hashCode()`
 
-### 1.2. toString()
+    反射
 
-![Alt text](../../../../images/image-43.png)
+    - `public final native getClass()`
+
+    锁
+
+    - `public final native void notify(), notifyAll()`
+    - `public final void wait(), wait(long), wait(long,int)`: 其中wait(long)是虚方法，其他不是
+
+    克隆和终结
+
+    - `protected native Object clone()`: 浅克隆方法
+    - `protected void finalize()`: 对象回收时调用，JDK9被弃用
+
+3. Object有6个虚方法
+
+    `hashCode()`,
+
+    `getClass()`, 
+
+    `notify()`, `notifyAll()`, 
+
+    `wait(long)`, 
+
+    `clone()`
+
+## toString()
+
+如果没有重写，应用对象将打印的是地址值
+
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111044322.png)
 
 
 

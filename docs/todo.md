@@ -1,51 +1,5 @@
-- [静态内部类内能用this吗？](#静态内部类内能用this吗)
-- [前后端分离的理解](#前后端分离的理解)
-- [Java特性有哪些？](#java特性有哪些)
-- [a = a + b 与 a += b 的区别](#a--a--b-与-a--b-的区别)
-- [重载和重写的区别](#重载和重写的区别)
-- [final和finally和finalize的区别](#final和finally和finalize的区别)
-- [HashMap的底层原理、扩容机制源码](#hashmap的底层原理扩容机制源码)
-- [ConcurrentHashMap](#concurrenthashmap)
-- [有哪些方式创建对象](#有哪些方式创建对象)
-- [抽象类和接口的区别](#抽象类和接口的区别)
-- [对于解决哈希冲突来说，常见的方法](#对于解决哈希冲突来说常见的方法)
-- [那Java中用来解决hash冲突的方法是什么，底层的实现细节（关于为什么是8，我说的是因为泊松分布，面试官说其实按魔法数理解会合适一些）](#那java中用来解决hash冲突的方法是什么底层的实现细节关于为什么是8我说的是因为泊松分布面试官说其实按魔法数理解会合适一些)
-- [hash算法](#hash算法)
-- [hascode](#hascode)
-- [hashcode的底层实现](#hashcode的底层实现)
-- [equals和hashcode都必须重写吗](#equals和hashcode都必须重写吗)
-- [String的hashCode](#string的hashcode)
-- [equals()方法和==的区别](#equals方法和的区别)
-- [String、StringBuffer与StringBuilder的区别？](#stringstringbuffer与stringbuilder的区别)
-- [equals()既然已经能实现对比的功能了，为什么还要hashCode()呢？](#equals既然已经能实现对比的功能了为什么还要hashcode呢)
-- [为什么在重写 equals 方法的时候需要重写 hashCode 方法?](#为什么在重写-equals-方法的时候需要重写-hashcode-方法)
-- [hashCode()既然效率这么高为什么还要equals()呢？](#hashcode既然效率这么高为什么还要equals呢)
-- [为什么要重写 hashcode 和 equals 方法？](#为什么要重写-hashcode-和-equals-方法)
-- [this() \& super()在构造方法中的区别？](#this--super在构造方法中的区别)
-- [Object有哪些方法？](#object有哪些方法)
-- [Java元注解有哪些？都有什么作用？](#java元注解有哪些都有什么作用)
-- [为什么需要泛型？](#为什么需要泛型)
-- [Java异常分类](#java异常分类)
-- [Error和Exception的区别？](#error和exception的区别)
-- [常见的异常有哪些？](#常见的异常有哪些)
-- [正规的规则引擎了解过吗](#正规的规则引擎了解过吗)
-- [脏读？](#脏读)
-- [sql语言怎么实现乐观锁和悲观锁（for update，version版本控制）](#sql语言怎么实现乐观锁和悲观锁for-updateversion版本控制)
-- [单点登录是怎么实现的](#单点登录是怎么实现的)
-- [为什么用JWT？](#为什么用jwt)
-- [cookie的问题](#cookie的问题)
-- [常见的实现登录的方式有哪些](#常见的实现登录的方式有哪些)
-- [传统Session](#传统session)
-- [redis+token（redis做登录的话，其中存了什么东西）](#redistokenredis做登录的话其中存了什么东西)
-- [为什么用JWT？优点？缺点？](#为什么用jwt优点缺点)
-- [http和https](#http和https)
-- [用户登录是否有过期时间，再次登录时，过期时间是顺延还是继续计时（顺延）](#用户登录是否有过期时间再次登录时过期时间是顺延还是继续计时顺延)
-- [cookie和session的区别（位置，安全性，生命周期，保存数据类型）](#cookie和session的区别位置安全性生命周期保存数据类型)
-- [cookie中存了什么样的信息，可以判断用户有否处于登录态（Session ID）](#cookie中存了什么样的信息可以判断用户有否处于登录态session-id)
-- [cookie被伪造？会导致什么问题，怎么解决](#cookie被伪造会导致什么问题怎么解决)
-- [秒杀](#秒杀)
 
----
+
 ## 静态内部类内能用this吗？
 ## 前后端分离的理解
 ## Java特性有哪些？
@@ -70,13 +24,13 @@ new
 
 ## hash算法
 
-![alt text](../images/image-203.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216968.png)
 
-![alt text](../images/image-204.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216969.png)
 
-![alt text](../images/image-205.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216970.png)
 
-![alt text](../images/image-206.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216971.png)
 
 ## hascode
 
@@ -107,9 +61,9 @@ hashcode的6种生成策略： https://zhuanlan.zhihu.com/p/348612455
 
 ## String的hashCode
 
-![alt text](../images/image-201.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216972.png)
 
-![alt text](../images/image-202.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216973.png)
 
 ## equals()方法和==的区别
 
@@ -225,7 +179,7 @@ jwt
 
 缺点：
 - 安全性：
-    
+  
     我们用的是hutool工具包内的JWT生成token，如果被人知道这个信息的话，token是可以被解密的，不是很安全，不能放敏感信息。
 
     解决：加盐值（密钥）。每个项目的盐值都不能一样。
@@ -235,7 +189,7 @@ jwt
     解决：对同一用户的同时登录数量进行限流。
 
 - 一次性
-    
+  
     无状态是jwt的特点，但也导致了这个问题，jwt是一次性的。想修改里面的内容，就必须签发一个新的jwt。
 
     （1）无法废弃：通过上面jwt的验证机制可以看出来，一旦签发一个jwt，在到期之前就会始终有效，无法中途废弃。例如你在payload中存储了一些信息，当信息需要更新时，则重新签发一个JWT，但是由于旧的JWT还没过期，拿着这个旧的JWT依旧可以登录，那登录后服务端从JWT中拿到的信息就是过时的。为了解决这个问题，我们就需要在服务端部署额外的逻辑，例如设置一个黑名单，一旦签发了新的jwt，那么旧的就加入黑名单（比如存到redis里面），避免被再次使用。
@@ -260,7 +214,7 @@ cookie被拿到以后，通常可以换一个机器访问。
 
 消息队列，削峰什么
 
-![alt text](../images/image-115.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112216974.png)
 
 
 

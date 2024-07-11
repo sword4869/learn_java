@@ -1,13 +1,4 @@
-- [1. Collection接口](#1-collection接口)
-  - [创建集合的对象的类型](#创建集合的对象的类型)
-  - [例子](#例子)
-  - [1.1. 遍历](#11-遍历)
-    - [1.1.1. 迭代器遍历](#111-迭代器遍历)
-      - [1.1.1.1. 迭代器](#1111-迭代器)
-    - [1.1.2. 增强for遍历](#112-增强for遍历)
-    - [1.1.3. Lambda表达式遍历](#113-lambda表达式遍历)
 
----
 
 ## 1. Collection接口
 
@@ -169,14 +160,14 @@ String str = it.next();     // java.util.NoSuchElementException
 - 遍历完后，报错NoSuchElementException
 - 迭代器遍历完毕, 指针不会复位。所以我们要继续第二次遍历集合，只能再次获取一个新的迭代器对象。
 - 迭代器遍历时，不能用集合的方法进行增加或者删除。
-    
+  
     删除可以用迭代器的remove方法来删除。
 
     添加还是不行。
 
 
 ##### 1.1.1.1. 迭代器
-![Alt text](../../../images/image-15.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112132612.png)
 
 #### 1.1.2. 增强for遍历
 

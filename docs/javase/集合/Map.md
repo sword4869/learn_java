@@ -1,13 +1,5 @@
-- [1. HashTable](#1-hashtable)
-- [2. Map接口](#2-map接口)
-  - [2.1. 遍历](#21-遍历)
-- [3. ConcurrentHashMap](#3-concurrenthashmap)
-- [4. LinkedHashMap](#4-linkedhashmap)
-- [5. TreeMap](#5-treemap)
-  - [5.1. 底层](#51-底层)
 
 
----
 ## 1. HashTable
 
 ## 2. Map接口
@@ -192,7 +184,7 @@ entrySet.forEach(new Consumer<Map.Entry<String, String>>() {
 - 依赖自然排序或者比较器排序，**对键进行排序**
 - 如果键存储的是自定义对象，需要实现Comparable接口或者在创建TreeMap对象时候给出比较器排序规则
 
-![Alt text](../../../images/image-47.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133976.png)
 
 ### 5.1. 底层
 
@@ -417,15 +409,15 @@ entrySet.forEach(new Consumer<Map.Entry<String, String>>() {
 
 
 - 6.2 HashMap是哈希表结构的，JDK8开始由数组，链表，红黑树组成的。既然有红黑树，HashMap的键是否需要实现Compareable接口或者传递比较器对象呢？
-    
+  
     不需要的。
     
     因为在HashMap的底层，默认是利用哈希值的大小关系来创建红黑树的
 
 - 6.3 TreeMap和HashMap谁的效率更高？
-    
+  
     如果是最坏情况，添加了8个元素，这8个元素形成了链表，此时TreeMap的效率要更高
-但是这种情况出现的几率非常的少。
+  但是这种情况出现的几率非常的少。
     
     一般而言，还是HashMap的效率要更高。
 

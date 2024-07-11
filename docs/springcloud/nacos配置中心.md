@@ -1,18 +1,3 @@
-- [如何使用nacos配置中心](#如何使用nacos配置中心)
-- [如何在nacos中添加配置文件](#如何在nacos中添加配置文件)
-- [bootstrap.yml 和 application.yml 的关系？](#bootstrapyml-和-applicationyml-的关系)
-- [配置优先级](#配置优先级)
-- [nacos如何去定位一个具体的配置文件](#nacos如何去定位一个具体的配置文件)
-- [nacos公共配置](#nacos公共配置)
-- [nacos扩展配置](#nacos扩展配置)
-- [日常使用](#日常使用)
-  - [是否需要重新maven编译](#是否需要重新maven编译)
-  - [注入的两种方式](#注入的两种方式)
-  - [远程配置的默认值](#远程配置的默认值)
-  - [如何修改spring.profiles.active](#如何修改springprofilesactive)
-
----
-
 [code: nacos_demo2](../../codes/cloud/nacos_demo2/user-service/src/main/resources/bootstrap.yml)
 
 ## 如何使用nacos配置中心
@@ -87,13 +72,13 @@ swagger:
 
 ## 如何在nacos中添加配置文件
 
-![alt text](../../images/image-362.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210500.png)
 
 然后在弹出的表单中，填写配置信息：
 
-![alt text](../../images/image-363.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210501.png)
 
-![alt text](../../images/image-367.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210502.png)
 
 ## bootstrap.yml 和 application.yml 的关系？
 
@@ -101,7 +86,7 @@ swagger:
 
 微服务将三者依次合并，才能完成项目启动。
 
-![alt text](../../images/image-361.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210503.png)
 
 ## 配置优先级
 
@@ -128,11 +113,11 @@ profiles不写是默认时，bootstrap或nacos的如果有，那么必被读取�
 vm的profiles会覆盖bootstrap的profiles。bootstrap和vm后最终的profiles是test，那么结果是**默认和test**起了。则bootstrap和nacos会起默认和test，谁有起谁。
   - 比如，都有，都起。
 
-    ![alt text](../../images/image-370.png)
+    ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210504.png)
 
   - 比如，bootstrap没test，nacos没默认。
 
-    ![bootstrap没test，nacos没默认](../../images/image-363.png)
+    ![bootstrap没test，nacos没默认](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210501.png)
 
 
 > 强制**本地配置**(bootstrap, application, vm)优先级最高（不被nacos覆盖）：
@@ -153,7 +138,7 @@ spring:
 namespace、group、dataid. 
 1. 通过config中的namespace、group定位配置所在环境。
 2. 再通过dataid找到具体的配置文件。
-    
+   
     dataid有三部分组成 `spring.application.name`-`spring.profiles.active`-`spring.cloud.nacos.config.file-extension`
 
 
@@ -177,7 +162,7 @@ PS：`spring.profiles.active`是由yml和vm参数共同决定的，而且vm会�
 
 若干项目中配置内容相同的配置。比如：redis的配置，很多项目用的同一套redis服务所以配置也一样。
 
-![alt text](../../images/image-141.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210505.png)
 
 ```yml
 # swagger 文档配置
@@ -274,10 +259,10 @@ spring:
 
 Active profiles会覆盖vm参数，大概因为其会被转化为vm参数拼接在原本vm参数后面。
 
-![alt text](../../images/image-301.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210506.png)
 
-![alt text](../../images/image-369.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210507.png)
 
 PS：注意不能嵌套自身。
 
-![alt text](../../images/image-368.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112210508.png)

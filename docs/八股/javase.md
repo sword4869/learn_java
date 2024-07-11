@@ -1,14 +1,3 @@
-- [String为什么不可改变？](#string为什么不可改变)
-- [String 为什么要设计成不可变的](#string-为什么要设计成不可变的)
-- [StringBuilder扩容原理](#stringbuilder扩容原理)
-- [StringBuffer和StringBuilder谁是线程安全的](#stringbuffer和stringbuilder谁是线程安全的)
-- [Object有5个虚方法](#object有5个虚方法)
-- [Java的数据类型](#java的数据类型)
-- [HashMap底层数据结构](#hashmap底层数据结构)
-- [红黑树和链表的转换](#红黑树和链表的转换)
-- [HashMap的扩容机制吗？](#hashmap的扩容机制吗)
-
----
 ## String为什么不可改变？
 
 <details>
@@ -18,7 +7,7 @@ String的底层是字节数组 `byte[]`。
 
 final + private + 且没有提供setter方法。
 
-![](../../images/image_id=412602.jpg)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112029731.jpg)
 
 </details>
 

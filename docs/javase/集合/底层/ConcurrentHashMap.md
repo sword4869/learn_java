@@ -1,8 +1,3 @@
-- [1. concurrentHashMap](#1-concurrenthashmap)
-- [2. JDK1.7 中concurrentHashMap](#2-jdk17-中concurrenthashmap)
-- [3. JDK1.8中concurrentHashMap](#3-jdk18中concurrenthashmap)
-
----
 ## 1. concurrentHashMap
 ConcurrentHashMap 是一种**线程安全**的高效Map集合
 
@@ -25,9 +20,9 @@ put流程
 - 以hash值，确定segment数组下标，确定hashEntry数组中的下标，来操作数据
 - ReentrantLock对segment数组下标进行加锁，获取锁失败就cas自旋锁进行尝试。
 
-![](../../../../images/image-20230505092654811.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130235.png)
 
-![](../../../../images/image-20230505093055382.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130237.png)
 
 ## 3. JDK1.8中concurrentHashMap
 
@@ -39,7 +34,7 @@ put流程
 
 - synchronized只锁定当前**链表或红黑二叉树的首节点**，只要hash不冲突，就不会产生并发的问题 , 效率得到提升
 
-![](../../../../images/image-20230505093507265.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130238.png)
 
 
 

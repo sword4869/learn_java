@@ -1,16 +1,3 @@
-- [如何将服务注册到nacos](#如何将服务注册到nacos)
-- [nacos服务分级存储模型](#nacos服务分级存储模型)
-- [Nacos 修改loadbalancer负载均衡策略为 集群](#nacos-修改loadbalancer负载均衡策略为-集群)
-- [nacos实现热更新负载均衡的权重](#nacos实现热更新负载均衡的权重)
-- [nacos服务下线的两种方式](#nacos服务下线的两种方式)
-- [nacos下线报错](#nacos下线报错)
-- [nacos环境隔离](#nacos环境隔离)
-- [nacos创建namespace](#nacos创建namespace)
-- [nacos非临时实例](#nacos非临时实例)
-- [nacos的ip是虚拟网卡](#nacos的ip是虚拟网卡)
-
----
-
 ## 如何将服务注册到nacos
 
 1. Nacos的依赖：父工程除了springcloud还要添加 alibaba 依赖管理，子工程是服务发现和配置中心。
@@ -65,7 +52,7 @@
 
 ## nacos服务分级存储模型
 
-![alt text](../../images/image-351.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209315.png)
 
 ```yml
 # 让服务到nacos服务器去注册服务
@@ -111,13 +98,13 @@ spring:
       discovery:
         cluster-name: HZ # 集群名称，默认是DEFAULT
 ```
-![alt text](../../images/image-352.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209316.png)
 
 效果就是，HZ上线时，只在HZ内轮询；当HZ下线了，才启用DAFAULT。
 
 ## nacos实现热更新负载均衡的权重
 
-![alt text](../../images/image-353.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209317.png)
 
 nacos实现热更新，控制服务访问。
 
@@ -126,19 +113,19 @@ nacos实现热更新，控制服务访问。
 
 方式1：点击下线按钮
 
-![alt text](../../images/image-310.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209318.png)
 
 方式2：点击编辑按钮，服务权重调整为0
 
-![alt text](../../images/image-312.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209319.png)
 
 ## nacos下线报错
 
 我们nacos-server:v2.1.0-slim版本的没有遇到。
 
-![alt text](../../images/image-310.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209318.png)
 
-![alt text](../../images/image-311.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209320.png)
 
 ## nacos环境隔离
 
@@ -146,7 +133,7 @@ Nacos环境隔离：（服务发现和配置中心都有）
 - namespace。开发环境、测试环境、生产环境。
 - group。区分项目。
 
-![alt text](../../images/image-354.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209321.png)
 
 使用命名空间需要先在nacos控制平台中创建，而group不用，直接在yml中配置就行。
 ```yml
@@ -162,7 +149,7 @@ spring:
 
 结果：
 
-![alt text](../../images/image-366.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209322.png)
 
 ```yaml
 # 配置中心
@@ -182,21 +169,21 @@ spring:
 
 ## nacos创建namespace
 
-![alt text](../../images/image-356.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209323.png)
 
-![alt text](../../images/image-357.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209324.png)
 
-![alt text](../../images/image-358.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209325.png)
 
 PS：不写`namespace` 和 `namespace: public`都表示使用public命名空间。
 
 `namespace: dev`，使用命名空间的名称是没用的，必须是命名空间id。而之所以有用，是因为命名空间id就是`dev`。
 
-![alt text](../../images/image-365.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209326.png)
 
 ## nacos非临时实例
 
-![alt text](../../images/image-360.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209327.png)
 
 Nacos的服务实例分为两种类型：临时实例（默认）和非临时实例：
 - 临时实例是心跳检测模式，服务提供者向nacos发ping；非临时实例，是nacos来主动询问服务提供者。
@@ -215,7 +202,7 @@ spring:
         ephemeral: false # 设置为非临时实例
 ```
 
-![alt text](../../images/image-359.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112209328.png)
 
 ## nacos的ip是虚拟网卡
 

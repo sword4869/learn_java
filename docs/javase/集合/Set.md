@@ -1,12 +1,3 @@
-- [1. Set接口](#1-set接口)
-- [2. HashSet](#2-hashset)
-  - [2.1. 哈希值](#21-哈希值)
-  - [2.2. 哈希表](#22-哈希表)
-- [3. LinkedHashSet](#3-linkedhashset)
-- [4. TreeSet](#4-treeset)
-
----
-
 ## 1. Set接口
 
 与Collection的API一致
@@ -49,7 +40,7 @@ s.forEach(str -> System.out.println(str));
 
 ### 2.1. 哈希值
 
-![Alt text](../../../images/image-31.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133611.png)
 
 ```java
 Student s1 = new Student("zhangsan", 23);
@@ -67,7 +58,7 @@ System.out.println("acD".hashCode());// 96354
 ```
 ### 2.2. 哈希表
 
-![Alt text](../../../images/image-32.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133612.png)
 
 ```java
 import java.util.HashSet;
@@ -137,7 +128,7 @@ class Student {
 
 ## 3. LinkedHashSet
 
-![Alt text](../../../images/image-33.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133613.png)
 
 ```java
 import java.util.LinkedHashSet;
@@ -163,11 +154,11 @@ public class A02_HashSetDemo1 {
 
 ## 4. TreeSet
 
-![Alt text](../../../images/image-34.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133614.png)
 
 因为Integer等已经实现了接口 `Comparable`
 
-![Alt text](../../../images/image-46.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133615.png)
 
 ```java
 TreeSet<Integer> ts = new TreeSet<>();

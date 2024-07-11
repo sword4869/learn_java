@@ -1,10 +1,5 @@
-- [1. 你谈谈 JMM（Java 内存模型）](#1-你谈谈-jmmjava-内存模型)
-- [2. 导致并发程序的问题原因(Java并发编程/JMM/线程安全的三大特性)](#2-导致并发程序的问题原因java并发编程jmm线程安全的三大特性)
-- [3. 那该如何保证Java程序在多线程的情况下执行安全呢？](#3-那该如何保证java程序在多线程的情况下执行安全呢)
-- [4. 内存屏障](#4-内存屏障)
 
 
----
 ## 1. 你谈谈 JMM（Java 内存模型） 
 
 JMM(Java Memory Model) Java内存模型。
@@ -24,7 +19,7 @@ Java内存模型，是一种抽象概念，描述了java虚拟机中所规范的
 3. 线程对变量的所有的操作(读，写)都必须在工作内存中完成，而不能直接读写主内存中的变量。
 4. 不同线程之间也不能直接访问对方工作内存中的变量，线程间变量的值的传递需要通过主内存完成。
 
-![](../../images/image-20230504181638237.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140956.png)
 
 
 ## 2. 导致并发程序的问题原因(Java并发编程/JMM/线程安全的三大特性)
@@ -66,7 +61,7 @@ volatile实现了JMM中的可见性和有序性，但无法保证原子性（还
 - 写操作加的屏障是阻止上方其它写操作越过屏障排到volatile变量写之下
 - 读操作加的屏障是阻止下方其它读操作越过屏障排到volatile变量读之上
 
-![](../../images/image-20230505082923729.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140957.png)
 
 ```java
 public class Reorder {
@@ -100,11 +95,11 @@ public class Reorder {
 
 在变量上添加volatile，禁止指令重排序，则可以解决问题
 
-![](../../images/image-20230505082835588.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140958.png)
 
 屏障添加的示意图
 
-![](../../images/image-20230505082923729.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140957.png)
 
 - 写操作加的屏障是阻止上方其它写操作越过屏障排到volatile变量写之下
 - 读操作加的屏障是阻止下方其它读操作越过屏障排到volatile变量读之上
@@ -115,11 +110,11 @@ public class Reorder {
 
 下面代码使用volatile修饰了x变量
 
-![](../../images/image-20230505083124159.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140959.png)
 
 屏障添加的示意图
 
-![](../../images/image-20230505083217904.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112140960.png)
 
 这样显然是不行的，主要是因为下面两个原则：
 

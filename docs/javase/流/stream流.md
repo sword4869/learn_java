@@ -1,14 +1,3 @@
-- [意义](#意义)
-- [获取流](#获取流)
-- [中间方法](#中间方法)
-- [终结方法](#终结方法)
-- [其他](#其他)
-  - [组合流](#组合流)
-  - [Stream.iterate()代替for循环](#streamiterate代替for循环)
-
-
----
-
 Stream流的三类方法：
 - 获取Stream流: 创建一条流水线，并把数据放到流水线上准备进行操作
 - 中间方法：一次操作完毕之后,还可以继续进行其他操作
@@ -63,7 +52,7 @@ list1.stream()
 
 ## 获取流
 
-![Alt text](../../../images/image-50.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112136365.png)
 
 
 ```java
@@ -172,11 +161,11 @@ list.stream().sorted((s1,s2)->s2.compareTo(s1)).forEach(s -> System.out.println(
 
 
 int转包装类：
-![alt text](../../../images/image-208.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112136366.png)
 
 max
 
-![alt text](../../../images/image-209.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112136367.png)
 
 > 注意
 
@@ -191,7 +180,7 @@ Stream<String> stream3 = stream.skip(1);        // error， stream已经被steam
 
 ## 终结方法
 
-![Alt text](../../../images/image-52.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112136368.png)
 
 collect: 
 - `Collectors.toList()`

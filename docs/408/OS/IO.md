@@ -1,16 +1,3 @@
-- [1. 有哪些常见的 IO 模型?](#1-有哪些常见的-io-模型)
-- [2. 阻塞 IO（BIO）](#2-阻塞-iobio)
-- [3. 非阻塞IO](#3-非阻塞io)
-- [4. IO 多路复用模型](#4-io-多路复用模型)
-  - [4.1. select](#41-select)
-  - [4.2. poll](#42-poll)
-  - [4.3. epoll](#43-epoll)
-  - [4.4. 调用总结](#44-调用总结)
-- [5. 信号驱动](#5-信号驱动)
-- [6. 异步IO（AIO）](#6-异步ioaio)
-
-
----
 应用程序都是运行在用户空间。
 
 只有内核空间才能进行**系统态**级别的资源有关的操作，比如文件管理、进程通信、内存管理等等。
@@ -23,7 +10,7 @@
 - 内核等待 I/O 设备准备好数据
 - 内核将数据从内核空间拷贝的buff到用户空间的buff。
 
-![alt text](../../../images/image-183.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215834.png)
 
 两阶段：
 1. 等待内核从文件中读取数据，文件上数据迟迟没有到来（网络波动）。
@@ -36,7 +23,7 @@ UNIX 系统下， IO 模型一共有 5 种：阻塞 IO、非阻塞 IO、IO 多�
 
 前四种都是同步，只有最后一种是异步。判断标准是第二阶段是否阻塞的。
 
-![alt text](../../../images/image-193.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215835.png)
 
 Java 中 3 种常见 IO 模型：
 - BIO (Blocking I/O):阻塞 IO 模型 。
@@ -45,7 +32,7 @@ Java 中 3 种常见 IO 模型：
 
 ## 2. 阻塞 IO（BIO）
 
-![alt text](../../../images/image-184.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215836.png)
 
 阻塞 IO 模型中，应用程序发起 read 调用后，会一直阻塞，直到内核把数据拷贝到用户空间。
 
@@ -53,7 +40,7 @@ Java 中 3 种常见 IO 模型：
 
 ## 3. 非阻塞IO
 
-![alt text](../../../images/image-185.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215837.png)
 
 非阻塞IO的recvfrom操作会立即返回结果而不是阻塞用户进程，但会通过**轮询操作**一直发起 read 调用。当数据就绪，进入阻塞状态，等待数据从内核空间拷贝到用户空间。
 
@@ -71,11 +58,11 @@ Java 中 3 种常见 IO 模型：
 
 IO 多路复用模型中，线程首先发起 select/poll/epoll 调用，询问内核数据是否准备就绪，等内核把数据准备好了，用户线程再发起 read 调用。
 
-![alt text](../../../images/image-186.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215838.png)
 
 ### 4.1. select
 
-![alt text](../../../images/image-187.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215839.png)
 
 1. 用户空间中，要多个FD被封装入fd_set（每个bit位表示一个FD，最大有1024个bit），将监听的fd标注为1.
 2. 执行select函数：将fd_set拷贝入内核空间；遍历fd_set；无就绪则休眠、就绪则唤醒、唤醒再遍历哪个就绪、将其他未就绪的清理为0；拷贝fd_set到用户空间。
@@ -84,7 +71,7 @@ IO 多路复用模型中，线程首先发起 select/poll/epoll 调用，询问�
 
 ### 4.2. poll
 
-![alt text](../../../images/image-188.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215840.png)
 
 IO流程：
 
@@ -95,9 +82,9 @@ IO流程：
 * 用户进程判断n是否大于0,大于0则遍历pollfd数组，找到就绪的fd
 ### 4.3. epoll
 
-![alt text](../../../images/image-189.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215841.png)
 
-![alt text](../../../images/image-190.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215842.png)
 1. 服务端会去调用epoll_create，创建一个epoll实例，epoll实例中包含两个数据
 
     - 红黑树（为空）：rb_root 用来去记录需要被监听的FD
@@ -110,7 +97,7 @@ IO流程：
 ### 4.4. 调用总结
 
 - 可移植性
-    
+  
     几乎所有的操作系统都支持select，部分Unix系统支持poll，只有Linux操作系统支持epoll（linux 2.6 内核引入）
 
 - 文件描述符的最大数量限制
@@ -134,7 +121,7 @@ IO流程：
 
 
 - 内核态检测文件描述符就绪状态的方式：
-   
+  
    select、poll采用轮询方式，遍历所有的文件描述符状态是否就绪。而epoll采用回调方式，对文件描述符注册了回调函数，当文件描述符就绪时，会主动调用回调函数来放入就绪事件链表中。
 
 - 其他
@@ -163,7 +150,7 @@ Java 中的 NIO ，有一个非常重要的选择器 ( Selector ) 的概念，�
 
 ## 5. 信号驱动
 
-![alt text](../../../images/image-191.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215843.png)
 
 信号驱动IO是与内核建立SIGIO的信号关联并设置回调，当内核有FD就绪时，会发出SIGIO信号通知用户发read调用，期间用户应用可以执行其它业务，无需阻塞等待。
 
@@ -176,6 +163,6 @@ Java 中的 NIO ，有一个非常重要的选择器 ( Selector ) 的概念，�
 
 用户进程在两个阶段都是非阻塞状态。
 
-![alt text](../../../images/image-192.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112215844.png)
 
 JDK7引入。

@@ -1,9 +1,4 @@
-- [快速构建](#快速构建)
-  - [空](#空)
-  - [singleton](#singleton)
-- [其他](#其他)
 
----
 
 ## 快速构建
 ### 空
@@ -24,7 +19,7 @@ Map<Object, Object> singletonMap = Collections.singletonMap(user);
 ## 其他
 仅限单列集合。
 
-![Alt text](../../../images/image-48.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112133344.png)
 
 ```java
 ArrayList<Integer> list1 = new ArrayList<>();

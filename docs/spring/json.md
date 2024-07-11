@@ -1,11 +1,3 @@
-- [hutool](#hutool)
-- [fastjson](#fastjson)
-- [jackson](#jackson)
-  - [枚举用jackson: @JsonValue](#枚举用jackson-jsonvalue)
-  - [如何让Jackson序列化时，忽视空值字段？](#如何让jackson序列化时忽视空值字段)
-
-
----
 ## hutool
 ```xml
 <!--hutool-->
@@ -70,7 +62,7 @@ User getUser = objectMapper.readValue(json, User.class);
 
 ### 如何让Jackson序列化时，忽视空值字段？
 
-![alt text](../../images/image-329.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112201158.png)
 
 ## 忽略？？？
 

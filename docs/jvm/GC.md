@@ -1,22 +1,3 @@
-- [Java 中有哪几块内存需要进行垃圾回收](#java-中有哪几块内存需要进行垃圾回收)
-- [对象什么时候可以被垃圾器回收？如何定位哪些对象是垃圾](#对象什么时候可以被垃圾器回收如何定位哪些对象是垃圾)
-- [🚀哪些对象当做根对象](#哪些对象当做根对象)
-- [🚀有哪几种常见的引用类型？](#有哪几种常见的引用类型)
-- [🚀常见的垃圾回收算法？](#常见的垃圾回收算法)
-- [分代回收](#分代回收)
-- [Minor GC、Mixed GC、Full GC（Major GC）是什么](#minor-gcmixed-gcfull-gcmajor-gc是什么)
-- [🚀常见的垃圾回收器有哪些？](#常见的垃圾回收器有哪些)
-- [串行垃圾回收器 Serial和Serial Old](#串行垃圾回收器-serial和serial-old)
-- [并行垃圾回收器 ParNew和Parallel Old](#并行垃圾回收器-parnew和parallel-old)
-- [CMS（Concurrent Mark Sweep）](#cmsconcurrent-mark-sweep)
-- [🚀G1 垃圾回收器了解吗?](#g1-垃圾回收器了解吗)
-- [G1回收的三个阶段](#g1回收的三个阶段)
-- [🚀什么时候会触发 GC?](#什么时候会触发-gc)
-- [🍳System.gc是minor gc还是full gc](#systemgc是minor-gc还是full-gc)
-- [🍳调用System.gc后，Java内存会不会马上进行回收](#调用systemgc后java内存会不会马上进行回收)
-
-
----
 ## Java 中有哪几块内存需要进行垃圾回收
 
 线程不共享的程序计数器、虚拟机栈、本地方法栈，跟随线程的生命周期随着线程回收而回收，不需要进行垃圾回收。
@@ -30,7 +11,7 @@
 如果对象没有任何的引用指向它了，那么这个对象现在就是垃圾，如果定位了垃圾，则有可能会被垃圾回收器回收。
 
 - 引用计数法
-    
+  
     一个对象被引用了一次，在当前的对象头上递增一次引用次数，如果这个对象的引用次数为0，代表这个对象可回收。
     
     循环引用问题
@@ -111,7 +92,7 @@ public class Demo {
 **标记-清除算法（Mark and Sweep）**：
 -   标记阶段：从根对象出发，根据可达性分析算法标记**可达对象**.
 -   清除阶段：清除**未被标记的不可达对象**。
-  
+
 缺点：
 
 效率低，标记和清除都需要遍历所有对象；
@@ -119,7 +100,7 @@ public class Demo {
 产生内存碎片；
 
 分配速度慢，遍历空闲链表才能找到合适的空闲内存空间。
-  
+
 **标记-整理算法（Mark and Compact）**：
 -   标记阶段：一样标记可达对象。
 -   整理阶段：将所有存活的对象向一端移动，然后清理掉不可达对象，从而消除内存碎片。
@@ -174,16 +155,16 @@ Java8时，新生代和老年代比例是1:2，年轻代使用复制算法，老
 <summary>串行S、并行P、并发C、G1</summary>
 
 - 串行垃圾回收器：Serial（新生代、复制）和Serial Old（老年代、标记整理）
-    
+  
     单线程回收，主要适用于单核CPU场景
 - 并行垃圾回收器（JDK8默认）：ParNew（新生代、复制）和Parallel Old（老年代、标记整理）
-    
+  
     暂停时间较短，适用于大型互联网应用中与用户交互的部分
 - 并发垃圾回收器：CMS（老年代、标记清除）
-    
+  
     吞吐量高，适用于后台进行大量数据操作
 - G1垃圾回收器（JDK9默认）
-    
+  
     适用于较大的堆，具有可控的暂停时间
 
 </details>
@@ -196,21 +177,21 @@ Java8时，新生代和老年代比例是1:2，年轻代使用复制算法，老
 
 单线程回收，主要适用于单核CPU场景
 
-![](../../images/image-20230506154006266.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147795.png)
 
 ## 并行垃圾回收器 ParNew和Parallel Old
 
 垃圾回收时，**多个垃圾回收线程**在工作，其他线程STW等待。
 
-![](../../images/image-20230506154042673.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147796.png)
 
 ## CMS（Concurrent Mark Sweep）
-    
+
 针对短STW。其最大特点是在进行垃圾回收时，应用仍然能正常运行。
 
 三次标记：初始标记、并发标记、重新标记，才并发清理。
 
-![](../../images/image-20230506154117857.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147797.png)
 
 > 哪些阶段是STW
 
@@ -249,27 +230,27 @@ G1垃圾回收器具有以下特点：
 
 - 初始时，所有区域都处于空闲状态
 
-  ![](../../images/image-20230506154542687.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147798.png)
 
 - 创建了一些对象，挑出一些空闲区域作为伊甸园区存储这些对象
 
-  ![](../../images/image-20230506154607558.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147799.png)
 
 - **当伊甸园需要垃圾回收时**，挑出一个空闲区域作为幸存区，用复制算法复制存活对象，需要暂停用户线程
 
-  ![](../../images/image-20230506154633118.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147800.png)
 
-  ![](../../images/image-20230506154705088.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147801.png)
 
 - 随着时间流逝，伊甸园的内存又有不足
 
 - 将伊甸园以及之前幸存区中的存活对象，采用复制算法，复制到新的幸存区，其中较老对象晋升至老年代
 
-  ![](../../images/image-20230506154759809.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147802.png)
 
-  ![](../../images/image-20230506154826981.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147803.png)
 
-  ![](../../images/image-20230506154859985.png)
+  ![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147804.png)
 
   
 
@@ -279,9 +260,9 @@ G1垃圾回收器具有以下特点：
 
 并发标记之后，会有**重新标记**阶段解决漏标问题，此时需要暂停用户线程。
 
-![](../../images/image-20230506155000503.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147805.png)
 
-![](../../images/image-20230506155047765.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147806.png)
 
 > Mixed Collection 混合回收
 
@@ -289,11 +270,11 @@ G1垃圾回收器具有以下特点：
 
 复制完成，内存得到释放。进入下一轮的新生代回收、并发标记、混合回收
 
-![](../../images/image-20230506155116267.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147807.png)
 
 其中H叫做巨型对象，如果对象非常大，会开辟一块连续的空间存储巨型对象
 
-![](../../images/image-20230506155146370.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112147808.png)
 
 </details>
 
@@ -319,7 +300,7 @@ G1垃圾回收器具有以下特点：
 
 </details>
 
-   
+
 ## 🍳System.gc是minor gc还是full gc
 
 full gc

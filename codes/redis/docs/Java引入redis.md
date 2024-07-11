@@ -1,21 +1,10 @@
-- [1. Jedis和Lettuce](#1-jedis和lettuce)
-  - [1.1. 直接创建Jedis](#11-直接创建jedis)
-  - [1.2. 连接池](#12-连接池)
-- [2. SpringDataRedis客户端](#2-springdataredis客户端)
-  - [2.1. 依赖配置](#21-依赖配置)
-  - [2.2. 默认序列化 RedisTemplate](#22-默认序列化-redistemplate)
-  - [2.3. 自定义序列化 RedisTemplate](#23-自定义序列化-redistemplate)
-  - [2.4. StringRedisTemplate](#24-stringredistemplate)
-
----
-
 Jedis的官网地址： https://github.com/redis/jedis
 
 在Redis官网中提供了各种语言的客户端，地址：https://redis.io/docs/clients/
 
 其中Java客户端也包含很多：
 
-![alt text](../../../images/image-80.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112220787.png)
 
 - Jedis和Lettuce：这两个主要是提供了Redis命令对应的API，方便我们操作Redis
 - SpringDataRedis又对这两种做了抽象和封装，因此我们后期会直接以SpringDataRedis来学习。
@@ -167,7 +156,7 @@ redis_hmdp:5>get \xAC\xED\x00\x05t\x00\x07person0
 
 1. 写config，自定义RedisTemplate Bean。
 2. 使用重写的 redisTemplate。
-    
+   
 
 整体可读性有了很大提升，并且能将Java对象自动的序列化为JSON字符串，并且查询时能自动把JSON反序列化为Java对象。
 

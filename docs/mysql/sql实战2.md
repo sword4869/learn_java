@@ -1,30 +1,3 @@
-- [语法顺序和执行顺序](#语法顺序和执行顺序)
-- [select](#select)
-  - [条件](#条件)
-- [连接 join](#连接-join)
-- [where](#where)
-- [group by](#group-by)
-  - [group by having中使用 select 别名](#group-by-having中使用-select-别名)
-  - [group\_concat](#group_concat)
-- [union](#union)
-- [order by](#order-by)
-- [limit](#limit)
-- [子查询](#子查询)
-- [聚合函数](#聚合函数)
-- [窗口函数 over](#窗口函数-over)
-  - [partition by order by](#partition-by-order-by)
-  - [rank, dense\_rank, row\_number](#rank-dense_rank-row_number)
-  - [与group的区别：不会减少原表中的行数](#与group的区别不会减少原表中的行数)
-- [函数](#函数)
-- [别名](#别名)
-- [distinct](#distinct)
-- [with](#with)
-  - [普通with](#普通with)
-  - [递归 with recursive](#递归-with-recursive)
-  - [with普通和递归不能连用](#with普通和递归不能连用)
-
----
-
 ## 语法顺序和执行顺序
 
 SQL语句的语法顺序是：
@@ -76,9 +49,9 @@ select * from emp where name like '__';
 select * from emp where idcard like '%X';
 ```
 
-![alt text](../../images/image-390.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153184.png)
 
-![alt text](../../images/image-391.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153185.png)
 
 ## 连接 join
 
@@ -89,7 +62,7 @@ select * from emp where idcard like '%X';
 - 右外连接 right [outer] join：即使左表中没有匹配，也从右表返回所有的行
 - 【mysql不支持】full join：只要其中一个表中存在匹配，则返回行
 
-![alt text](../../images/image-386.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153186.png)
 
 在on中是相等。在where中是null。
 
@@ -357,34 +330,34 @@ ORDER BY s1.salary DESC, s1.emp_no;
 
 > sql217
 
-![alt text](../../images/image-396.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153187.png)
 
 ```sql
 -- 不分组、不排序：整张表的和
 select emp_no, salary, sum(emp_no) over () as t_rank
 from salaries
 ```
-![alt text](../../images/image-398.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153188.png)
 ```sql
 -- 不分组、排序：72527有3个10001 10002 10004：看的是所有的72527
 select emp_no, salary, sum(emp_no) over (order by salary desc) as t_rank
 from salaries
 ```
-![alt text](../../images/image-397.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153189.png)
 
 ```sql
 -- 分组、不排序：72527组有两个10002 10004
 select emp_no, salary, sum(emp_no) over (partition by salary) as t_rank
 from salaries
 ```
-![alt text](../../images/image-399.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153190.png)
 
 ```sql
 -- 分组、排序
 select emp_no, salary, sum(emp_no) over (partition by salary order by salary desc) as t_rank
 from salaries
 ```
-![alt text](../../images/image-400.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153191.png)
 
 > 分组可以多列
 
@@ -395,7 +368,7 @@ from dept_emp de, titles t, departments d
 where de.emp_no = t.emp_no and de.dept_no = d.dept_no
 order by dept_no, title
 ```
-![alt text](../../images/image-419.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153192.png)
 
 ### rank, dense_rank, row_number
 
@@ -409,7 +382,7 @@ select *,
     row_number() over (order by 成绩 desc) as row_num
 from 班级表
 ```
-![alt text](../../images/image-394.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153193.png)
 
 
 ```sql
@@ -422,13 +395,13 @@ select *,
 from 班级表
 ```
 
-![alt text](../../images/image-395.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153194.png)
 
 ### 与group的区别：不会减少原表中的行数
 
-![alt text](../../images/image-394.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153193.png)
 
-![alt text](../../images/image-393.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153195.png)
 
 ## 函数
 字符串函数
@@ -874,7 +847,7 @@ SELECT * FROM employee_paths;
 |  692 | Tarek   |        333 | 333->692 |     2 |
 +------+---------+------------+----------+-------+
 ```
-![alt text](../../images/image-129.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153196.png)
 
 
 > 例子4：由子及父

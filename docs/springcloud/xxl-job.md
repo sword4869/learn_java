@@ -1,21 +1,10 @@
-- [添加执行器](#添加执行器)
-- [添加任务](#添加任务)
-  - [调度配置](#调度配置)
-  - [高级配置](#高级配置)
-- [分片广播](#分片广播)
-- [🚀如何并行执行任务不重复](#如何并行执行任务不重复)
-- [🚀xxl-job的工作原理](#xxl-job的工作原理)
-- [xxl-job怎么工作（建议与上面进行融合）](#xxl-job怎么工作建议与上面进行融合)
-
----
-
 ## 添加执行器
 
 （1）执行器管理
 
-![alt text](../../images/image-428.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211619.png)
 
-![alt text](../../images/image-429.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211620.png)
 
 appname是前边在nacos中配置xxl信息时指定的执行器的应用名
 
@@ -102,20 +91,20 @@ public class XxlJobConfig {
 
 Java服务也启动后。
 
-![alt text](../../images/image-430.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211621.png)
 
 ## 添加任务
 
 （1）任务管理：让哪个执行器去执行任务
 
-![alt text](../../images/image-432.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211622.png)
 
-![alt text](../../images/image-433.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211623.png)
 
 
 （2）java
 
-![alt text](../../images/image-431.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211624.png)
 
 `@XxlJob(JobHandler中的内容)`注解
 ```java
@@ -146,7 +135,7 @@ xxl-job提供图形界面去配置.
 
 ### 高级配置
 
-![alt text](../../images/image-434.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211625.png)
 
 当执行器集群部署时，提供丰富的路由策略，包括；
 - FIRST（第一个）：固定选择第一个机器
@@ -162,7 +151,7 @@ xxl-job提供图形界面去配置.
 
 
 子任务：每个任务都拥有一个唯一的任务ID(任务ID可以从任务列表获取)，当本任务执行结束并且执行成功时，将会触发子任务ID所对应的任务的一次主动调度，通过子任务可以实现一个任务执行完成去执行另一个任务。
-  
+
 调度过期策略：
 - 忽略：调度过期后，忽略过期的任务，从当前时间开始重新计算下次触发时间；
 - 立即执行一次：调度过期后，立即执行一次，并从当前时间开始重新计算下次触发时间；
@@ -183,7 +172,7 @@ xxl-job提供图形界面去配置.
 
 广播，是指每次调度会向集群中的**所有执行器**发送任务调度，请求中携带分片参数（执行器序号和执行器总数）。
 
-![alt text](../../images/image-435.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211626.png)
 
 
 ● 分片任务场景: 10个执行器的集群来处理10w条数据 每台机器只需要处理1w条数据
@@ -205,7 +194,7 @@ public class SimpleJob {
 ```
 启动两个执行器。而且再起一个执行器，会动态扩容，原来那两个会输出 `shardTotal: 3`
 
-![alt text](../../images/image-436.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211627.png)
 
 ## 🚀如何并行执行任务不重复
 
@@ -229,8 +218,8 @@ xxl-job 由调度中心、执行器组成。
 
 调度中心向执行器下发任务，执行器执行任务。
 
-![alt text](../../images/image-427.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211628.png)
 
 ## xxl-job怎么工作（建议与上面进行融合）
 
-![alt text](../../images/image-441.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112211629.png)

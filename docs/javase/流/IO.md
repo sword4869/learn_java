@@ -1,38 +1,12 @@
-- [1. 分类](#1-分类)
-- [2. 字节流](#2-字节流)
-  - [2.1. FileOutputStream](#21-fileoutputstream)
-  - [2.2. FileInputStream](#22-fileinputstream)
-    - [2.2.1. 单个字节](#221-单个字节)
-    - [2.2.2. 多个字节](#222-多个字节)
-  - [2.3. try释放](#23-try释放)
-- [3. 字符流](#3-字符流)
-  - [3.1. FileReader](#31-filereader)
-  - [3.2. FileWriter](#32-filewriter)
-  - [3.3. 缓冲区](#33-缓冲区)
-- [4. 缓冲流](#4-缓冲流)
-  - [4.1. 字节缓冲流](#41-字节缓冲流)
-  - [4.2. 字符缓冲流](#42-字符缓冲流)
-- [5. 转换流](#5-转换流)
-- [6. 序列化流](#6-序列化流)
-- [7. 打印流](#7-打印流)
-- [8. 压缩流](#8-压缩流)
-- [9. demo](#9-demo)
-  - [9.1. 拷贝文件夹](#91-拷贝文件夹)
-  - [9.2. 字节的时间](#92-字节的时间)
-  - [9.3. 文件原地修改](#93-文件原地修改)
-  - [分块和合并](#分块和合并)
-- [零拷贝](#零拷贝)
-- [RandomAccessFile](#randomaccessfile)
 
 
----
 ## 1. 分类
 
 - 基本流：
-    
-    ![Alt text](../../../images/image-51.png)
+  
+    ![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112135425.png)
 - 高级流：
-    
+  
     转换流、序列化流、
 
 根据数据的流向分为：**输入流**和**输出流**。
@@ -380,15 +354,15 @@ fw.close();
 > FileReader有缓冲区（FileInputStream没有）
 
 1. 创建字符输入流对象 `new FileReader("b.txt")`
-    
+   
     底层: 关联文件，并创建缓冲区(长度为8192的字节数组)
 
 2. 读取数据 `fr.read()`
-    
+   
     底层:
     1. 判断缓冲区中是否有数据可以读取
     2. 缓冲区没有数据: 
-        
+       
         从文件中获取数据→装到缓冲区中，每次尽可能装满缓冲区
         
         如果文件中也没有数据了，返回-1.
@@ -419,7 +393,7 @@ fr.close();
 > FileWriter有缓冲区（FileOutputStream没有）
 
 1. 创建字符输出流对象 `new FileWriter("b.txt")`
-    
+   
     底层: 关联文件，并创建缓冲区(长度为8192的字节数组)
 
 2. 刷缓冲区到硬盘
@@ -451,7 +425,7 @@ fw.write("e");  // 报错，流已经关闭了
 
 BufferedInputStream, BufferedOutputStream. 
 
-![Alt text](../../../images/image-58.png)
+![Alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112135426.png)
 
 ```java
 /*
@@ -739,9 +713,9 @@ class Student implements Serializable {
 }
 ```
 IDEA自动添加序列号
-![alt text](../../../images/image-59.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112135427.png)
 
-![alt text](../../../images/image-60.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112135428.png)
 
 多个对象：使用容器写入读出。
 

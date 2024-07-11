@@ -1,20 +1,4 @@
-- [Mybatis导入](#mybatis导入)
-- [编写mapper查询](#编写mapper查询)
-- [编写mapper查询之注解](#编写mapper查询之注解)
-  - [@Param注解](#param注解)
-  - [参数占位符](#参数占位符)
-  - [主键返回](#主键返回)
-  - [数据封装](#数据封装)
-- [编写mapper查询之XML](#编写mapper查询之xml)
-  - [resultType](#resulttype)
-  - [resultMap](#resultmap)
-    - [基本](#基本)
-    - [一对一 association](#一对一-association)
-    - [一对多 collection](#一对多-collection)
-    - [多对多 discriminator](#多对多-discriminator)
-
----
-# Mybatis导入
+## Mybatis导入
 
 ```xml
 <!-- mybatis起步依赖 -->
@@ -65,7 +49,7 @@
 
 @Mapper注解：表示是mybatis中的Mapper接口。程序运行时：框架会自动生成接口的实现类对象(代理对象)，并给交Spring的IOC容器管理
 
-# 编写mapper查询
+## 编写mapper查询
 
 一种方式是注解，一种是XML。
 
@@ -88,9 +72,9 @@ List<User> querySelfDefined(@Param("ew") QueryWrapper<User> wrapper); // @Param(
 ```
 方式二：xml
 
-![alt text](../../images/image-151.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111409647.png)
 
-![alt text](../../images/image-410.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111409648.png)
 ```java
 // Service中
 @Override
@@ -112,7 +96,7 @@ List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param
 </select>
 ```
 
-# 编写mapper查询之注解
+## 编写mapper查询之注解
 @Select、@Delete、@Insert、@Update
 
 ```java
@@ -134,15 +118,17 @@ public interface UserMapper {
 }
 ```
 
-## @Param注解
+### @Param注解
+
+当名字不一致时, ew是给sql语句的名字。
 
 ```java
 List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
 ```
 
-当名字不一致时
 
-## 参数占位符
+
+### 参数占位符
 
 在Mybatis中提供的参数占位符有两种：`${...}` 、`#{...}`。里面的属性名可以随便写，但是建议保持表字段名字一致。
 
@@ -161,13 +147,13 @@ List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param
 1. 性能更高: 只编译一次，编译后的SQL语句缓存起来，后面再次执行这条语句时，不会再次编译。（只是输入的参数不同）
 2. 更安全(防止SQL注入)：不采用字符串拼接，而是将敏感字进行转义
 
-## 主键返回
+### 主键返回
 
 默认情况下，执行插入操作时，是不会主键值返回的。
 
 如果我们想要拿到主键值，需要在Mapper接口中的方法上添加一个Options注解，并在注解中指定属性`useGeneratedKeys=true`和`keyProperty="实体类属性名"`
 
-## 数据封装
+### 数据封装
 - 实体类属性名和数据库表查询返回的字段名一致，mybatis会自动封装。
 - 如果实体类属性名和数据库表查询返回的字段名不一致，不能自动封装。
 
@@ -203,7 +189,7 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 ```
-# 编写mapper查询之XML
+## 编写mapper查询之XML
 
 https://blog.csdn.net/li_w_ch/article/details/109802957
 
@@ -222,11 +208,13 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 
 > 写法
 
+`<select>`:
 
-`<select>`、`<insert>`、`<update>`、`<delete>`:
 - `id`:同方法名
 - `parameterType`: 方法参数类型
 - `resultType`/`resultMap`: 方法返回值类型
+
+`<insert>`、`<update>`、`<delete>`：只需要`id`
 
 | 标签名 | 说明 | 属性 |
 | --- | --- | --- |
@@ -265,7 +253,48 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
     </delete>
 </mapper>
 ```
-## resultType
+增删改dou'xing
+
+```java
+Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数占位符
+
+
+	<update id="update">
+        update eval_enterprise_info
+        set
+        enterprise_name = #{enterpriseName},
+        enterprise_address = #{enterpriseAddress},
+        longitude = #{longitude},
+        latitude = #{latitude},
+        enterprise_list_name = #{enterpriseListName},
+        enterprise_reg_address = #{enterpriseRegAddress},
+        enterprise_legal_name = #{enterpriseLegalName},
+        enterprise_legal_idcard = #{enterpriseLegalIdcard},
+        enterprise_legal_household = #{enterpriseLegalHousehold},
+        enterprise_legal_phone = #{enterpriseLegalPhone},
+        enterprise_manager = #{enterpriseManager},
+        enterprise_manager_idcard = #{enterpriseManagerIdcard},
+        enterprise_manager_phone = #{enterpriseManagerPhone},
+        enterprise_manager_scope = #{enterpriseManagerScope},
+        land_usage_name  = #{landUsageName},
+        landlord_name = #{landlordName},
+        landlord_idcard = #{landlordIdcard},
+        landlord_phone = #{landlordPhone},
+        reg_capital = #{regCapital},
+        floor_space = #{floorSpace},
+        machine_number = #{machineNumber},
+        employ_number = #{employNumber},
+        license_status = #{licenseStatus},
+        area_type = #{areaType},
+        enterprise_room_status = #{enterpriseRoomStatus},
+        status = #{status}
+        where id = #{id}
+    </update>
+```
+
+
+
+### resultType
 ```xml
     <!-- id 对应函数名, resultType 对应pojo类 -->
     <select id="list" resultType="com.itheima.pojo.Emp">
@@ -303,7 +332,7 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 ```
 
 
-## resultMap
+### resultMap分开
 
 ```xml
 <resultMap id="唯一的标识" type="pojo对象A">
@@ -329,8 +358,7 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 ```
 column是sql中select 查询出来的名字，property 是javabean类的字段名，type/javaType/ofType是javabean的全类名。
 
-
-### 基本
+#### 基本
 
 [code: resultMap项目](../../codes/javaweb/resultmap/src/main/java/com/sword/resultmap/mapper/UserMapper.java)
 
@@ -340,7 +368,7 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
     </select>
 ```
 
-### 一对一 association
+#### 一对一 association
 
 ```java
     <resultMap id="user_cardass" type="com.sword.resultmap.domain.dto.UserCardAssociation">
@@ -368,7 +396,7 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
 +----+------+---------+-----------+
 ```
 
-![alt text](../../images/image-409.png)
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111409649.png)
 
 `c.name cardname` 冲突必须要起别名，不然就是
 ```json
@@ -382,7 +410,7 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
   },
 ```
 
-### 一对多 collection
+#### 一对多 collection
 
 ```xml
     <resultMap id="user_cardcol" type="com.sword.resultmap.domain.dto.UserCardCollection">
@@ -449,7 +477,7 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
 ]
 ```
 
-### 多对多 discriminator
+#### 多对多 discriminator
 
 ```xml
     <resultMap id="carddis" type="com.sword.resultmap.domain.dto.CardDis">
@@ -494,3 +522,29 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
   }
 ]
 ```
+
+### resultMap子查询
+
+#### 一对一 association
+
+同样确立 `property` 属性名。
+
+但直接指定 `column`子查询传递参数，`select`子查询方法。
+
+```java
+<resultMap id="EnterpriseMap" type="com.hello.domain.eval.enterprise.valueobject.EnterpriseValueObject">
+    <result column="id" property="id"/>
+    <result column="enterprise_name" property="enterpriseName"/>
+    <result column="area_status" property="areaStatus"/>
+    <association property="areaGovernEntity" column="{enterpriseId=id,areaStatus=area_status}" select="queryAreaGovernEntity"/>
+</resultMap>
+
+<select id="queryAreaGovernEntity" resultType="com.hello.domain.eval.areagovern.entity.AreaGovernEntity">
+    select * from eval_area_govern
+    where enterprise_id = #{enterpriseId}
+    and delete_flag = '0'
+    and #{areaStatus} = '1'
+    order by id desc limit 1
+</select>
+```
+

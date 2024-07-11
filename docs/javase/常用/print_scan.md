@@ -1,13 +1,3 @@
-- [1. println, print, printf](#1-println-print-printf)
-- [2. scan](#2-scan)
-  - [2.1. 用法](#21-用法)
-  - [2.2. 两套体系](#22-两套体系)
-    - [2.2.1. 细节](#221-细节)
-    - [2.2.2. 混用引起的后果](#222-混用引起的后果)
-- [3. 中文乱码](#3-中文乱码)
-
-
----
 
 ## 1. println, print, printf
 
@@ -102,7 +92,7 @@ boolean hasNextBigDecimal = sc.hasNextBigDecimal();
     如果用了这三个其中一个，就不要用nextLine()。
 
 - `nextLine()`单独使用。
-    
+  
     在接收数据的时候，会遇到回车，就会停止接收数据。
 
     如果想要整数，那么先接收，再使用`Integer.parseInt()`进行类型转换。

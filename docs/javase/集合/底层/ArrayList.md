@@ -1,26 +1,10 @@
-- [1. 源码分析（jdk1.8）](#1-源码分析jdk18)
-  - [1.1. 成员变量](#11-成员变量)
-  - [1.2. 构造方法](#12-构造方法)
-  - [1.3. 空参构造的添加数据](#13-空参构造的添加数据)
-  - [删除元素](#删除元素)
-- [2. 面试题](#2-面试题)
-  - [JDK版本](#jdk版本)
-  - [2.1. ArrayList list=new ArrayList(10)中的list扩容几次](#21-arraylist-listnew-arraylist10中的list扩容几次)
-  - [2.2. 如何实现数组和List之间的转换](#22-如何实现数组和list之间的转换)
-  - [2.3. 用Arrays.asList转List后，如果修改了数组内容，list受影响吗？List用toArray转数组后，如果修改了List内容，数组受影响吗](#23-用arraysaslist转list后如果修改了数组内容list受影响吗list用toarray转数组后如果修改了list内容数组受影响吗)
-  - [2.4. ArrayList和LinkedList的区别是什么？](#24-arraylist和linkedlist的区别是什么)
-  - [ArrayList是线程安全的吗](#arraylist是线程安全的吗)
-  - [2.5. ArrayList和LinkedList需要保证线程安全，有两种方案](#25-arraylist和linkedlist需要保证线程安全有两种方案)
-
-
----
 # 1. 源码分析（jdk1.8）
 
 分析ArrayList源码主要从三个方面去翻阅：成员变量，构造函数，关键方法
 
 ## 1.1. 成员变量
 
-![](../../../../images/image-20230427192118259.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130147.png)
 
 ArrayList底层是动态数组 `Object []`。
 
@@ -30,7 +14,7 @@ ArrayList底层是动态数组 `Object []`。
 
 三种构造方法，来初始化elementDate数组：
 - 默认空参构造 `new ArrayList()`：
-    
+  
     `elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA`
 - 指定容量的带参构造 `new ArrayList(int initialCapacity)`：可以按照指定的容量初始化数组
     - 容量非0：`elementData = new Object[capacity]`; 
@@ -39,14 +23,14 @@ ArrayList底层是动态数组 `Object []`。
 
     collection对象转数组`.toArray()`。
 
-![](../../../../images/image-20230427192154014.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130148.png)
 
-![](../../../../images/image_new_new.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130149.png)
 
 
 ## 1.3. 空参构造的添加数据
 
-![](../../../../images/image-20230427192644244.png)
+![](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112130150.png)
 
 
 - 空参构造：ArrayList的数组初始容量为0

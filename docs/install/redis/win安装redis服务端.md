@@ -10,9 +10,9 @@
 # 启动Redis服务
 redis-server.exe redis.windows.conf
 
-## 服务方式1
+## 服务退出方式1
 ctrl-C
-## 服务方式2
+## 服务退出方式2
 redis-cli.exe shutdown
 ```
 
