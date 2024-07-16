@@ -8,3 +8,8 @@
 
 ![在这里插入图片描述](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407102308443.png)
 
+连接：
+
+​	用户名: postgres
+
+​	密码: 刚才自己设置的

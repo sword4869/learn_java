@@ -159,16 +159,21 @@ select * from user where id in ( 5, 1)
 select * from user where id in ( 5, 1) order by field(id, 5, 1)
 ```
 
-## group by
+## group by having
 
 ```sql
 -- 单个字段
 select gender 数量 from emp group by gender;
--- 多个字段
-select workaddress, gender 数量 from emp group by gender , workaddress;
+-- 多个字段（同一张表）
+select workaddress, gender 数量 from emp group by gender, workaddress;
 -- 使用聚合函数后的age结果就只有一个，ok
 select gender, age from emp group by gender;   -- error，因为每个组中的 age 有多个值，不知道选哪个
 select gender, max(age) from emp group by gender;
+
+-- 多个字段（s_name是其他表字段）
+SELECT s.s_id, st.s_name
+from score s join student st on s.s_id = st.s_id
+GROUP BY s.s_id,  st.s_name		-- 本来s_id就已经分成一组一个了，但要确保 s_id和s_name是一对一的关系，不然会增加分组。比如，换成成绩就有问题了，01-99, 01-68, 02-90
 ```
 ### group by having中使用 select 别名
 ```sql
@@ -177,7 +182,83 @@ from salaries
 group by emp_no     -- 每组emp_no 有多行
 having t > 15;      -- 去掉不符合结果的组。本来这里是 count(*) > 15，但GROUP BY、 HAVING语句中，可以使用 SELECT 中设定的别名。
 ```
-### group_concat
+### having配合group  by使用
+
+having 是对group by后的分组做筛选，对应的包含n条数据的单个分组。
+
+having的字段要么是使用**聚合函数**对n条组内数据做统计变成单个数据，要么是group by的分组字段。
+
+```sql
+SELECT s_id
+FROM score
+GROUP BY s_id
+HAVING score < 60 and count(*) >= 2 	-- 报错，因为 score 是对应一个分组内的n条数据
+
+SELECT s_id
+FROM score
+GROUP BY s_id
+HAVING min(score) < 60 and count(*) >= 2 	-- 正确，因为 min(score) 就是单个数据了。
+
+SELECT s_id, count(*), sum(score), avg(score)
+FROM score
+GROUP BY s_id
+HAVING s_id < 3 							-- 正确，因为是根据s_id分组，s_id 就是单个数据。
+```
+
+### where和group的区别
+
+> 一样的情况：对group by 字段操作
+
+![image-20240716094549991](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407160945121.png)
+
+> 不一样的情况: 对组内n条数据操作
+
+- `where score < 60`: 分组前过滤，那么分组数据中就不包含及格以上的分数及其不及格课程数。
+- `HAVING min(score) < 60`分组后过滤，那么分组中就是全部成绩，全部课程数。
+
+
+
+![image-20240716093310581](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407160933715.png)
+
+```sql
+-- 48、查询两门以上不及格课程的同学的学号及其平均成绩
+
+select s_id, avg(score)
+from score
+where s_id in		-- 子表查不及格的学号：where只统计不及格的课程数。avg(score)是统计及格和不及格的全部课程数
+(
+	SELECT s_id
+	FROM score
+	where score < 60
+	GROUP BY s_id
+	HAVING count(*) >= 2 
+)
+GROUP BY s_id
+```
+
+![image-20240716094058656](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407160940805.png)
+
+### having可以单独使用
+
+```sql
+select s_id
+from score
+having score > 60		-- 报错，having只能使用 select 出现的字段
+
+select s_id, score 
+from score
+having score > 60		-- select加入score
+
+
+select s_id, score 
+from score
+where score > 60		-- 其实效果同where，where还比单独使用Having好, 因为可以只 select s_id
+
+```
+
+
+
+### group_concat【独有】
 
 ```sql
 -- SQL247 按照dept_no进行汇总
@@ -273,7 +354,7 @@ select * from table1 where id in (select id from table2);
 
 ## 聚合函数
 
-count、max、min、avg、sum
+count、max、min、sum、avg
 
 NULL值是不参与所有聚合函数运算的。
 
@@ -291,6 +372,21 @@ select emp_no, max(salary) from salaries -- error
 select * from salaries where salary in (select max(salary) from salaries)
 ```
 
+> avg = 总值 / 总个数 = sum(...) / sum(1) = sum(...) / count(1)
+
+```sql
+-- 分数及格率
+SELECT 
+round(sum(case when score >= 60 then 1 else 0 end)) / count(1) pass1,
+round(sum(case when score >= 60 then 1 else 0 end)) / sum(1) pass2,
+avg(case when score >= 60 then 1 else 0 end) pass
+from score
+```
+
+
+
+
+
 > 比较奇特的写法
 
 ```sql
@@ -306,7 +402,7 @@ ORDER BY s1.salary DESC, s1.emp_no;
 ```
 
 ## 窗口函数 over
-窗口函数写在select子句中
+窗口函数写在select子句中，**用了窗口函数，再写group就报错**
 ```sql
 -- 分组，组内排名
 <窗口函数> over ( [partition by <用于分组的列名>] [order by <用于排序的列名>] )
@@ -430,7 +526,7 @@ select round(2.344, 2);  -- 保留2位小数
 -- 生成一个六位数的随机验证码。
 select lpad(round(rand()*1000000 , 0), 6, '0');
 ```
-日期函数
+日期函数: [MySQL日期时间操作函数（挺全的）_mysql日期函数-CSDN博客](https://blog.csdn.net/hu1010037197/article/details/115391335)
 
 datetime: 
 

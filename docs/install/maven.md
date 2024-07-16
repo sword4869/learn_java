@@ -6,18 +6,20 @@ Maven（可以用idea捆绑安装的，也可以 [自行安装](https://maven.ap
 
 ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407091645825.png)
 
-Maven 推荐直接用idea捆绑安装的，仓储和配置文件可以单独配置，具体见 setting->Build,Execution,Deployment -> Build Tools -> Maven 
+Maven 推荐直接用idea捆绑安装的，仓储和配置文件可以单独配置（C盘爆炸，容量足够就不用管），具体见 setting->Build,Execution,Deployment -> Build Tools -> Maven 
 
 User setting file 和 Local repository 选择Override即可自定义路径
 
 ## config中的setting.xml
+
+### 自用阿里云
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
-  <!-- 本地仓库 -->
+  <!-- 本地仓库：默认~/.m2/repository -->
   <localRepository>D:\Applications\apache-maven-3.9.6\repository</localRepository>
   <!-- 远程仓库 -->
   <mirrors>
@@ -45,13 +47,13 @@ User setting file 和 Local repository 选择Override即可自定义路径
   </profiles>
 </settings>
 ```
+### 公司代理
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
-  <!-- 本地仓库 -->
-  <localRepository>D:\Applications\apache-maven-3.9.6\repository</localRepository>
   <!-- 公司服务器 -->
   <servers>
      <server>
