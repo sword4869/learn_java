@@ -55,7 +55,7 @@ public class EmailTest {
 }
 ```
 
-
+`@SpringBootTest` + `@Test`
 
 ## @SpringBootTest
 

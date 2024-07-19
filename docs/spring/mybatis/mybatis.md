@@ -210,9 +210,9 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 
 `<select>`:
 
-- `id`:同方法名
-- `parameterType`: 方法参数类型
-- `resultType`/`resultMap`: 方法返回值类型
+- `id`:同函数名，也是xml中的唯一标签id（别的sql片段引用它）。
+- `parameterType`: 函数参数类型
+- `resultType`/`resultMap`: 函数返回值类型
 
 `<insert>`、`<update>`、`<delete>`：只需要`id`
 
@@ -253,7 +253,7 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
     </delete>
 </mapper>
 ```
-增删改dou'xing
+增删改都行
 
 ```java
 Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数占位符
@@ -292,11 +292,12 @@ Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数�
     </update>
 ```
 
+### other
 
+![image-20240718104409909](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407181044555.png)
 
 ### resultType
 ```xml
-    <!-- id 对应函数名, resultType 对应pojo类 -->
     <select id="list" resultType="com.itheima.pojo.Emp">
         select * from emp       
         <where>
@@ -310,7 +311,9 @@ Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数�
         order by update_time desc
     </select>
 
+	
 
+	//////////////// 引用公共sql片段
     <sql id="commonSelect">
         select id, username, password, name, gender, image, job, entrydate, dept_id, create_time, update_time from emp
     </sql>
@@ -331,8 +334,11 @@ Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数�
     </select>
 ```
 
-
 ### resultMap分开
+
+`column`是sql中select 查询出来的名字，
+
+`property` 是javabean类的字段名，`type`/`javaType`/`ofType`是javabean的全类名。
 
 ```xml
 <resultMap id="唯一的标识" type="pojo对象A">
@@ -340,51 +346,52 @@ Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数�
     <result column="select出来的其他列名" property="pojo对象A的属性名"/>
     <result ..."/>
 
-    <association property="pojo对象A的属性名" javaType="pojo对象B">
+    <association property="pojo对象A的属性名" javaType="pojo对象A的属性名对应的类型 pojo对象B">
         <id column="select出来的主键列名"  property="pojo对象B的属性名"/>
         <result column="select出来的其他列名" property="pojo对象B的属性名"/>
     </association>
 
-    <collection property="pojo对象A的属性名" ofType="集合中的pojo对象C">
+    <collection property="pojo对象A的属性名" ofType="pojo对象A的属性名对应的集合中的pojo对象C">
         <id column="select出来的主键列名" property="pojo对象C的属性名" />
         <result column="select出来的其他列名"  property="pojo对象C的属性名" />  
     </collection>
 
-    <discriminator javaType="int" column="type">
-        <case value="0" resultMap="card1"></case>
+    <discriminator column="type" javaType="int">		/// 列名，pojo对象A的属性的类型
+        <case value="0" resultMap="card1"></case>		/// 根据其值，对应不同的pojo类
         <case value="1" resultMap="card2"></case>
     </discriminator>
 </resultMap>
 ```
-column是sql中select 查询出来的名字，property 是javabean类的字段名，type/javaType/ofType是javabean的全类名。
-
 #### 基本
 
-[code: resultMap项目](../../codes/javaweb/resultmap/src/main/java/com/sword/resultmap/mapper/UserMapper.java)
+[code: resultMap项目](../../../codes/javaweb/resultmap/src/main/java/com/sword/resultmap/mapper/UserMapper.java)
 
 ```xml
-    <select id="getUsers" resultType="com.sword.resultmap.domain.po.User">
-        select * from user
-    </select>
+<select id="getUsers" resultType="com.sword.resultmap.domain.po.User">
+    select * from user
+</select>
+
+// 返回的天然是一个集合，可用List, Set接收
+List<User> getUsers();
 ```
 
 #### 一对一 association
 
 ```java
-    <resultMap id="user_cardass" type="com.sword.resultmap.domain.dto.UserCardAssociation">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <association property="card" javaType="com.sword.resultmap.domain.dto.Card">
-            <id column="card_id" property="cardId"/>
-            <result column="card_name" property="name"/>
-        </association>
-    </resultMap>
+<resultMap id="user_cardass" type="com.sword.resultmap.domain.dto.UserCardAssociation">
+    <id column="id" property="id" />
+    <result column="name" property="name" />
+    <association property="card" javaType="com.sword.resultmap.domain.dto.Card">
+        <id column="card_id" property="cardId"/>
+        <result column="card_name" property="name"/>
+    </association>
+</resultMap>
 
-    <select id="getUsersCardAssociation" resultMap="user_cardass">
-        select u.id, u.name, c.card_id, c.name card_name
-        from user u, card_association c
-        where u.id = c.user_id
-    </select>
+<select id="getUsersCardAssociation" resultMap="user_cardass">
+    select u.id, u.name, c.card_id, c.name card_name
+    from user u, card_association c
+    where u.id = c.user_id
+</select>
 ```
 ```
 +----+------+---------+-----------+
@@ -411,6 +418,8 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
 ```
 
 #### 一对多 collection
+
+之所以叫collection，是因为java传入的不仅可以是List，还可以是Set
 
 ```xml
     <resultMap id="user_cardcol" type="com.sword.resultmap.domain.dto.UserCardCollection">
@@ -527,16 +536,23 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
 
 #### 一对一 association
 
-同样确立 `property` 属性名。
+直接指定子查询
 
-但直接指定 `column`子查询传递参数，`select`子查询方法。
+​	`select`子查询的标签id。
+
+​	 `column`子查询传递参数。
+
+然后将子查询的结果的赋值给javabean的属性`property`
 
 ```java
 <resultMap id="EnterpriseMap" type="com.hello.domain.eval.enterprise.valueobject.EnterpriseValueObject">
     <result column="id" property="id"/>
     <result column="enterprise_name" property="enterpriseName"/>
     <result column="area_status" property="areaStatus"/>
-    <association property="areaGovernEntity" column="{enterpriseId=id,areaStatus=area_status}" select="queryAreaGovernEntity"/>
+    // 多个sql参数
+    <association select="queryAreaGovernEntity" column="{enterpriseId=id,areaStatus=area_status}" property="areaGovernEntity"/>
+    // 单个sql参数，就不用指定。findRoleByUserId中就是 value
+    <collection select="findRoleByUserId" column="id" property="roles"/>	
 </resultMap>
 
 <select id="queryAreaGovernEntity" resultType="com.hello.domain.eval.areagovern.entity.AreaGovernEntity">
@@ -545,6 +561,13 @@ column是sql中select 查询出来的名字，property 是javabean类的字段�
     and delete_flag = '0'
     and #{areaStatus} = '1'
     order by id desc limit 1
+</select>
+        
+
+<select id="findRoleByUserId" resultType="com.safesoft.domain.system.entity.Role">
+    select id, name
+    from sys_role sr
+             inner join sys_user_role sur on sur.role_id = sr.id and sur.user_id = #{value}
 </select>
 ```
 
