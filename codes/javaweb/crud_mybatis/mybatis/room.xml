@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safesoft.domain.appointment.equipment.room.repository.RoomInfoRepository">
+    <!--新增房间信息-->
+    <insert id="insertRoom" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO t_room_info(room_name, room_description, access_control_device_serial, created_user_id,
+                                updated_user_id)
+        VALUES (#{roomName}, #{roomDescription}, #{accessControlDeviceSerial}, #{createdUserId}, #{updatedUserId})
+    </insert>
+
+    <!--批量新增房间监控信息-->
+    <insert id="batchInsertRoomMonitor">
+        INSERT INTO t_room_monitor_info(room_id, device_serial, channel_no)
+        VALUES
+        <foreach collection="monitorList" item="roomMonitor" separator=",">
+            (#{roomId}, #{roomMonitor.deviceSerial}, #{roomMonitor.channelNo})
+        </foreach>
+    </insert>
+
+    <!--修改房间信息-->
+    <update id="updateRoom">
+        UPDATE t_room_info
+        SET room_name                    = #{roomName},
+            room_description             = #{roomDescription},
+            access_control_device_serial = #{accessControlDeviceSerial},
+            updated_user_id              = #{updatedUserId},
+            updated_time                 = current_timestamp
+        WHERE id = #{id}
+          AND deleted_flag = '0'
+    </update>
+
+    <!--删除房间信息-->
+    <update id="deleteRoom">
+        UPDATE t_room_info
+        SET deleted_flag = '1',
+            updated_user_id = #{currentUserId},
+            updated_time = current_timestamp
+        WHERE id = #{id}
+          AND deleted_flag = '0'
+    </update>
+
+    <!--删除房间监控信息-->
+    <delete id="deleteRoomMonitor">
+        DELETE
+        FROM t_room_monitor_info
+        WHERE room_id = #{id}
+    </delete>
+
+    <!--查询房间信息分页-->
+    <select id="queryRoomInfoPage" resultType="com.safesoft.domain.appointment.equipment.room.vo.RoomInfoVO">
+        SELECT id,
+               room_name,
+               room_description
+            FROM t_room_info
+        WHERE deleted_flag = '0'
+        <if test="roomName != null and roomName != ''">
+            AND room_name LIKE '%'||#{roomName}||'%'
+        </if>
+        LIMIT #{limit} OFFSET #{start}
+        ORDER BY created_time DESC
+    </select>
+
+    <!--查询房间信息总数-->
+    <select id="queryRoomInfoTotal" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM t_room_info
+        WHERE deleted_flag = '0'
+        <if test="roomName != null and roomName != ''">
+            AND room_name LIKE '%'||#{roomName}||'%'
+        </if>
+    </select>
+
+    <!--根据房间id查询房间信息-->
+    <select id="queryRoomInfoById" resultType="com.safesoft.domain.appointment.equipment.room.vo.RoomInfoVO">
+        SELECT id,
+               room_name,
+               room_description
+            FROM t_room_info
+        WHERE id = #{id}
+        AND deleted_flag = '0'
+    </select>
+
+    <!--根据房间id查询房间监控信息-->
+    <select id="queryRoomMonitorList"
+            resultType="com.safesoft.domain.appointment.equipment.room.vo.RoomMonitorVO">
+        SELECT id,
+               room_id,
+               device_serial,
+               channel_no
+            FROM t_room_monitor_info
+        WHERE room_id = #{id}
+    </select>
+
+    <!--检查房间名称是否存在-->
+    <select id="checkRoomNameExists" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM t_room_info
+        WHERE room_name = #{roomName}
+        AND deleted_flag = '0'
+        <if test="id != null">
+            AND id != #{id}
+        </if>
+    </select>
+
+    <!--查询房间下拉列表-->
+    <select id="queryRoomDropDown" resultType="com.safesoft.commons.IdNameValueObject">
+        SELECT id,
+               room_name name
+            FROM t_room_info
+        WHERE deleted_flag = '0'
+    </select>
+</mapper>

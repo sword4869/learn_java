@@ -27,11 +27,18 @@ pagehelper:
 ### 不管mybatis-config.xml之类的东西，直接能用
 
 ```java
-PageHelper.startPage(query.getPageNum().intValue(), query.getPageSize().intValue());		// 都要求是int值，这里是从Long转
-// .....查询：得到List<User> users;
-// 转化正常查询集合→Page<T>：p,getResult()获取List<T>，p.getTotal()总条数, p.getPages()总页
-Page<User> p = (Page)users;
-// 返回结果
+// (1) 设置分页参数
+int pageNum = 2;
+int pageSize = 20;
+PageHelper.startPage(pageNum, pageSize);		// 都要求是int值，平时是从Long转
+
+
+// (2) 正常的mybatis查询：得到List<User> users;
+// 转化正常查询集合List<T>→Page<T>
+Page<User> p = (Page)userMapper.selectAll();
+
+// (3) 返回结果
+// p,getResult()获取List<T>，p.getTotal()总条数, p.getPages()总页
 List<UserVO> vos = BeanUtil.copyToList(p.getResult(), UserVO.class);
 PageDTO<UserVO> pageDTO = new PageDTO<UserVO>(p.getTotal(), (long) p.getPages(), vos);
 ```

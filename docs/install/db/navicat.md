@@ -8,3 +8,5 @@
 [Navicat查看建表语句_navicat12如何看ddl-CSDN博客](https://blog.csdn.net/qq_35760825/article/details/124734000)
 
 COLLATE pg_catalog.”default” 是一个用于指定文本属性排序方式的关键字
+
+导出，是不带DDL的，只有Insert语句。

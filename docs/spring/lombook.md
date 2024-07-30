@@ -85,6 +85,8 @@ https://blog.csdn.net/sunnyzyq/article/details/119992746
 
 ## @Slf4j
 
+【方式1】
+
 ```java
 // 在类上加注释
 @Slf4j
@@ -99,3 +101,19 @@ public class RedissonTest {
 // 2024-04-22 15:57:43.307  INFO 18768 --- [           main] com.sword.redisson01.RedissonTest        : 获取锁失败 .... 1
 ```
 `log.error/warn/debug/info()`
+
+【方式2】
+
+```java
+public class InstitutionBasicController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(InstitutionBasicController.class);
+
+	@GetMapping(WebURIMappingConstant.REQUEST_MAPPING_INSTITUTION_BASIC_TEACHER)
+    public Rest<JsonPagedVO<TeacherInfoVO>> getTeacher(@Validated TeacherInfoCriteria teacherInfoCriteria) {
+        LOGGER.info("获取教师信息 {}", teacherInfoCriteria);
+        JsonPagedVO<TeacherInfoVO> teacherList = teacherService.getTeacherList(teacherInfoCriteria);
+        return RestBody.okData(teacherList);
+    }
+}
+```
+

@@ -1,5 +1,5 @@
 https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylink
-## Mybatis导入
+## Mybatis-Plus导入
 
 - 引入起步依赖
 - 在application.yml中根据需要添加配置
@@ -9,13 +9,6 @@ https://jx3ir08ot5k.feishu.cn/docx/JpLMd3rM3o6Gvqxt0L6clCgznzg?from=from_copylin
 ### 起步依赖
 
 ```xml
-<!-- mybatis起步依赖 -->
-<!-- <dependency>
-    <groupId>org.mybatis.spring.boot</groupId>
-    <artifactId>mybatis-spring-boot-starter</artifactId>
-    <version>2.3.0</version>
-</dependency> -->
-
 <!-- mybatis-plus包含对mybatis的自动装配，因此完全可以替换掉Mybatis -->
 <dependency>
     <groupId>com.baomidou</groupId>
@@ -84,6 +77,52 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 ```
 在启动上加`@MapperScan("com.sword.crud.mapper")`。所以在mapper接口上就不用标注`@Mapper`
 
+### 编写mapper查询
+
+一种方式是注解，一种是XML。
+
+方式一：注解
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+@Select("SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id ${ew.customSqlSegment}")
+List<User> querySelfDefined(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+```
+方式二：xml
+
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111409647.png)
+
+![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111409648.png)
+```java
+// Service中
+@Override
+public List<UserVO> querySelfDefined() {
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.eq("a.city", "北京")
+            .in("u.id", List.of(1L, 2L, 4L));
+    // 传递 wrapper
+    List<User> users = userMapper.querySelfDefined2(wrapper);
+    return BeanUtil.copyToList(users, UserVO.class);
+}
+
+// mapper中
+List<User> querySelfDefined2(@Param("ew") QueryWrapper<User> wrapper); // @Param(Constants.WRAPPER)
+
+// xml中
+<select id="querySelfDefined2" resultType="com.sword.crud.domain.po.User">
+    SELECT u.* FROM user u INNER JOIN address a ON u.id = a.user_id  ${ew.customSqlSegment}
+</select>
+```
 
 ## MybatisPlus插件
 
@@ -125,6 +164,8 @@ public class User {
     private Double distance;
 }
 ```
+这些注解都是mp独有的: 
+
 - 表名不一致 `@TableName`
 - 主键名不一致:`@TableId`
   - 可以set指定id，不set则自己生成。生成方案，如果是数据库设置 `auto_increment` 必须写 `IdType.AUTO`，否则默认是雪花算法 `IdType.ASSIGN_ID`。
@@ -297,21 +338,6 @@ List<UserDTO> userDTOS = userService.query()
 
 [enumtest](../../codes/javaweb/enumtest/枚举.md)
 
-## 自动更新时间
-
-不是在mybatisplus上搞（fill什么的），而是在数据库DDL上动手。
-
-```sql
-create_time datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-update_time datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
-```
-![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416633.png)
-
-![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416634.png)
-
-![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416635.png)
-
-![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407111416636.png)
 
 ## 逻辑删除 
 

@@ -50,6 +50,12 @@ http://localhost:8080/doc.html
 	<artifactId>swagger-spring-boot-starter</artifactId>
 	<version>1.9.0.RELEASE</version> 
 </dependency>
+
+<dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-boot-starter</artifactId>
+    <version>3.0.0</version>
+</dependency>
 ```
 
 ```yml
@@ -85,11 +91,11 @@ public class UserController{
 }
 ```
 
-### POJO 
+### VO
 
 类上 `@ApiModel(description = "用户VO实体")`
 
-POJO 类字段 `@ApiModelProperty("用户id")`
+字段 `@ApiModelProperty("用户id")`
 
 ```java
 package com.sword.crud.domain.vo;
@@ -105,8 +111,11 @@ public class UserVO {
     @ApiModelProperty("用户id")   // 第一个参数就是value
     private Long id;
     
-    @ApiModelProperty(value = "用户名", example = "Jack")
+    @ApiModelProperty(value = "用户名", example = "Jack")		// example对apifox自动生成很有用，
     private String username;
+    
+    @ApiModelProperty(value = "机构id", example = "1", notes = "机构id", required = true)	// 默认 required = false
+    private Long institutionId;
 }
 ```
 

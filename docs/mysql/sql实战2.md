@@ -37,6 +37,8 @@ limit <限制行数>
 (3) 所有的筛选完成后，才 select 选择结果表中的列。
 
 (4) 无论是书写顺序，还是执行顺序，UNION 都是排在 ORDER BY 前面的。SQL语句会将所有UNION 段合并后，再进行排序。
+(5) 先排序再分页limit
+
 ## select
 ### 条件
 ```sql
@@ -317,6 +319,8 @@ limit 3 offset 1
 -- 查询第2页员工数据, 每页展示10条记录
 select * from emp limit 10,10;
 ```
+
+允许，查询超出范围的数据，不会报错。
 
 ## 子查询
 
@@ -611,8 +615,6 @@ FROM 表名 [ [AS] 表别名1 ];
 SELECT emp_no as rank     -- error, rank是关键字
 SELECT emp_no as 'rank'     -- ok
 ```
-
-其他关键字：`row`, `rows`
 
 表别名不能有引号。`from employees 'e'` 错。
 
