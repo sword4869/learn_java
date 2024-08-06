@@ -1,6 +1,6 @@
 ## 基于REST风格的URL
 
-1、@GetMapping，处理 Get 请求 
+1、@GetMapping，处理 Get 请求。
 
 2、@PostMapping，处理 Post 请求 
 
@@ -18,7 +18,9 @@ http://localhost:8080/users    PUT：修改用户
 http://localhost:8080/users/1  DELETE：删除id为1的用户
 ```
 
-类mapping 的常量+方法mapping的restful，而不是方法上写`@DeleteMapping(WebURIMappingConstant.REQUEST_MAPPING_TEACHER+ "/{teacherId}")`。
+**类mapping 的常量+方法mapping的restful，而不是方法上写**
+
+e.g. `@DeleteMapping(WebURIMappingConstant.REQUEST_MAPPING_TEACHER+ "/{teacherId}")` → `@RequestMapping(WebURIMappingConstant.REQUEST_MAPPING_TEACHER)` + `@DeleteMapping("/{teacherId}")`。
 
 ```java
 @RestController
@@ -81,6 +83,75 @@ public Rest<Void> deleteTeacher(@PathVariable Long teacherId) {
 code, data, msg, (identifier)
 
 泛型Void对应无实际数据。
+
+```java
+package com.itheima.pojo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RestBody<T> {
+    private int code = 200; // 响应码
+    private String msg = "ok";  //响应信息 描述字符串
+    private T data; //返回的数据
+    private String identifier = "success";
+
+    public RestBody() {
+    }
+
+    public static RestBody<Void> ok() {
+        return new RestBody();
+    }
+
+    public static RestBody<Void> ok(String msg) {
+        RestBody<Void> restBody = new RestBody();
+        restBody.setMsg(msg);
+        return restBody;
+    }
+
+    public static <T> RestBody<T> okData(T data) {
+        RestBody<T> restBody = new RestBody();
+        restBody.setData(data);
+        return restBody;
+    }
+
+    public static <T> RestBody<T> okData(T data, String msg) {
+        RestBody<T> restBody = new RestBody();
+        restBody.setData(data);
+        restBody.setMsg(msg);
+        return restBody;
+    }
+
+    public static RestBody<Void> failure(String msg, String identifier) {
+        RestBody<Void> restBody = new RestBody();
+        restBody.setMsg(msg);
+        restBody.setIdentifier(identifier);
+        return restBody;
+    }
+
+    public static RestBody<Void> failure(int httpStatus, String msg) {
+        RestBody<Void> restBody = new RestBody();
+        restBody.setCode(httpStatus);
+        restBody.setMsg(msg);
+        restBody.setIdentifier("-9999");
+        return restBody;
+    }
+
+    public static <T> RestBody<T> failureData(T data, String msg, String identifier) {
+        RestBody<T> restBody = new RestBody();
+        restBody.setData(data);
+        restBody.setMsg(msg);
+        restBody.setIdentifier(identifier);
+        return restBody;
+    }
+}
+```
+
+
 
 ## 异常处理
 

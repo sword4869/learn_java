@@ -1,0 +1,1 @@
+[IDEA配置数据库，以及写mapper时的配置_sql resolution scopes-CSDN博客](https://blog.csdn.net/qq386972715/article/details/124860516)

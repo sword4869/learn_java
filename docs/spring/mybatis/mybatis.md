@@ -67,8 +67,8 @@
 
 ```xml
 mybatis:
-  mapper-locations: classpath:mybatis/**/*.xml
-  config-location: classpath:mybatis.xml
+  mapper-locations: classpath:mybatis/**/*.xml		# 修改默认mapper文件位置
+  config-location: classpath:mybatis.xml			# 指定配置文件
 ```
 
 mybatis.xml
@@ -138,8 +138,8 @@ select *  from emp where name like '%张%' and gender = 1 order by update_time d
 
 | 标签名 | 说明 | 属性 |
 | --- | --- | --- |
-| **where** | 删除开头额外的AND或OR |  |
-| **set** | 删掉额外的逗号 |  |
+| **where** | 删除**开头**额外的AND或OR，**不会添加！** |  |
+| **set** | 删掉**末尾**额外的逗号，**不会添加！** |  |
 | **if** | 条件 | test |
 | **foreach** | 循环 | collection, item, separator, open, close |
 | sql | sql | id |
@@ -164,157 +164,8 @@ Integer update(Enterprise enterprise);		// 可以直接识别属性名的参数�
 </update>
 ```
 
-### insert
 
-#### 返回主键
-
-默认情况下，执行插入操作时，是不会主键值返回的。
-
-如果需要获取sql插入自动生成的主键id，需要设置`useGeneratedKeys="true"`（默认false）和`keyProperty="实体类属性名"` 这两个属性: 
-
-​	keyProperty中对应的值是实体类的属性，而不是数据库的字段。
-
-​	无关insert方法的返回值，而是使用传入的实体对象的主键对应属性的值
-
-```xml
-<!-- 写法1 -->
-<insert id="addRuleHistory" keyProperty="id" useGeneratedKeys="true">
-    INSERT INTO eval_rule_history(id,eval_rule_no) values
-    (nextval('eval_id_seq'),#{evalRuleNo})
-</insert>
-
-<!-- 写法2：数据库设置了 "id" int8 NOT NULL DEFAULT nextval('eval_id_seq'::regclass), mybatis直接都不写 -->
-<insert id="insertRoom" keyProperty="id" useGeneratedKeys="true">
-    INSERT INTO eval_rule_history(eval_rule_no) values
-    (#{evalRuleNo})
-</insert>
-```
-
-```java
-final int saveRes = roomInfoRepository.insertRoom(roomInfoEntity);
-if (saveRes == 0) {
-    return ReturnInfo.failure("保存房间信息失败");
-}
-return roomInfoEntity.getId();		// 使用传入的实体对象的主键对应属性的值
-```
-
-PS：老写法
-
-```xml
-<insert id="addRuleHistory">
-    <selectKey keyProperty="id" resultType="long" order="BEFORE">
-        select nextval('eval_id_seq')
-    </selectKey>
-    insert into eval_rule_history(id,eval_rule_no) values
-    (#{id},#{evalRuleNo})
-</insert>
-```
-
-#### 不返
-
-```xml
-<insert id="submit">
-    insert into eval_area_govern (enterprise_id, is_target, is_noticed, is_sign, is_remove, area, score)
-    values ( #{enterpriseId}, #{isTarget}, #{isNoticed}, #{isSign}, #{isRemove}, #{area}, #{score})
-</insert>
-```
-
-#### 批量插入
-
-```java
-int insert(List<InstitutionMaterial> institutionMaterials);
-```
-
-```xml
-<insert id="insertBatch">    // 不用写parameterType。
-    INSERT INTO tb_student (name, age, phone, address, class_id) VALUES
-    <foreach collection="list" separator="," item="item">			// collection="list"固定写法
-        (#{item.name},#{item.age},#{item.phone},#{item.address},#{item.classId})
-    </foreach>
-</insert>
-```
-
-PS: 自动生成的代码是错误的，`parameterType="java.util.List&lt;com.safesoft.domain.institution.entity.InstitutionMaterial&gt;"`, 会报错`Cannot find class: java.util.List<com.safesoft.domain.institution.entity.InstitutionMaterial>`
-
-```java
-public interface StudentMapper {
-    int insertBatch(List<Student> studentList);
-}
-```
-
-[Mybatis 三种批量插入数据 方式-CSDN博客](https://blog.csdn.net/u010253246/article/details/115752049)
-
-### update
-
-都要这样写，因为前端传来的可能是全部的字段，也可能是只传更新的字段（其他未变动的字段就是null）。
-
-```xml
-<update id="update">
-    update emp
-    <set>
-        update_time = now(), 
-        updated_user_id = #{updatedUserId}		# 固定传、固定设置的东西就写前面
-        <if test="username != null and username != ''">			# 不仅要 username != null, 还要 username != ''
-            username=#{username},
-        </if>
-        <if test="gender != null and gender != ''">
-            gender=#{gender}
-    </set>
-    where id=#{id}
-</update>
-```
-
-### delete
-
-```xml
-<!-- delete from emp where id in (1,2,3); -->
-<delete id="deleteByIds">
-    delete from emp where id in
-    <foreach collection="ids" item="id" separator="," open="(" close=")">
-        #{id}
-    </foreach>
-</delete>
-```
-
-### select
-
-#### 多条件
-
-```xml
-<!--分页查询的总条数-->
-<select id="insCount" resultType="java.lang.Long">
-    select count(distinct ins.*) from t_institution_info ins join t_label_institution l on ins.id =
-    l.institution_id
-    <where>
-        <if test="institutionName != null and institutionName != ''">		# # 不仅要 username != null, 还要 username != ''
-            and institution_name like CONCAT('%',#{institutionName},'%')
-        </if>
-        <if test="creditCode != null and creditCode != ''">
-            and credit_code = #{creditCode}
-        </if>
-        <if test="township != null and township != ''">
-            and township = #{township}
-        </if>
-        <if test="institutionType != null and institutionType != ''">
-            and type_code = #{institutionType}
-        </if>
-        <if test="institutionStatus != null and institutionStatus !=''">
-            and ins_status = #{institutionStatus}
-        </if>
-        <if test="label != null and label != ''">
-            and l.label_code = #{label}
-        </if>
-    </where>
-</select>
-```
-
-#### 直接VO还是PO再转VO
-
-如果VO是PO中的挑几个字段，那么PO再BeanUtil转VO。
-
-如果VO是PO的联表查询，那么直接resultMap对应VO。
-
-### other
+### 指定字段类型
 
 ![image-20240718104409909](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407181044555.png)
 

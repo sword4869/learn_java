@@ -1,0 +1,5 @@
+[MySQL 有哪些锁？ | 小林coding (xiaolincoding.com)](https://xiaolincoding.com/mysql/lock/mysql_lock.html#auto-inc-锁)
+
+两种自增锁。
+
+主从库的数据不一致问题。主库的insert不连续，设置 `innodb_autoinc_lock_mode = 2 时，并且 binlog_format = row`

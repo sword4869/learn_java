@@ -22,7 +22,9 @@ ctrl+shift+u: 单词全大写
 
 鼠标滚轮：矩阵选中
 
-ctrl+alt+l: 格式化
+**ctrl_alt_o**: 优化无用导入 import 
+
+**ctrl_alt_l:** 格式化代码  format  
 
 alt+enter: 修复报错
 

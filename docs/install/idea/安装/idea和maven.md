@@ -1,6 +1,6 @@
 ## install
 
-Maven（可以用idea捆绑安装的，也可以 [自行安装](https://maven.apache.org/download.cgi)）
+**Maven就用idea捆绑安装的 Bundled (Maven 3)**（也可以 [自行安装](https://maven.apache.org/download.cgi)）
 
 
 
@@ -12,16 +12,18 @@ User setting file 和 Local repository 选择Override即可自定义路径
 
 ## config中的setting.xml
 
-### 自用阿里云
+### 自用
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+    
   <!-- 本地仓库：默认~/.m2/repository -->
   <localRepository>D:\Applications\apache-maven-3.9.6\repository</localRepository>
-  <!-- 远程仓库 -->
+  
+  <!-- 远程仓库: 阿里云 -->
   <mirrors>
     <mirror>
         <id>aliyunmaven</id>
@@ -30,69 +32,58 @@ User setting file 和 Local repository 选择Override即可自定义路径
         <url>https://maven.aliyun.com/repository/public</url>
     </mirror>
   </mirrors>
-  <!-- 默认JDK -->
-  <profiles>
-    <profile>     
-      <id>JDK-1.8</id>       
-      <activation>       
-          <activeByDefault>true</activeByDefault>       
-          <jdk>1.8</jdk>       
-      </activation>       
-      <properties>       
-          <maven.compiler.source>1.8</maven.compiler.source>       
-          <maven.compiler.target>1.8</maven.compiler.target>       
-          <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>       
-      </properties>       
-  </profile>
-  </profiles>
+  
 </settings>
 ```
 ### 公司代理
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
-  <!-- 公司服务器 -->
-  <servers>
-     <server>
-       <id>nexus-snapshots</id>
-       <username>admin</username>
-       <password>admin123</password>
-     </server>
-     <server>
-       <id>nexus-repository</id>
-       <username>admin</username>
-       <password>admin123</password>
-     </server>
-  </servers>
-  <!-- 公司仓库 -->
-  <mirrors>
-	<mirror>  
-      <id>local</id>  
-      <mirrorOf>*</mirrorOf>  
-      <name>local maven</name>  
-      <url>http://10.10.2.34:8081/repository/maven-public/</url>  
-    </mirror> 
-  </mirrors>
-  <!-- 默认JDK -->
-  <profiles>
-    <profile>     
-      <id>JDK-1.8</id>       
-      <activation>       
-          <activeByDefault>true</activeByDefault>       
-          <jdk>1.8</jdk>       
-      </activation>       
-      <properties>       
-          <maven.compiler.source>1.8</maven.compiler.source>       
-          <maven.compiler.target>1.8</maven.compiler.target>       
-          <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>       
-      </properties>       
-    </profile>
-  </profiles>
-</settings>
+<!-- 公司服务器 -->
+<servers>
+ <server>
+   <id>nexus-snapshots</id>
+   <username>admin</username>
+   <password>admin1234</password>
+ </server>
+ <server>
+   <id>nexus-repository</id>
+   <username>admin</username>
+   <password>admin1234</password>
+ </server>
+</servers>
+
+<!-- 公司仓库 -->
+<mirrors>
+<mirror>  
+  <id>local</id>  
+  <mirrorOf>*</mirrorOf>  
+  <name>local maven</name>  
+  <url>http://xx.:8081/repository/maven-public/</url>  
+</mirror> 
+</mirrors>
 ```
+
+### 其他
+
+```xml
+<!-- 默认JDK -->
+<profiles>
+    <profile>     
+        <id>JDK-1.8</id>       
+        <activation>       
+            <activeByDefault>true</activeByDefault>       
+            <jdk>1.8</jdk>       
+        </activation>       
+        <properties>       
+            <maven.compiler.source>1.8</maven.compiler.source>       
+            <maven.compiler.target>1.8</maven.compiler.target>       
+            <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>       
+        </properties>       
+    </profile>
+</profiles>
+```
+
+
 
 
 

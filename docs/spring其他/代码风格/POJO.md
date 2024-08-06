@@ -90,7 +90,7 @@ VO2
 展示对象：xxxVO，xxx一般为网页名称。
 ```
 
-## 注解
+## Entity和VO的注解
 
 `@TableId`等mybatis-plus注解加在Entity上。
 
@@ -108,7 +108,7 @@ VO2
 
 业务没有多端展示。VO=DTO，直接使用DTO或VO传输到前端数据即可。
 
-​	甚至DTO展示的东西和Entity差不多时，直接用Entity即可。
+​	甚至DTO展示的东西和PO差不多时，直接 使用PO 并且前传后时 insert sql 里 不注入 id 就行。
 
 
 

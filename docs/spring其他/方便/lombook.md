@@ -34,6 +34,27 @@ public class User {
 }
 ~~~
 
+## @Getter @Setter
+
+自己写了，lombok就不会帮我们生成了（不会冲突我们的自定义规则）
+
+```java
+public void test(){
+    Dog dog = new Dog();
+    dog.setName("dog");
+    System.out.println(dog.getName());		// fixed
+}
+
+@Getter
+@Setter
+static class Dog{
+    private String name;
+    public String getName(){
+        return "fixed";
+    }
+}
+```
+
 ## @EqualsAndHashCode
 `@EqualsAndHashCode` 默认选项 `(callSuper=false)`：
 
@@ -42,10 +63,49 @@ public class User {
 2.  需要考虑**父类**和本类中的成员，使用`@EqualsAndHashCode(callSuper=true)`
 3.  如果全部要比较 或 全部不需要比较 父类成员，使用全局配置 lombok.config
 
+## @ToString
+
+  ```java
+  @ToString						// 默认false, 只打印子类自身的属性。
+  @ToString(callSuper = true)		// 默认false，callSuper = true表示在toString方法中包含父类的toString方法，不然只会打印子类的属性
+  ```
+
+```java
+public class TestCase {
+    @Test
+    public void test(){
+        Dog1 dog1 = new Dog1();
+        System.out.println(dog1);
+
+        Dog2 dog2 = new Dog2();
+        System.out.println(dog2);
+    }
+    @Data
+    static class Animal{
+        private String name = "animal";
+    }
+    @Data
+    static class Dog1{
+        private Integer age = 1;
+    }
+
+    @Data
+    static class Dog2{
+        private String name = "dog";		// 重新声名，这样就是子类自身的了 
+        private Integer age = 2;
+    }
+    
+    // TestCase.Dog1(age=1)
+    // TestCase.Dog2(name=dog, age=2)
+}
+```
+
+
 
 ## @AllArgsConstructor
+
 ```java
-@AllArgsConstructor(staticName = "of")      // // return new User(...)
+@AllArgsConstructor(staticName = "of")      // return new User(...)
 
 User user = User.of("Tom", 123);    
 ```
@@ -116,4 +176,6 @@ public class InstitutionBasicController {
     }
 }
 ```
+
+
 

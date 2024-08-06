@@ -754,3 +754,19 @@ GROUP BY s.s_id, st.s_name
 
 
 ![image-20240715172016709](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407151720790.png)
+
+## 韦恩图
+
+```sql
+-- 外连接
+select c.name Customers
+from customers c left join orders o
+on c.id = o.customerId
+where o.customerId is null
+
+-- 子查询，更快
+select c1.Name Customers 
+from Customers c1 
+where c1.Id not in (select CustomerId from Orders)		-- 条件就是外连接的连接列
+```
+

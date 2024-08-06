@@ -17,11 +17,12 @@
 public interface VideoMapper{
 ```
 
-有很多mapper接口时，就需要写很多@Mappe注解。可以在项目启动类中加入`@MapperScan(“mapper文件所在包”)`，从而不用再在接口上添加任何注解。
+有很多mapper接口时，就需要写很多@Mappe注解。可以在项目启动类中加入`@MapperScan` 或 `@MapperScans`，从而不用再在接口上添加任何注解。
 
 ```java
 @SrpingBootApplication
-@MapperScan("com.hello.world")		# mapper文件所在包
+@MapperScan("com.safesoft.domain.*.mapper")		// 单个时
+@MapperScans({@MapperScan("com.safesoft.domain.*.mapper"), @MapperScan("com.safesoft.domain.*.repository")})	// 多个时
 public class TestApplication{
 ```
 

@@ -49,6 +49,8 @@ where s.emp_no = d.emp_no;
 select * from emp where name like '__';
 -- `%` 任意多个任意字符
 select * from emp where idcard like '%X';
+-- `\_`转义字符
+select * from emp where idcard like '3\_A';
 ```
 
 ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153184.png)
@@ -64,21 +66,21 @@ select * from emp where idcard like '%X';
 - 右外连接 right [outer] join：即使左表中没有匹配，也从右表返回所有的行
 - 【mysql不支持】full join：只要其中一个表中存在匹配，则返回行
 
-![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153186.png)
-
 在on中是相等。在where中是null。
 
 
 
-> 连接中的null
+### 连接中的null
 
-`on t1.name = t2.name`中，null不参与比较，则都被过滤，null只有is null/is not null.
+`on t1.name = t2.name`中，null不参与比较，则都被过滤（null只有is null/is not null）.
 
 inner join 不对null 的记录进行连接（都匹配才行）
 
 left / right /full join 都会对null的记录进行连接 （即使没有匹配）
 
-> 多表笛卡尔: 隐式内连接
+### 内连接
+
+>  两种写法：显示内连接 inner join on，隐式内连接 笛卡儿积
 
 ```sql
 -- 显式内连接
@@ -91,6 +93,10 @@ select a.name
 from a, b
 where a.name = b.name and date = '1920';
 ```
+> 效率问题（Todo）
+
+PS：笛卡尔积使用where来只显示匹配的记录, 会减少实际的匹配次数吗? 不会, 只是显示的是有效记录，并不能提高执行效率。
+
 ```sql
 -- sql 218
 select t1.*
@@ -142,7 +148,35 @@ where de.emp_no = s1.emp_no         -- 员工薪资
     and s1.salary > s2.salary;      -- 高薪资
 ```
 
-> mysql实现不支持的 full join 。
+> 等值查询 和 非等值查询
+
+1. 等值查询
+
+   ```
+   select a.name, b.age
+   from a join b on a.name = b.name;
+   ```
+
+2. 非等值查询
+
+   ```
+   select a.grade, c.level
+   from a join c on a.grade between c.low_grade and c.high_grade
+   ```
+
+### 外连接
+
+互相转化：`主表 left join 副表`， `副表 right join 主表`
+
+主表全查，副表匹配则匹配，不匹配则模拟出null。
+
+![image-20240730224049815](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407302240894.png)
+
+### mysql实现不支持的 full join
+
+
+
+那么如何手动实现？
 
 韦恩图：全连接是左圆去掉交集部分（左连结且右表字段是null）+交集部分+右圆去掉交集部分（右连结且左表字段是null）。
 - 内连接是两圆的交集，
@@ -150,6 +184,22 @@ where de.emp_no = s1.emp_no         -- 员工薪资
 - 右连接是右圆，
 
 “去掉”在代码里表示出来就是`XX IS NULL`。
+
+### 自连接
+
+并非连接类型，只是表自己连接自己。
+
+```sql
+-- 只查有的，顶级上司不会显示，因为 mgr 是 null
+select a.ename 员工, b.ename 上司
+from emp a join emp b on a.mgr = b.empno;
+
+-- 使用left join, 顶级上司会显示
+select a.ename 员工, b.ename 上司
+from emp a left join emp b on a.mgr = b.empno;
+```
+
+
 
 ## where
 
@@ -164,15 +214,15 @@ select * from user where id in ( 5, 1) order by field(id, 5, 1)
 ## group by having
 
 ```sql
--- 单个字段
+-- 单个字段: 男性女性
 select gender 数量 from emp group by gender;
--- 多个字段（同一张表）
-select workaddress, gender 数量 from emp group by gender, workaddress;
+-- 多个字段（同一张表）: 男性女性在不同地区
+select gender, workaddress, count(*) from emp group by gender, workaddress;
 -- 使用聚合函数后的age结果就只有一个，ok
 select gender, age from emp group by gender;   -- error，因为每个组中的 age 有多个值，不知道选哪个
 select gender, max(age) from emp group by gender;
 
--- 多个字段（s_name是其他表字段）
+-- 联表多个字段，确保一对一关系
 SELECT s.s_id, st.s_name
 from score s join student st on s.s_id = st.s_id
 GROUP BY s.s_id,  st.s_name		-- 本来s_id就已经分成一组一个了，但要确保 s_id和s_name是一对一的关系，不然会增加分组。比如，换成成绩就有问题了，01-99, 01-68, 02-90
@@ -295,6 +345,10 @@ order by hire_date desc
 order by hire_date desc, gender [asc]       -- 升序可不写
 ```
 ## limit
+
+`limit #{取几个} offset #{跳过几个} `
+
+`limit #{跳过几个}m#{取几个}`
 
 个数和offset(跳过几个，即从索引 k 开始)
 ```sql
@@ -504,7 +558,8 @@ from 班级表
 ![alt text](https://cdn.jsdelivr.net/gh/sword4869/pic1@main/images/202407112153195.png)
 
 ## 函数
-字符串函数
+### 字符串函数
+
 ```sql
 select concat('Hello', ' ', ' MySQL'); -- Hello MySQL
 select concat('Hello', "'", ' MySQL'); -- Hello'MySQL
@@ -518,7 +573,7 @@ select length(name)     -- 5
 -- cast 函数，负责类型转化。这里是转换数值型为字符串，好让concat拼接。
 select concat('Prices: ', cast(buyprice AS CHAR))   
 ```
-数值函数
+### 数值函数
 
 ```sql
 select ceil(1.1);
@@ -530,7 +585,9 @@ select round(2.344, 2);  -- 保留2位小数
 -- 生成一个六位数的随机验证码。
 select lpad(round(rand()*1000000 , 0), 6, '0');
 ```
-日期函数: [MySQL日期时间操作函数（挺全的）_mysql日期函数-CSDN博客](https://blog.csdn.net/hu1010037197/article/details/115391335)
+### 日期函数
+
+[MySQL日期时间操作函数（挺全的）_mysql日期函数-CSDN博客](https://blog.csdn.net/hu1010037197/article/details/115391335)
 
 datetime: 
 
@@ -573,7 +630,8 @@ select datediff('2021-10-01', '2021-12-01');  -- -61  返回天
 数
 ```
 
-流程函数
+### 流程函数
+
 ```sql
 select if(false, 'Ok', 'Error');    -- true Ok, false Error
 
@@ -687,14 +745,15 @@ group by t1.emp_no;
 - 聚合函数中
   
 
-1、distinct语句中select显示的字段只能是distinct指定的字段，其他字段是不可能出现的。
+1、distinct出现在最前方就是后面所有字段联合起来一起去重.
+
 ```sql
 -- 单个去重
 select distinct name from A;            -- 结果是name
 -- 根据name和id两个字段来去重的
 select distinct name,age from A;        -- 结果是name和age
 ```
-distinct必须放在开头。例如，假如表A有“id”列，如果想获取distinc name，以及对应的“id”字段，想直接通过distinct是不可能实现的。`select id, distinct name from A;`
+而且distinct必须放在开头。例如，假如表A有“id”列，如果想获取distinc name，以及对应的“id”字段，想直接通过distinct是不可能实现的。`select id, distinct name from A;  --error`
 
 
 2、聚合函数

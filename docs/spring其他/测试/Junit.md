@@ -20,12 +20,16 @@ https://zhuanlan.zhihu.com/p/86624354
 ```java
 import org.junit.Test;
 
-@Test
-public void test(){
-    assertEquals(3, element);
-    
-    // dynamicArray 实现了 Iterable 接口
-    assertIterableEquals(List.of(1,2,3), dynamicArray);
+public class TestCase {
+    @Test
+    public void test(){			// 不同于SpringBootTest， junit需要public
+        System.out.println("test");
+        
+        assertEquals(3, element);
+
+        // dynamicArray 实现了 Iterable 接口
+        assertIterableEquals(List.of(1,2,3), dynamicArray);
+    }
 }
 ```
 
